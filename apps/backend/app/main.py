@@ -10,8 +10,10 @@ from app.db.session import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: We could create tables here, but we are using Alembic
-    # await engine.start()
+    # Run database migrations automatically on startup
+    import os
+    print("Running automatic database migrations...")
+    os.system("alembic upgrade head")
     yield
     # Shutdown
     await engine.dispose()
