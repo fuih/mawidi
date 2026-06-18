@@ -74,7 +74,7 @@ async def register_doctor(db: AsyncSession, data: DoctorRegister) -> dict:
         is_active=True,
         is_verified=False,
         subscription_status="trial",
-        subscription_end_date=datetime.now(timezone.utc) + timedelta(days=14)
+        subscription_end_date=(datetime.now(timezone.utc) + timedelta(days=14)).replace(tzinfo=None)
     )
 
     try:
