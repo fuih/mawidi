@@ -12,3 +12,4 @@ httpx
 python-dotenv
 cloudinary
 email-validator
+slowapi
