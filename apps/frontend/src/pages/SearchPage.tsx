@@ -49,7 +49,12 @@ export function SearchPage() {
         if (gender) params.gender = gender;
         
         const res = await api.get("/search/doctors", { params });
-        setDoctors(res.data);
+        if (Array.isArray(res.data)) {
+          setDoctors(res.data);
+        } else {
+          setDoctors([]);
+          setError("Le serveur n'a pas renvoyé une liste valide. Vérifiez l'URL de l'API (VITE_API_URL).");
+        }
       } catch (err: any) {
         setError("Erreur lors de la recherche");
         setDoctors([]);
