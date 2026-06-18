@@ -46,7 +46,7 @@ if settings.CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
-        allow_origin_regex=r"https://.*\.loca\.lt|https://.*\.pinggy.*",
+        allow_origin_regex=r"https://.*\.loca\.lt|https://.*\.pinggy.*|https://.*\.vercel\.app|https://.*\.onrender\.com",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
