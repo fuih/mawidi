@@ -1,0 +1,69 @@
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.v1 import api_router
+from app.core.config import settings
+from app.db.session import engine
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: We could create tables here, but we are using Alembic
+    # await engine.start()
+    yield
+    # Shutdown
+    await engine.dispose()
+
+
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from app.core.limiter import limiter
+
+async def _custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        {"detail": "Trop de tentatives. Veuillez patienter une minute."},
+        status_code=429
+    )
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    openapi_url=f"{settings.API_V1_PREFIX}/openapi.json",
+    lifespan=lifespan,
+)
+
+# Add SlowAPI rate limiter
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _custom_rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
+
+
+# Set all CORS enabled origins
+if settings.CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
+        allow_origin_regex=r"https://.*\.loca\.lt|https://.*\.pinggy.*",
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+import os
+from fastapi.staticfiles import StaticFiles
+
+# Create upload directory if it doesn't exist
+os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+
+# Mount the uploads directory to serve static files
+app.mount("/media/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+
+app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+
+
+@app.get("/health", tags=["Health"])
+async def health_check():
+    return {"status": "ok"}
