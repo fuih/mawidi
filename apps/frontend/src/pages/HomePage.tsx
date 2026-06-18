@@ -32,6 +32,8 @@ export function HomePage() {
             src="/images/Vector%203.svg"
             alt="Mawidi Hero"
             className="w-full h-full object-contain scale-[1.15] translate-x-8"
+            loading="eager"
+            fetchPriority="high"
           />
         </div>
 
@@ -102,7 +104,7 @@ export function HomePage() {
               {/* Floating Card */}
               <div className="absolute bottom-6 right-0 xl:-right-8 bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 flex items-center gap-6 max-w-md z-40">
                 <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
-                  <img src="/images/algeria-1.png" alt="Algérie" className="w-full h-full object-contain" />
+                  <img src="/images/algeria-1.png" alt="Algérie" className="w-full h-full object-contain" loading="eager" fetchPriority="high" />
                 </div>
                 <div>
                   <h4 className="text-lg font-bold text-foreground mb-2">Partout en Algérie</h4>
@@ -316,6 +318,7 @@ export function HomePage() {
                 src="/images/algiers-monument.png"
                 alt="Maqam Echahid Alger"
                 className="w-full h-auto opacity-80 mix-blend-multiply"
+                loading="lazy"
               />
             </div>
 
