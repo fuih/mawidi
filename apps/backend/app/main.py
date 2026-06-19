@@ -10,19 +10,8 @@ from app.db.session import engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Run database migrations automatically using the Alembic Python API
-    try:
-        from alembic.config import Config
-        from alembic import command
-        import os
-        print("Running automatic database migrations via Python API...")
-        # Since main.py is inside app/, we need to point to the alembic.ini in the root backend folder
-        alembic_ini_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "alembic.ini")
-        alembic_cfg = Config(alembic_ini_path)
-        command.upgrade(alembic_cfg, "head")
-        print("Database migrations completed successfully!")
-    except Exception as e:
-        print(f"Failed to run migrations: {e}")
+    # Startup: We could create tables here, but we are using Alembic
+    # await engine.start()
     yield
     # Shutdown
     await engine.dispose()
