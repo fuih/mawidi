@@ -209,6 +209,38 @@ async def authenticate_patient(
     )
 
 
+# ── Admin Auth ───────────────────────────────────────────────────
+
+async def authenticate_admin(
+    db: AsyncSession, email: str, password: str
+) -> dict:
+    """Verify admin credentials and return token pair.
+
+    Raises:
+        HTTPException 401 on invalid email or password.
+    """
+    result = await db.execute(select(Admin).where(Admin.email == email))
+    admin = result.scalar_one_or_none()
+
+    if admin is None or not admin.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    if not verify_password(password, admin.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    token_data = {"sub": str(admin.id), "type": "admin"}
+    return {
+        "access_token": create_access_token(token_data),
+        "refresh_token": create_refresh_token(token_data),
+    }
+
+
 # ── Token Refresh ────────────────────────────────────────────────
 
 async def refresh_tokens(db: AsyncSession, refresh_token: str) -> TokenResponse:
