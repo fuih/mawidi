@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, MapPin, User, Stethoscope, ChevronDown, BadgeCheck, RotateCcw } from "lucide-react";
 import api, { getImageUrl } from "../lib/api";
+import { Skeleton } from "../components/ui/Skeleton";
 
 interface DoctorResult {
   id: string;
@@ -196,51 +197,73 @@ export function SearchPage() {
             </div>
 
             <div className="space-y-4">
-              {doctors.map((doctor) => (
-                <div key={doctor.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow">
-                  {/* Photo */}
-                  <div className="relative shrink-0 mx-auto sm:mx-0">
-                    <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-gray-50 bg-gray-100 flex items-center justify-center">
-                      {doctor.profile_photo_url ? (
-                        <img src={getImageUrl(doctor.profile_photo_url)} alt={doctor.last_name} className="h-full w-full object-cover" />
-                      ) : (
-                        <User className="h-10 w-10 text-gray-400" />
-                      )}
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6">
+                    <div className="relative shrink-0 mx-auto sm:mx-0">
+                      <Skeleton className="h-24 w-24 rounded-full border-4 border-gray-50" />
                     </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-left gap-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-[#112142] flex items-center justify-center sm:justify-start gap-2">
-                        Dr. {doctor.first_name} {doctor.last_name}
-                        <BadgeCheck className="w-5 h-5 text-[#039D77]" />
-                      </h3>
-                      <p className="text-[#039D77] font-medium text-sm mt-1">{doctor.specialty}</p>
-                      
-                      <div className="flex items-center justify-center sm:justify-start gap-1 text-sm text-gray-500 mt-2">
-                        <MapPin className="h-4 w-4 shrink-0" />
-                        <span>{doctor.city}</span>
+                    <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-left gap-4">
+                      <div className="w-full">
+                        <Skeleton className="h-7 w-3/4 max-w-[250px] mb-2 mx-auto sm:mx-0" />
+                        <Skeleton className="h-5 w-1/2 max-w-[150px] mb-3 mx-auto sm:mx-0" />
+                        <Skeleton className="h-4 w-1/3 max-w-[120px] mb-4 mx-auto sm:mx-0" />
+                        <Skeleton className="h-4 w-full max-w-[400px] mb-1.5" />
+                        <Skeleton className="h-4 w-5/6 max-w-[350px]" />
                       </div>
-                      
-                      {doctor.bio && (
-                        <p className="mt-3 text-sm text-gray-600 line-clamp-2">
-                          {doctor.bio}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col items-center sm:items-end justify-center h-full sm:pt-4">
-                       <Link
-                        to={`/${doctor.slug || doctor.id}`}
-                        className="bg-[#039D77] text-white font-medium px-8 py-2.5 rounded-xl hover:bg-[#039D77]/90 transition-colors"
-                       >
-                        Voir le profil
-                       </Link>
+                      <div className="flex flex-col items-center sm:items-end justify-center h-full sm:pt-4 w-full sm:w-auto">
+                        <Skeleton className="h-10 w-32 rounded-xl" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                doctors.map((doctor) => (
+                  <div key={doctor.id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-6 hover:shadow-md transition-shadow">
+                    {/* Photo */}
+                    <div className="relative shrink-0 mx-auto sm:mx-0">
+                      <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-gray-50 bg-gray-100 flex items-center justify-center">
+                        {doctor.profile_photo_url ? (
+                          <img src={getImageUrl(doctor.profile_photo_url)} alt={doctor.last_name} className="h-full w-full object-cover" />
+                        ) : (
+                          <User className="h-10 w-10 text-gray-400" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-left gap-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-[#112142] flex items-center justify-center sm:justify-start gap-2">
+                          Dr. {doctor.first_name} {doctor.last_name}
+                          <BadgeCheck className="w-5 h-5 text-[#039D77]" />
+                        </h3>
+                        <p className="text-[#039D77] font-medium text-sm mt-1">{doctor.specialty}</p>
+                        
+                        <div className="flex items-center justify-center sm:justify-start gap-1 text-sm text-gray-500 mt-2">
+                          <MapPin className="h-4 w-4 shrink-0" />
+                          <span>{doctor.city}</span>
+                        </div>
+                        
+                        {doctor.bio && (
+                          <p className="mt-3 text-sm text-gray-600 line-clamp-2">
+                            {doctor.bio}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex flex-col items-center sm:items-end justify-center h-full sm:pt-4">
+                         <Link
+                          to={`/${doctor.slug || doctor.id}`}
+                          className="bg-[#039D77] text-white font-medium px-8 py-2.5 rounded-xl hover:bg-[#039D77]/90 transition-colors"
+                         >
+                          Voir le profil
+                         </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
 
               {!loading && doctors.length === 0 && (
                 <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">

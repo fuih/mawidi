@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Users } from "lucide-react";
 import api from "../../lib/api";
+import { Skeleton } from "../../components/ui/Skeleton";
 
 interface Assistant {
   id: string;
@@ -68,7 +69,44 @@ export function AssistantsManager() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Chargement...</div>;
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <Skeleton className="h-8 w-64 mb-2" />
+            <Skeleton className="h-5 w-96" />
+          </div>
+          <Skeleton className="h-10 w-28 rounded-lg" />
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-50 text-gray-600 border-b">
+              <tr>
+                <th className="px-6 py-4"><Skeleton className="h-4 w-20" /></th>
+                <th className="px-6 py-4"><Skeleton className="h-4 w-24" /></th>
+                <th className="px-6 py-4"><Skeleton className="h-4 w-16" /></th>
+                <th className="px-6 py-4 text-right"><Skeleton className="h-4 w-16 ml-auto" /></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <tr key={i} className="hover:bg-gray-50/50">
+                  <td className="px-6 py-4"><Skeleton className="h-5 w-32" /></td>
+                  <td className="px-6 py-4">
+                    <Skeleton className="h-4 w-40 mb-1" />
+                    <Skeleton className="h-3 w-24" />
+                  </td>
+                  <td className="px-6 py-4"><Skeleton className="h-6 w-16 rounded-full" /></td>
+                  <td className="px-6 py-4 text-right"><Skeleton className="h-8 w-8 rounded-lg ml-auto" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">

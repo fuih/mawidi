@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import api from "../../lib/api";
 import { useAuthStore } from "../../lib/authStore";
+import { Skeleton } from "../../components/ui/Skeleton";
 
 interface Appointment {
   id: string;
@@ -94,8 +95,45 @@ export function PatientDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-white border-b">
+          <div className="max-w-4xl mx-auto px-4 py-8">
+            <div className="flex items-center gap-4">
+              <Skeleton className="w-14 h-14 rounded-2xl" />
+              <div>
+                <Skeleton className="h-8 w-64 mb-2" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+          <div className="flex gap-2 bg-white border rounded-xl p-1 w-fit">
+            <Skeleton className="h-8 w-24 rounded-lg" />
+            <Skeleton className="h-8 w-24 rounded-lg" />
+            <Skeleton className="h-8 w-24 rounded-lg" />
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl border p-5 flex flex-col sm:flex-row gap-4 justify-between">
+                <div className="flex gap-4 items-start flex-1">
+                  <Skeleton className="w-12 h-12 rounded-xl" />
+                  <div className="w-full">
+                    <Skeleton className="h-5 w-48 mb-2" />
+                    <Skeleton className="h-4 w-64 mb-3" />
+                    <div className="flex gap-3">
+                      <Skeleton className="h-5 w-32" />
+                      <Skeleton className="h-5 w-24" />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <Skeleton className="h-8 w-24 rounded-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
