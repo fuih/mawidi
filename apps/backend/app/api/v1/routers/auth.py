@@ -58,13 +58,15 @@ async def login_doctor(
     if not tokens:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
-    # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=True, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=True, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    is_prod = settings.ENV == "production"
     
-    # Set CSRF token (not HttpOnly, readable by frontend)
+    # Set HttpOnly cookies for JWTs
+    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    
+    # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=True, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
     
     return {"message": "Successfully logged in", "type": "doctor"}
 
@@ -80,13 +82,15 @@ async def register_patient(
     """Register a new patient."""
     tokens = await auth_service.register_patient(db, patient_in)
     
+    is_prod = settings.ENV == "production"
+    
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=True, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=True, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=True, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
     
     return {"message": "Successfully registered and logged in", "type": "patient"}
 
@@ -104,13 +108,15 @@ async def login_patient(
     if not tokens:
         raise HTTPException(status_code=400, detail="Incorrect phone or password")
     
+    is_prod = settings.ENV == "production"
+    
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=True, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=True, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token (not HttpOnly, readable by frontend)
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=True, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
     
     return {"message": "Successfully logged in", "type": "patient"}
 
@@ -130,9 +136,11 @@ async def refresh_tokens(
     if not tokens:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
         
+    is_prod = settings.ENV == "production"
+    
     # Set new cookies
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=True, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=True, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     return {"message": "Tokens refreshed"}
 

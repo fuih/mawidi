@@ -23,6 +23,25 @@ from app.services import auth_service
 
 router = APIRouter()
 
+@router.get("/seed-initial-admin")
+async def seed_initial_admin(db: AsyncSession = Depends(get_db)):
+    """Seed the first admin. Only works if no admins exist in the database."""
+    # Check if any admin exists
+    result = await db.execute(select(Admin).limit(1))
+    if result.scalar_one_or_none() is not None:
+        raise HTTPException(status_code=400, detail="An admin already exists. Cannot seed again.")
+    
+    from app.core.security import get_password_hash
+    admin = Admin(
+        id=uuid.uuid4(),
+        email="admin@tabibak.pro",
+        password_hash=get_password_hash("admin123"),
+        is_active=True
+    )
+    db.add(admin)
+    await db.commit()
+    return {"message": "Admin created successfully! Email: admin@tabibak.pro, Password: admin123"}
+
 @router.post("/login")
 async def login_admin(
     response: Response,
@@ -37,13 +56,15 @@ async def login_admin(
             detail="Incorrect email or password",
         )
         
+    is_prod = settings.ENV == "production"
+    
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=True, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=True, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=True, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
     
     return {"message": "Successfully logged in", "type": "admin"}
 

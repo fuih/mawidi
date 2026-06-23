@@ -33,6 +33,15 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+// Manually extract and set CSRF token for cross-origin local dev
+api.interceptors.request.use((config) => {
+  const match = document.cookie.match(new RegExp('(^| )csrf_token=([^;]+)'));
+  if (match && match[2]) {
+    config.headers['X-CSRF-Token'] = match[2];
+  }
+  return config;
+});
+
 // Intercept 401 responses to refresh token or logout
 api.interceptors.response.use(
   (response) => response,
