@@ -18,6 +18,7 @@ import secrets
 from app.models.doctor import Doctor
 from app.models.patient import Patient
 from pydantic import BaseModel
+from app.core.config import settings
 router = APIRouter()
 
 @router.get("/patient/me")
