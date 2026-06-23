@@ -157,7 +157,7 @@ async def get_current_clinic_user(
             raise credentials_exception
         
         # Return the doctor associated with this assistant
-        doc_result = await db.execute(select(Doctor).where(Doctor.id == assistant.doctor_id))
+        doc_result = await db.execute(select(Doctor).where(Doctor.id == assistant.doctor_id))  # type: ignore
         doctor = doc_result.scalar_one_or_none()
         if doctor is None or not doctor.is_active:
             raise HTTPException(

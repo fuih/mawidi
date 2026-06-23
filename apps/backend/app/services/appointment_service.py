@@ -337,7 +337,7 @@ async def create_appointment(
         appointment.patient_phone,
         appointment.patient_name,
         appointment.appointment_date.strftime('%d/%m/%Y'),
-        appointment.appointment_time.strftime('%H:%M'),
+        appointment.appointment_time.strftime('%H:%M') if appointment.appointment_time else None,
         "pending",
         None,
         appointment.cancellation_token,
@@ -394,7 +394,7 @@ async def get_doctor_appointments(
 async def get_today_appointments(
     db: AsyncSession,
     doctor_id: uuid.UUID,
-) -> list[AppointmentResponse]:
+) -> dict:
     """Fetch all of today's appointments for a doctor, ordered by time."""
     today = datetime.now(timezone.utc).date()
 
@@ -578,9 +578,9 @@ async def reschedule_appointment(
     db: AsyncSession,
     appointment_id: uuid.UUID,
     doctor_id: uuid.UUID,
-    data: appointment_schemas.AppointmentReschedule,
+    data: AppointmentReschedule,
     background_tasks: BackgroundTasks,
-) -> appointment_schemas.AppointmentResponse:
+) -> AppointmentResponse:
     """Move an appointment to a new date/time and update queue number if needed."""
     
     # Ensure appointment exists
@@ -595,11 +595,15 @@ async def reschedule_appointment(
             detail="Rendez-vous introuvable."
         )
 
-    # Acquire lock on the doctor row to serialize reschedule operations
     doc_result = await db.execute(
         select(Doctor).where(Doctor.id == doctor_id).with_for_update()
     )
     doctor = doc_result.scalar_one_or_none()
+    if not doctor:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Doctor not found."
+        )
 
     # Prevent moving to past
     local_tz = timezone(timedelta(hours=1))
@@ -707,13 +711,12 @@ async def get_analytics_stats(
     total = total_result.scalar() or 0
 
     # Per-status counts in range
-    status_result = await db.execute(
-        select(Appointment.status, func.count())
-        .where(Appointment.doctor_id == doctor_id)
-        .where(Appointment.appointment_date >= start_date if start_date else True)
-        .where(Appointment.appointment_date <= end_date if end_date else True)
-        .group_by(Appointment.status)
-    )
+    status_query = select(Appointment.status, func.count()).where(Appointment.doctor_id == doctor_id)
+    if start_date:
+        status_query = status_query.where(Appointment.appointment_date >= start_date)
+    if end_date:
+        status_query = status_query.where(Appointment.appointment_date <= end_date)
+    status_result = await db.execute(status_query.group_by(Appointment.status))
     status_counts = {row[0].value: row[1] for row in status_result.all()}
 
     # Today count
@@ -736,8 +739,8 @@ async def get_analytics_stats(
     doctor_result = await db.execute(select(Doctor).where(Doctor.id == doctor_id))
     doctor = doctor_result.scalar_one_or_none()
     
-    fill_rate = 0
-    avg_patients_per_day = 0
+    fill_rate = 0.0
+    avg_patients_per_day = 0.0
 
     if doctor:
         if doctor.booking_mode == "queue_based":
@@ -982,7 +985,7 @@ async def patient_reschedule_appointment(
         )
 
     # Validate the new slot
-    if data.appointment_date < now.date() or (data.appointment_date == now.date() and data.appointment_time <= now.time()):
+    if data.appointment_date < now.date() or (data.appointment_date == now.date() and data.appointment_time is not None and data.appointment_time <= now.time()):
         raise HTTPException(status_code=400, detail="Cannot reschedule to a past date/time.")
 
     # Validate working hours for the new day
@@ -1000,7 +1003,7 @@ async def patient_reschedule_appointment(
     if not working_hours:
         raise HTTPException(status_code=400, detail="Doctor does not work on the selected day")
 
-    if data.appointment_time < working_hours.start_time or data.appointment_time >= working_hours.end_time:
+    if data.appointment_time is not None and (data.appointment_time < working_hours.start_time or data.appointment_time >= working_hours.end_time):
         raise HTTPException(status_code=400, detail="Requested time is outside working hours")
 
     # Check for blocked slots
@@ -1017,7 +1020,7 @@ async def patient_reschedule_appointment(
         if blocked.start_time is None and blocked.end_time is None:
             raise HTTPException(status_code=400, detail="Doctor is unavailable on the selected date")
         if (blocked.start_time is not None and blocked.end_time is not None and 
-            blocked.start_time <= data.appointment_time < blocked.end_time):
+            data.appointment_time is not None and blocked.start_time <= data.appointment_time < blocked.end_time):
             raise HTTPException(status_code=400, detail="The selected time slot is blocked")
 
     # Update the appointment
@@ -1085,7 +1088,7 @@ async def get_monthly_appointment_counts(
 
     result = await db.execute(query)
     
-    counts = {}
+    counts: dict[str, int] = {}
     for row in result:
         counts[row.appointment_date.isoformat()] = row.count
         

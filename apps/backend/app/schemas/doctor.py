@@ -28,9 +28,8 @@ class DoctorPublicProfile(BaseModel):
     bio_ar: str | None = None
     profile_photo_url: str | None = None
     consultation_fee: Decimal | None = None
-    booking_mode: str = "time_based"
+    booking_mode: Literal["time_based", "queue_based"] = "time_based"
     queue_cutoff_time: time | None = None
-    slug: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -43,7 +42,7 @@ class DoctorDashboardProfile(DoctorPublicProfile):
     is_active: bool
     is_verified: bool
     # System settings
-    booking_mode: Literal["time_based", "queue_based"] | None = None
+    booking_mode: Literal["time_based", "queue_based"] = "time_based"
     max_daily_queue: int | None = None
     queue_cutoff_time: time | None = None
     auto_confirm_appointments: bool | None = None

@@ -2,13 +2,14 @@
 Async SQLAlchemy engine and session factory.
 """
 
+from typing import Any
 from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.config import settings
 
-engine_kwargs = {"echo": False, "pool_pre_ping": True}
+engine_kwargs: dict[str, Any] = {"echo": False, "pool_pre_ping": True}
 if not settings.DATABASE_URL.startswith("sqlite"):
     engine_kwargs["pool_size"] = 20
     engine_kwargs["max_overflow"] = 10

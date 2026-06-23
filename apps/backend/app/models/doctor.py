@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from app.models.appointment import Appointment
     from app.models.blocked_slot import BlockedSlot
     from app.models.working_hours import WorkingHours
+    from app.models.assistant import Assistant
+    from app.models.notification import Notification
 
 
 class Doctor(TimestampMixin, Base):

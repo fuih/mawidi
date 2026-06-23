@@ -62,8 +62,8 @@ async def login_doctor(
     is_prod = settings.ENV == "production"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
@@ -86,8 +86,8 @@ async def register_patient(
     is_prod = settings.ENV == "production"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
@@ -112,8 +112,8 @@ async def login_patient(
     is_prod = settings.ENV == "production"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token (not HttpOnly, readable by frontend)
     csrf_token = secrets.token_urlsafe(32)
@@ -140,8 +140,8 @@ async def refresh_tokens(
     is_prod = settings.ENV == "production"
     
     # Set new cookies
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     return {"message": "Tokens refreshed"}
 

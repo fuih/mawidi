@@ -35,7 +35,7 @@ async def get_notifications(
     unread_count = count_result.scalar() or 0
     
     return NotificationListResponse(
-        items=notifications,
+        items=notifications,  # type: ignore
         unread_count=unread_count
     )
 
