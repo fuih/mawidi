@@ -1,8 +1,8 @@
-"""Add assistants and payments
+"""Add assistants
 
-Revision ID: f123456789ab
-Revises: 5a0f5845b8d1
-Create Date: 2026-06-18 20:00:00.000000
+Revision ID: d23456789abc
+Revises: 6c29d2e5a10d
+Create Date: 2026-06-23 20:00:00.000000
 """
 from typing import Sequence, Union
 
@@ -11,8 +11,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f123456789ab'
-down_revision: Union[str, None] = '5a0f5845b8d1'
+revision: str = 'd23456789abc'
+down_revision: Union[str, None] = '6c29d2e5a10d'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -36,29 +36,8 @@ def upgrade() -> None:
     op.create_index(op.f('ix_assistants_doctor_id'), 'assistants', ['doctor_id'], unique=False)
     op.create_index(op.f('ix_assistants_email'), 'assistants', ['email'], unique=True)
 
-    # ### payments table ###
-    op.create_table('payments',
-    sa.Column('id', sa.Uuid(), nullable=False),
-    sa.Column('doctor_id', sa.Uuid(), nullable=False),
-    sa.Column('checkout_id', sa.String(length=255), nullable=False),
-    sa.Column('amount', sa.Numeric(precision=10, scale=2), nullable=False),
-    sa.Column('status', sa.String(length=50), nullable=False),
-    sa.Column('completed_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-    sa.ForeignKeyConstraint(['doctor_id'], ['doctors.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_payments_checkout_id'), 'payments', ['checkout_id'], unique=True)
-    op.create_index(op.f('ix_payments_doctor_id'), 'payments', ['doctor_id'], unique=False)
-
 
 def downgrade() -> None:
-    # ### payments ###
-    op.drop_index(op.f('ix_payments_doctor_id'), table_name='payments')
-    op.drop_index(op.f('ix_payments_checkout_id'), table_name='payments')
-    op.drop_table('payments')
-
     # ### assistants ###
     op.drop_index(op.f('ix_assistants_email'), table_name='assistants')
     op.drop_index(op.f('ix_assistants_doctor_id'), table_name='assistants')
