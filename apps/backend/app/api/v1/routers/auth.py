@@ -59,15 +59,17 @@ async def login_doctor(
     if not tokens:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
-    is_prod = settings.ENV == "production"
+    import os
+    is_prod = settings.ENV == "production" or os.environ.get("RENDER") == "true"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    cookie_samesite = "none" if is_prod else "lax"
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite=cookie_samesite)
     
     return {"message": "Successfully logged in", "type": "doctor"}
 
@@ -83,15 +85,17 @@ async def register_patient(
     """Register a new patient."""
     tokens = await auth_service.register_patient(db, patient_in)
     
-    is_prod = settings.ENV == "production"
+    import os
+    is_prod = settings.ENV == "production" or os.environ.get("RENDER") == "true"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    cookie_samesite = "none" if is_prod else "lax"
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite=cookie_samesite)
     
     return {"message": "Successfully registered and logged in", "type": "patient"}
 
@@ -109,15 +113,17 @@ async def login_patient(
     if not tokens:
         raise HTTPException(status_code=400, detail="Incorrect phone or password")
     
-    is_prod = settings.ENV == "production"
+    import os
+    is_prod = settings.ENV == "production" or os.environ.get("RENDER") == "true"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    cookie_samesite = "none" if is_prod else "lax"
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token (not HttpOnly, readable by frontend)
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite=cookie_samesite)
     
     return {"message": "Successfully logged in", "type": "patient"}
 
@@ -137,20 +143,25 @@ async def refresh_tokens(
     if not tokens:
         raise HTTPException(status_code=401, detail="Invalid refresh token")
         
-    is_prod = settings.ENV == "production"
+    import os
+    is_prod = settings.ENV == "production" or os.environ.get("RENDER") == "true"
     
     # Set new cookies
-    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    cookie_samesite = "none" if is_prod else "lax"
+    response.set_cookie(key="access_token", value=tokens.access_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens.refresh_token, httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     return {"message": "Tokens refreshed"}
 
 @router.post("/logout")
 async def logout(response: Response):
     """Log out by clearing cookies."""
-    response.delete_cookie(key="access_token", samesite="lax")
-    response.delete_cookie(key="refresh_token", samesite="lax")
-    response.delete_cookie(key="csrf_token", samesite="lax")
+    import os
+    is_prod = settings.ENV == "production" or os.environ.get("RENDER") == "true"
+    cookie_samesite = "none" if is_prod else "lax"
+    response.delete_cookie(key="access_token", samesite=cookie_samesite)
+    response.delete_cookie(key="refresh_token", samesite=cookie_samesite)
+    response.delete_cookie(key="csrf_token", samesite=cookie_samesite)
     return {"message": "Logged out"}
 
 @router.get("/me")
