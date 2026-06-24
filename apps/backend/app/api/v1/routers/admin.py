@@ -56,15 +56,17 @@ async def login_admin(
             detail="Incorrect email or password",
         )
         
-    is_prod = settings.ENV == "production"
+    import os
+    is_prod = settings.ENV == "production" or os.environ.get("RENDER") == "true"
+    cookie_samesite = "none" if is_prod else "lax"
     
     # Set HttpOnly cookies for JWTs
-    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
-    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite="lax", max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
+    response.set_cookie(key="access_token", value=tokens["access_token"], httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    response.set_cookie(key="refresh_token", value=tokens["refresh_token"], httponly=True, secure=is_prod, samesite=cookie_samesite, max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 86400)
     
     # Set CSRF token
     csrf_token = secrets.token_urlsafe(32)
-    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite="lax")
+    response.set_cookie(key="csrf_token", value=csrf_token, httponly=False, secure=is_prod, samesite=cookie_samesite)
     
     return {"message": "Successfully logged in", "type": "admin"}
 
