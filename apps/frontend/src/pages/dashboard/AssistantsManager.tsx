@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Users } from "lucide-react";
+import { Plus, Trash2, Users, Eye, EyeOff } from "lucide-react";
 import api from "../../lib/api";
 import { Skeleton } from "../../components/ui/Skeleton";
 
@@ -25,6 +25,7 @@ export function AssistantsManager() {
     password: ""
   });
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const fetchAssistants = async () => {
     try {
@@ -147,7 +148,16 @@ export function AssistantsManager() {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium mb-1">Mot de passe provisoire</label>
-              <input required type="password" minLength={8} className="w-full border rounded-lg px-3 py-2" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
+              <div className="relative">
+                <input required type={showPassword ? "text" : "password"} minLength={8} className="w-full border rounded-lg px-3 py-2 pr-10" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
             <div className="md:col-span-2 flex justify-end gap-3 mt-4">
               <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 border rounded-lg font-medium hover:bg-gray-50">Annuler</button>
