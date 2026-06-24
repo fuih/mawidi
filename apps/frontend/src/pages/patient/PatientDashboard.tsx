@@ -39,7 +39,7 @@ const formatDate = (s: string) =>
 
 export function PatientDashboard() {
   const navigate = useNavigate();
-  const { isAuthenticated, userType } = useAuthStore();
+  const { isAuthenticated, userType, isInitializing } = useAuthStore();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState("");
@@ -48,10 +48,13 @@ export function PatientDashboard() {
   const [filter, setFilter] = useState<"upcoming" | "past" | "all">("upcoming");
 
   useEffect(() => {
+    if (isInitializing) return;
+    
     if (!isAuthenticated || userType !== "patient") {
       navigate("/login");
       return;
     }
+    
     api.get("/appointments/patient/me")
       .then((r) => setAppointments(r.data))
       .catch((err) => {
@@ -59,7 +62,7 @@ export function PatientDashboard() {
         setFetchError(`Erreur (${err.response?.status ?? "?"}): ${detail}`);
       })
       .finally(() => setLoading(false));
-  }, [isAuthenticated, userType, navigate]);
+  }, [isAuthenticated, userType, navigate, isInitializing]);
 
   const handleCancel = async (id: string) => {
     if (!confirm("Voulez-vous vraiment annuler ce rendez-vous ?")) return;
@@ -93,7 +96,7 @@ export function PatientDashboard() {
     return d >= today && !["cancelled", "completed", "no_show"].includes(a.status);
   }).length;
 
-  if (loading) {
+  if (loading || isInitializing) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="bg-white border-b">

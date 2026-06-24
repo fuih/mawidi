@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate, Navigate } from "react-router-dom";
 import { 
   LayoutDashboard, 
   ListTodo,
@@ -20,7 +20,7 @@ import api, { getImageUrl } from "../../lib/api";
 export function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout, userType } = useAuthStore();
+  const { logout, userType, isAuthenticated, isInitializing } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [resendStatus, setResendStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -56,6 +56,14 @@ export function DashboardLayout() {
       { name: "Abonnement", href: "/dashboard/billing", icon: CreditCard },
       { name: "Paramètres", href: "/dashboard/settings", icon: Settings }
     );
+  }
+
+  if (isInitializing) {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500">Chargement...</div>;
+  }
+
+  if (!isAuthenticated || !["doctor", "assistant"].includes(userType as string)) {
+    return <Navigate to="/login" replace />;
   }
 
   return (

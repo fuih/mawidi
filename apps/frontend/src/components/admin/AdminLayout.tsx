@@ -3,8 +3,12 @@ import { LayoutDashboard, Users, LogOut, ShieldCheck } from "lucide-react";
 import { useAuthStore } from "../../lib/authStore";
 
 export function AdminLayout() {
-  const { userType, isAuthenticated, logout } = useAuthStore();
+  const { userType, isAuthenticated, logout, isInitializing } = useAuthStore();
   const location = useLocation();
+
+  if (isInitializing) {
+    return <div className="min-h-screen flex items-center justify-center bg-gray-100 text-gray-500">Chargement...</div>;
+  }
 
   if (!isAuthenticated || userType !== "admin") {
     return <Navigate to="/admin/login" replace />;
