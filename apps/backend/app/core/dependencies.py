@@ -62,6 +62,18 @@ async def verify_csrf(request: Request):
             return
             
         if not csrf_cookie or not csrf_header or csrf_cookie != csrf_header:
+            # Fallback: Origin checking for cross-domain deployments (Vercel/Render)
+            # where frontend JS cannot read third-party csrf_token cookies.
+            origin = request.headers.get("origin")
+            if origin:
+                from app.core.config import settings
+                import re
+                if origin in settings.CORS_ORIGINS:
+                    return
+                regex = r"https://.*\.loca\.lt|https://.*\.pinggy.*|https://.*\.vercel\.app|https://.*\.onrender\.com"
+                if re.match(regex, origin):
+                    return
+                    
             raise HTTPException(status_code=403, detail="CSRF token mismatch")
 
 async def get_current_doctor(
