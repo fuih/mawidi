@@ -20,6 +20,14 @@ export function BillingPage() {
 
   const loadStatus = async () => {
     try {
+      // 1. Silent fallback to verify any pending payments (in case webhook was missed, e.g. local testing)
+      try {
+        await api.post("/billing/verify");
+      } catch (e) {
+        console.error("Verification failed", e);
+      }
+      
+      // 2. Fetch the actual status
       const res = await api.get("/billing/status");
       setStatus(res.data);
     } catch (err) {

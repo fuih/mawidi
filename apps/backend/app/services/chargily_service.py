@@ -64,3 +64,22 @@ def verify_webhook_signature(payload: str, signature: str) -> bool:
     ).hexdigest()
     
     return hmac.compare_digest(computed_signature, signature)
+
+async def get_checkout_status(checkout_id: str) -> str:
+    """
+    Fetch the real-time status of a checkout from Chargily.
+    """
+    headers = {
+        "Authorization": f"Bearer {settings.CHARGILY_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(f"{CHARGILY_BASE_URL}/checkouts/{checkout_id}", headers=headers)
+            if response.status_code == 200:
+                return response.json().get("status", "unknown")
+        except Exception as e:
+            logger.error(f"Error checking checkout status: {str(e)}")
+            
+    return "unknown"

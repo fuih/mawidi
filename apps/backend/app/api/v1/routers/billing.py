@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -71,3 +71,57 @@ async def create_checkout(
     await db.commit()
 
     return CheckoutResponse(checkout_url=checkout_url)
+
+@router.post("/verify")
+async def verify_payment(
+    db: AsyncSession = Depends(get_db),
+    current_doctor: Doctor = Depends(get_current_doctor),
+):
+    """
+    Check the doctor's most recent pending payment and verify its status synchronously with Chargily.
+    This acts as a fallback for when webhooks fail (e.g. localhost testing).
+    """
+    result = await db.execute(
+        select(Payment)
+        .where(Payment.doctor_id == current_doctor.id, Payment.status == "pending")
+        .order_by(Payment.created_at.desc())
+        .limit(1)
+    )
+    payment = result.scalars().first()
+    
+    if not payment:
+        return {"status": "no_pending_payment"}
+        
+    chargily_status = await chargily_service.get_checkout_status(payment.checkout_id)
+    
+    if chargily_status == "paid":
+        payment.status = "paid"
+        payment.completed_at = datetime.now(timezone.utc)
+        
+        # Update Doctor Subscription
+        now = datetime.now(timezone.utc)
+        current_end_date = current_doctor.subscription_end_date
+        
+        if current_end_date and current_end_date.tzinfo is None:
+            current_end_date = current_end_date.replace(tzinfo=timezone.utc)
+            
+        base_date = now
+        if current_end_date and current_end_date > now:
+            base_date = current_end_date
+            
+        new_end_date = base_date + timedelta(days=30)
+        
+        current_doctor.subscription_status = "active"
+        current_doctor.subscription_end_date = new_end_date
+        
+        from app.models.notification import Notification
+        notification = Notification(
+            doctor_id=current_doctor.id,
+            message=f"Paiement reçu ! Votre abonnement a été renouvelé avec succès jusqu'au {new_end_date.strftime('%d/%m/%Y')}."
+        )
+        db.add(notification)
+        
+        await db.commit()
+        return {"status": "success", "new_end_date": new_end_date}
+        
+    return {"status": chargily_status}
