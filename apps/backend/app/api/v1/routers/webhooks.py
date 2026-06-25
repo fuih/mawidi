@@ -73,15 +73,15 @@ async def chargily_webhook(request: Request, db: AsyncSession = Depends(get_db))
     # 8. Update Doctor Subscription
     doctor = await db.get(Doctor, payment.doctor_id)
     if doctor:
-        now = datetime.now(timezone.utc)
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         
         # If doctor has an active subscription ending in the future, extend it.
         # Otherwise, start from today.
         current_end_date = doctor.subscription_end_date
         
-        # Ensure we're comparing timezone-aware datetimes
-        if current_end_date and current_end_date.tzinfo is None:
-            current_end_date = current_end_date.replace(tzinfo=timezone.utc)
+        # Ensure we're comparing timezone-naive datetimes
+        if current_end_date and current_end_date.tzinfo is not None:
+            current_end_date = current_end_date.replace(tzinfo=None)
             
         base_date = now
         if current_end_date and current_end_date > now:

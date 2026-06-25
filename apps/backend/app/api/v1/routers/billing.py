@@ -104,11 +104,11 @@ async def verify_payment(
             payment.completed_at = datetime.now(timezone.utc)
             
             # Update Doctor Subscription
-            now = datetime.now(timezone.utc)
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
             current_end_date = current_doctor.subscription_end_date
             
-            if current_end_date and current_end_date.tzinfo is None:
-                current_end_date = current_end_date.replace(tzinfo=timezone.utc)
+            if current_end_date and current_end_date.tzinfo is not None:
+                current_end_date = current_end_date.replace(tzinfo=None)
                 
             base_date = now
             if current_end_date and current_end_date > now:
