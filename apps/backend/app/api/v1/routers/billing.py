@@ -84,44 +84,51 @@ async def verify_payment(
     result = await db.execute(
         select(Payment)
         .where(Payment.doctor_id == current_doctor.id, Payment.status == "pending")
-        .order_by(Payment.created_at.desc())
-        .limit(1)
     )
-    payment = result.scalars().first()
+    pending_payments = result.scalars().all()
     
-    if not payment:
+    if not pending_payments:
         return {"status": "no_pending_payment"}
         
-    chargily_status = await chargily_service.get_checkout_status(payment.checkout_id)
+    any_paid = False
+    newest_end_date = None
+    last_status = "pending"
     
-    if chargily_status == "paid":
-        payment.status = "paid"
-        payment.completed_at = datetime.now(timezone.utc)
+    for payment in pending_payments:
+        chargily_status = await chargily_service.get_checkout_status(payment.checkout_id)
+        last_status = chargily_status
         
-        # Update Doctor Subscription
-        now = datetime.now(timezone.utc)
-        current_end_date = current_doctor.subscription_end_date
-        
-        if current_end_date and current_end_date.tzinfo is None:
-            current_end_date = current_end_date.replace(tzinfo=timezone.utc)
+        if chargily_status == "paid":
+            any_paid = True
+            payment.status = "paid"
+            payment.completed_at = datetime.now(timezone.utc)
             
-        base_date = now
-        if current_end_date and current_end_date > now:
-            base_date = current_end_date
+            # Update Doctor Subscription
+            now = datetime.now(timezone.utc)
+            current_end_date = current_doctor.subscription_end_date
             
-        new_end_date = base_date + timedelta(days=30)
-        
-        current_doctor.subscription_status = "active"
-        current_doctor.subscription_end_date = new_end_date
-        
-        from app.models.notification import Notification
-        notification = Notification(
-            doctor_id=current_doctor.id,
-            message=f"Paiement reçu ! Votre abonnement a été renouvelé avec succès jusqu'au {new_end_date.strftime('%d/%m/%Y')}."
-        )
-        db.add(notification)
-        
+            if current_end_date and current_end_date.tzinfo is None:
+                current_end_date = current_end_date.replace(tzinfo=timezone.utc)
+                
+            base_date = now
+            if current_end_date and current_end_date > now:
+                base_date = current_end_date
+                
+            new_end_date = base_date + timedelta(days=30)
+            
+            current_doctor.subscription_status = "active"
+            current_doctor.subscription_end_date = new_end_date
+            newest_end_date = new_end_date
+            
+            from app.models.notification import Notification
+            notification = Notification(
+                doctor_id=current_doctor.id,
+                message=f"Paiement reçu ! Votre abonnement a été renouvelé avec succès jusqu'au {new_end_date.strftime('%d/%m/%Y')}."
+            )
+            db.add(notification)
+            
+    if any_paid:
         await db.commit()
-        return {"status": "success", "new_end_date": new_end_date}
+        return {"status": "success", "new_end_date": newest_end_date}
         
-    return {"status": chargily_status}
+    return {"status": last_status}
