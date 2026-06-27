@@ -11,6 +11,7 @@ interface ManualBookingModalProps {
 
 export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: ManualBookingModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [bookingMode, setBookingMode] = useState<"time_based" | "queue_based">("queue_based");
   const [doctorId, setDoctorId] = useState("");
   
@@ -46,6 +47,7 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
       });
       setSlots([]);
       setDoctorId("");
+      setError(null);
     }
   }, [isOpen, defaultDateStr]);
 
@@ -80,6 +82,7 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
   const handleManualBook = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
     // If queue mode, omit the appointment time
     const payload = { ...formData };
@@ -92,7 +95,7 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
       onSuccess();
       onClose();
     } catch (err: any) {
-      alert(err.response?.data?.detail || "Erreur lors de l'ajout du rendez-vous.");
+      setError(err.response?.data?.detail || "Erreur lors de l'ajout du rendez-vous.");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,7 +110,14 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
             <X className="h-5 w-5" />
           </button>
         </div>
-        <form onSubmit={handleManualBook} className="p-6 space-y-4">
+
+        {error && (
+          <div className="mx-6 mt-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-lg">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleManualBook} className="p-6 pt-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nom du patient *</label>
             <input 
