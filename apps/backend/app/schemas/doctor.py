@@ -88,5 +88,6 @@ class DoctorSearchResult(BaseModel):
     bio: str | None = None
     profile_photo_url: str | None = None
     consultation_fee: Decimal | None = None
+    slug: str | None = None
 
     model_config = {"from_attributes": True}
