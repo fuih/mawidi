@@ -314,8 +314,7 @@ async def manual_book_appointment(
     appointment = await appointment_service.create_appointment(
         db, 
         full_appointment, 
-        background_tasks,
-        skip_anti_spam=True
+        background_tasks
     )
     return appointment
 
