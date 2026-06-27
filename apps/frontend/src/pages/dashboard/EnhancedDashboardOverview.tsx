@@ -86,7 +86,7 @@ export function EnhancedDashboardOverview() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto w-full">
+      <div className="w-full">
         {/* Page Header Skeleton */}
         <div className="mb-8">
           <Skeleton className="h-8 w-64 mb-2" />
@@ -167,11 +167,11 @@ export function EnhancedDashboardOverview() {
   const apptsCompleted = todayAppts.filter(a => a.status === "completed").length;
 
   return (
-    <div className="max-w-7xl mx-auto w-full">
+    <div className="w-full">
       {/* Page Header */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Bonjour, Dr. {profile?.first_name || ""}</h2>
-        <p className="text-gray-600 mt-1">Voici votre programme pour aujourd'hui.</p>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">Bonjour, Dr. {profile?.first_name || ""}</h2>
+        <p className="text-gray-500 text-lg mt-2">Voici votre programme pour aujourd'hui.</p>
       </div>
 
       {/* Top Stats Row */}
@@ -182,8 +182,8 @@ export function EnhancedDashboardOverview() {
             <span className="text-xs font-semibold text-gray-500 uppercase">Rendez-vous prévus</span>
             <span className="material-symbols-outlined text-blue-500 text-[20px]">calendar_clock</span>
           </div>
-          <div className="flex items-end gap-1">
-            <span className="text-2xl font-bold text-gray-900">{apptsTotal}</span>
+          <div className="flex items-end gap-1 mt-2">
+            <span className="text-4xl font-extrabold text-gray-900 tracking-tight">{apptsTotal}</span>
           </div>
           <div className="text-xs text-gray-500 mt-2">Pour la date sélectionnée</div>
         </div>
@@ -194,8 +194,8 @@ export function EnhancedDashboardOverview() {
             <span className="text-xs font-semibold text-gray-500 uppercase">À confirmer</span>
             <span className="material-symbols-outlined text-orange-500 text-[20px]">pending_actions</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{apptsPending}</div>
-          <div className="flex items-center gap-1 text-orange-500 mt-1">
+          <div className="text-4xl font-extrabold text-gray-900 tracking-tight mt-2">{apptsPending}</div>
+          <div className="flex items-center gap-1 text-orange-500 mt-2">
             <span className="text-xs font-medium">En attente de validation</span>
           </div>
         </div>
@@ -206,8 +206,8 @@ export function EnhancedDashboardOverview() {
             <span className="text-xs font-semibold text-gray-500 uppercase">Patients traités</span>
             <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{apptsCompleted}</div>
-          <div className="text-xs text-gray-500 mt-1">Consultations terminées</div>
+          <div className="text-4xl font-extrabold text-gray-900 tracking-tight mt-2">{apptsCompleted}</div>
+          <div className="text-xs text-gray-500 mt-2">Consultations terminées</div>
         </div>
       </div>
 
@@ -222,8 +222,8 @@ export function EnhancedDashboardOverview() {
             {/* Agenda Header & Tabs */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div className="flex items-center gap-4">
-                <h3 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-primary">view_agenda</span>
+                <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-[24px]">view_agenda</span>
                   {selectedDate.toDateString() === new Date().toDateString() 
                     ? "Agenda du jour" 
                     : `Agenda du ${selectedDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`}
