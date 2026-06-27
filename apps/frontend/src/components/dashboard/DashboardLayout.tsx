@@ -147,14 +147,6 @@ export function DashboardLayout() {
         </nav>
 
         <div className="absolute bottom-0 w-full p-4 border-t bg-white">
-          <div className="flex items-center justify-between mb-4 px-2">
-            <button className="flex items-center gap-2 text-xs font-medium text-white bg-primary px-3 py-1.5 rounded-md">
-              FR
-            </button>
-            <button className="flex items-center gap-2 text-xs font-medium text-gray-500 hover:text-gray-900 px-3 py-1.5 rounded-md">
-              العربية
-            </button>
-          </div>
           <button 
             onClick={() => {
               logout();
@@ -171,7 +163,7 @@ export function DashboardLayout() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b bg-white px-4 sm:px-6 lg:px-8">
+        <header className="flex h-16 shrink-0 items-center justify-between px-4 sm:px-6 lg:px-8">
           <button
             className="lg:hidden text-gray-500 hover:text-gray-900"
             onClick={() => setSidebarOpen(true)}
@@ -181,10 +173,6 @@ export function DashboardLayout() {
           
           <div className="flex flex-1 justify-end items-center gap-4">
             <NotificationBell />
-            <div className="flex items-center gap-2 border-l pl-4 cursor-pointer hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors">
-              <Globe className="h-4 w-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">FR</span>
-            </div>
           </div>
         </header>
 
