@@ -309,7 +309,7 @@ export function DoctorProfilePage() {
 
           <div className="mb-10 min-h-[150px]">
             {slotsLoading ? (
-              <div className="transition-all duration-500 animate-in fade-in zoom-in-95">
+              <div className="animate-in fade-in duration-200">
                 <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4">Étape 2: L'heure</p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {Array.from({ length: 10 }).map((_, i) => (
@@ -318,23 +318,23 @@ export function DoctorProfilePage() {
                 </div>
               </div>
             ) : !isWorkingDay ? (
-              <div className="text-center p-8 bg-red-50/50 rounded-2xl border border-red-100 transition-all duration-500 animate-in fade-in zoom-in-95">
+              <div className="text-center p-8 bg-red-50/50 rounded-2xl border border-red-100 animate-in fade-in duration-200">
                 <p className="text-red-800 font-bold text-lg mb-1">Non disponible</p>
                 <p className="text-red-600">Le médecin ne consulte pas ce jour-là.</p>
               </div>
             ) : availableSlots.length === 0 ? (
-              <div className="text-center p-8 bg-gray-50 rounded-2xl border border-gray-200 transition-all duration-500 animate-in fade-in zoom-in-95">
+              <div className="text-center p-8 bg-gray-50 rounded-2xl border border-gray-200 animate-in fade-in duration-200">
                 <p className="text-gray-800 font-bold text-lg mb-1">Complet</p>
                 <p className="text-gray-600">Aucun créneau disponible pour cette journée.</p>
               </div>
             ) : isQueueMode ? (
-              <div className="text-center p-8 bg-orange-50/50 rounded-2xl border border-orange-100 transition-all duration-500 animate-in fade-in zoom-in-95">
+              <div className="text-center p-8 bg-orange-50/50 rounded-2xl border border-orange-100 animate-in fade-in duration-200">
                 <Users className="h-12 w-12 text-orange-400 mx-auto mb-4" />
                 <p className="text-orange-800 font-bold text-lg mb-1">Consultation sans RDV</p>
                 <p className="text-orange-600">Vous recevrez un numéro de file après validation.</p>
               </div>
             ) : (
-              <div className="transition-all duration-500 animate-in fade-in zoom-in-95">
+              <div className="animate-in fade-in duration-200">
                 <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4">Étape 2: L'heure</p>
                 {/* Single unified grid as requested (no categories) */}
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
@@ -343,12 +343,12 @@ export function DoctorProfilePage() {
                       key={s.time}
                       disabled={!s.is_available}
                       onClick={() => setSelectedSlot(s.time)}
-                      className={`p-3 text-sm font-bold rounded-xl border transition-all duration-300 transform ${
+                      className={`p-3 text-sm font-bold rounded-xl border transition-colors duration-200 transform-gpu ${
                         !s.is_available
                           ? "bg-gray-50 text-gray-400 border-gray-100 cursor-not-allowed opacity-50"
                           : selectedSlot === s.time
-                          ? "bg-primary text-white border-primary shadow-lg shadow-primary/30 scale-105"
-                          : "bg-white text-gray-700 border-gray-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:scale-105"
+                          ? "bg-primary text-white border-primary shadow-md scale-105"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:scale-[1.02]"
                       }`}
                     >
                       {s.time.substring(0, 5)}
