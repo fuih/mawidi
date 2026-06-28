@@ -177,37 +177,45 @@ export function EnhancedDashboardOverview() {
       {/* Top Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Total Appointments */}
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-semibold text-gray-500 uppercase">Rendez-vous prévus</span>
-            <span className="material-symbols-outlined text-blue-500 text-[20px]">calendar_clock</span>
+        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">Rendez-vous prévus</span>
+            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+              <span className="material-symbols-outlined text-blue-500 text-[20px]">calendar_clock</span>
+            </div>
           </div>
           <div className="flex items-end gap-1 mt-2">
-            <span className="text-3xl font-extrabold text-gray-900 tracking-tight">{apptsTotal}</span>
+            <span className="text-4xl font-black text-[#112142] tracking-tight">{apptsTotal}</span>
           </div>
-          <div className="text-xs text-gray-500 mt-2">Pour la date sélectionnée</div>
+          <div className="text-xs text-gray-500 mt-3 font-medium">Pour la date sélectionnée</div>
         </div>
 
         {/* Pending Confirmations */}
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-semibold text-gray-500 uppercase">À confirmer</span>
-            <span className="material-symbols-outlined text-orange-500 text-[20px]">pending_actions</span>
+        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">À confirmer</span>
+            <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
+              <span className="material-symbols-outlined text-orange-500 text-[20px]">pending_actions</span>
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-gray-900 tracking-tight mt-2">{apptsPending}</div>
-          <div className="flex items-center gap-1 text-orange-500 mt-2">
-            <span className="text-xs font-medium">En attente de validation</span>
+          <div className="text-4xl font-black text-[#112142] tracking-tight mt-2">{apptsPending}</div>
+          <div className="flex items-center gap-1 text-orange-500 mt-3">
+            <span className="text-xs font-bold">En attente de validation</span>
           </div>
         </div>
 
-        {/* Completed */}
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-semibold text-gray-500 uppercase">Patients traités</span>
-            <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+        {/* Completed Appointments */}
+        <div className="bg-[#039D77] rounded-3xl p-6 shadow-[0_8px_30px_rgb(3,157,119,0.3)] hover:shadow-[0_8px_30px_rgb(3,157,119,0.4)] transition-all">
+          <div className="flex justify-between items-start mb-4">
+            <span className="text-[11px] font-black text-white/90 uppercase tracking-widest">Consultations terminées</span>
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+              <span className="material-symbols-outlined text-white text-[20px]">check_circle</span>
+            </div>
           </div>
-          <div className="text-3xl font-extrabold text-gray-900 tracking-tight mt-2">{apptsCompleted}</div>
-          <div className="text-xs text-gray-500 mt-2">Consultations terminées</div>
+          <div className="text-4xl font-black text-white tracking-tight mt-2">{apptsCompleted}</div>
+          <div className="flex items-center gap-1 text-white/90 mt-3">
+            <span className="text-xs font-bold">Patients pris en charge</span>
+          </div>
         </div>
       </div>
 
@@ -218,7 +226,7 @@ export function EnhancedDashboardOverview() {
         <div className="lg:col-span-8 space-y-6">
           
           {/* Widget 1: Agenda */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-[0_8px_40px_rgb(17,33,66,0.04)] border border-gray-100">
             {/* Agenda Header & Tabs */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
               <div className="flex items-center gap-4">
@@ -236,18 +244,18 @@ export function EnhancedDashboardOverview() {
                   Nouveau
                 </button>
               </div>
-              <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg self-stretch sm:self-auto overflow-x-auto">
+              <div className="flex space-x-2 bg-gray-50/80 p-1.5 rounded-xl border border-gray-100 self-stretch sm:self-auto overflow-x-auto">
                 <button 
                   onClick={() => setActiveTab("all")}
-                  className={`px-4 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "all" ? "bg-white shadow-sm text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                  className={`px-5 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === "all" ? "bg-white shadow-[0_2px_10px_rgb(17,33,66,0.06)] text-[#112142]" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"}`}
                 >Tous</button>
                 <button 
                   onClick={() => setActiveTab("upcoming")}
-                  className={`px-4 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "upcoming" ? "bg-white shadow-sm text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                  className={`px-5 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === "upcoming" ? "bg-white shadow-[0_2px_10px_rgb(17,33,66,0.06)] text-[#112142]" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"}`}
                 >À venir</button>
                 <button 
                   onClick={() => setActiveTab("completed")}
-                  className={`px-4 py-1.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors ${activeTab === "completed" ? "bg-white shadow-sm text-primary" : "text-gray-600 hover:bg-gray-200"}`}
+                  className={`px-5 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === "completed" ? "bg-white shadow-[0_2px_10px_rgb(17,33,66,0.06)] text-[#112142]" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"}`}
                 >Terminés</button>
               </div>
             </div>
@@ -255,12 +263,12 @@ export function EnhancedDashboardOverview() {
             {/* Patient List */}
             <div className="space-y-4">
               {filteredAppts.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">Aucun rendez-vous pour aujourd'hui.</div>
+                <div className="text-center py-12 text-gray-500 font-medium">Aucun rendez-vous pour aujourd'hui.</div>
               ) : (
                 filteredAppts.map((apt) => (
-                  <div key={apt.id} className="patient-card flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-lg border border-gray-200 bg-white gap-4 hover:shadow-md transition-shadow">
+                  <div key={apt.id} className="patient-card flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 rounded-2xl border-2 border-gray-50 bg-white gap-4 hover:border-[#039D77]/20 hover:shadow-[0_8px_30px_rgb(3,157,119,0.06)] transition-all">
                     <div className="flex items-center gap-4">
-                      <div className="bg-primary/10 text-primary font-medium px-3 py-1 rounded-md min-w-[70px] text-center">
+                      <div className="bg-[#039D77]/10 text-[#039D77] font-bold px-4 py-2 rounded-xl min-w-[75px] text-center text-sm">
                         {apt.appointment_time ? apt.appointment_time.substring(0, 5) : `#${apt.queue_number}`}
                       </div>
                       <div className={apt.status === "cancelled" || apt.status === "no_show" ? "opacity-60" : ""}>

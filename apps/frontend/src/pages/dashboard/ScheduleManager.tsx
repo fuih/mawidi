@@ -255,7 +255,7 @@ export function ScheduleManager() {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:bg-primary/90 transition-all disabled:opacity-70 text-sm"
+                className="flex items-center gap-2 bg-[#039D77] text-white px-6 py-3 rounded-xl font-bold shadow-[0_8px_30px_rgb(3,157,119,0.3)] hover:bg-[#027a5c] hover:scale-[1.02] transition-all disabled:opacity-70 disabled:hover:scale-100 text-sm"
               >
                 {isSaving ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -281,7 +281,7 @@ export function ScheduleManager() {
               </p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border divide-y overflow-hidden transition-all hover:shadow-md">
+            <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgb(17,33,66,0.04)] border border-gray-100 divide-y overflow-hidden transition-all hover:shadow-[0_8px_40px_rgb(17,33,66,0.08)]">
               {DAYS.map((day) => {
                 const config = schedule.find((s) => s.day === day.id)!;
 
@@ -369,7 +369,7 @@ export function ScheduleManager() {
                     <p className="text-gray-500 font-medium">Aucune indisponibilité prévue.</p>
                   </div>
                 ) : (
-                  <div className="bg-white rounded-xl shadow-sm border divide-y overflow-hidden">
+                  <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgb(17,33,66,0.04)] border border-gray-100 divide-y overflow-hidden">
                     {blockedSlots.map((slot) => (
                       <div key={slot.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
                         <div>
@@ -399,7 +399,7 @@ export function ScheduleManager() {
               </div>
 
               <div className="order-1 md:order-2">
-                <form onSubmit={handleAddBlockedSlot} className="bg-white p-5 rounded-xl shadow-sm border space-y-4">
+                <form onSubmit={handleAddBlockedSlot} className="bg-white p-6 sm:p-8 rounded-3xl shadow-[0_8px_40px_rgb(17,33,66,0.04)] border border-gray-100 space-y-5">
                   <h3 className="font-semibold text-gray-900 border-b pb-2 mb-4">Ajouter une indisponibilité</h3>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">Date <span className="text-red-500">*</span></label>
@@ -459,7 +459,7 @@ export function ScheduleManager() {
         <div className="space-y-6">
           
           {/* Booking Mode Card */}
-          <div className="bg-white rounded-xl shadow-sm border p-6 sticky top-6">
+          <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgb(17,33,66,0.04)] border border-gray-100 p-6 sm:p-8 sticky top-6">
             <div className="flex items-center gap-3 mb-2">
               <Users className="h-5 w-5 text-primary" />
               <h2 className="text-lg font-bold text-gray-900">Mode de réservation</h2>
