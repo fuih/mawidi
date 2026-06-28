@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Search, MapPin, User, Stethoscope, ChevronDown, BadgeCheck, RotateCcw } from "lucide-react";
 import api, { getImageUrl } from "../lib/api";
 import { Skeleton } from "../components/ui/Skeleton";
+import { ALGERIAN_WILAYAS } from "../constants";
 
 interface DoctorResult {
   id: string;
@@ -25,8 +26,9 @@ export function SearchPage() {
   // To keep it simple, we'll map the "Spécialité, médecin..." input to `name` state, and users can type anything.
   // But wait, the backend `name` only searches first/last name.
   // Let's just keep the state variables.
-  const [searchQuery, setSearchQuery] = useState("");
-  const [city, setCity] = useState("");
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("name") || "");
+  const [city, setCity] = useState(searchParams.get("city") || "");
   const [gender, setGender] = useState("");
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   
@@ -121,7 +123,7 @@ export function SearchPage() {
                     >
                       Toutes les wilayas
                     </div>
-                    {cities.map((c) => (
+                    {(cities.length > 0 ? cities : ALGERIAN_WILAYAS).map((c) => (
                       <div 
                         key={c}
                         className={`px-4 py-2.5 hover:bg-[#f1f8f7] hover:text-[#039D77] cursor-pointer text-sm transition-colors ${city === c ? 'font-semibold text-[#039D77] bg-[#f1f8f7]' : 'text-gray-700'}`}

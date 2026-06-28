@@ -1,355 +1,359 @@
-import { Link } from "react-router-dom";
+import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Search,
-  MapPin,
-  ShieldCheck,
-  CalendarDays,
-  CheckCircle2,
-  UserCheck,
-  MapPin as MapPinIcon,
+  ArrowRight,
+  BadgeCheck,
   Bell,
-  Smile,
-  Shield,
-  Smartphone,
-  MousePointerClick,
-  FileText,
-  Clock,
-  HeadphonesIcon,
-  CreditCard,
-  Info
+  CalendarCheck,
+  CheckCircle2,
+  ChevronRight,
+  Clock3,
+  HeartPulse,
+  MapPin,
+  MessageCircle,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Stethoscope,
+  UserCheck,
 } from "lucide-react";
 
+const specialties = [
+  "Cardiologie",
+  "Dermatologie",
+  "Pediatrie",
+  "Gynecologie",
+  "Dentiste",
+  "Ophtalmologie",
+];
+
+const patientSteps = [
+  {
+    icon: Search,
+    title: "Recherchez",
+    text: "Trouvez un medecin par specialite, nom ou ville.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Choisissez",
+    text: "Comparez les disponibilites et selectionnez un horaire.",
+  },
+  {
+    icon: Bell,
+    title: "Confirmez",
+    text: "Recevez votre confirmation et vos rappels au bon moment.",
+  },
+];
+
+const doctorBenefits = [
+  "Agenda en ligne synchronise avec votre cabinet",
+  "Rappels automatiques pour limiter les rendez-vous oublies",
+  "Profil public clair pour etre trouve plus facilement",
+];
+
+const trustItems = [
+  { value: "24/7", label: "Reservation accessible" },
+  { value: "100%", label: "Gratuit pour les patients" },
+  { value: "Securise", label: "Donnees protegees" },
+  { value: "Algerie", label: "Pense pour le terrain local" },
+];
+
 export function HomePage() {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const [city, setCity] = useState("");
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const params = new URLSearchParams();
+    if (query.trim()) params.set("q", query.trim());
+    if (city.trim()) params.set("city", city.trim());
+
+    navigate(params.toString() ? `/search?${params.toString()}` : "/search");
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-white font-sans">
-
-      {/* 1. HERO SECTION */}
-      <section className="relative w-full bg-white overflow-hidden pt-16 pb-20 min-h-[700px] flex flex-col justify-center">
-
-        {/* Hero Image (Absolute to screen right edge) */}
-        <div className="absolute top-1/2 -translate-y-1/2 -right-0 w-[60vw] max-w-[1000px] h-[750px] hidden lg:flex items-center justify-center z-10">
-          <img
-            src="/images/Vector%203.svg"
-            alt="Mawidi Hero"
-            className="w-full h-full object-contain scale-[1.15] translate-x-8"
-            loading="eager"
-            fetchPriority="high"
-          />
-        </div>
-
-        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-
-            {/* Hero Left: Text & Search */}
-            <div className="max-w-2xl pt-6">
-              <h1 className="text-5xl md:text-6xl lg:text-[64px] font-bold text-[#1e293b] leading-[1.15] mb-6 tracking-tight">
-                Trouvez le bon <br />
-                médecin, près de <br />
-                chez vous
-              </h1>
-              <p className="text-lg text-gray-600 mb-10 max-w-lg">
-                Prenez rendez-vous en quelques clics avec des médecins qualifiés partout en Algérie.
-              </p>
-
-              {/* Floating Search Bar */}
-              <div className="bg-white p-3 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex flex-col sm:flex-row gap-2 w-full max-w-[700px] mb-8 border border-gray-100">
-                <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white rounded-xl">
-                  <Search className="h-5 w-5 text-gray-400 shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Spécialité, médecin, clinique..."
-                    className="w-full bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm md:text-base"
-                  />
-                </div>
-                <div className="hidden sm:block w-px h-10 bg-gray-100 self-center"></div>
-                <div className="flex-[0.8] flex items-center gap-3 px-4 py-3 bg-white rounded-xl">
-                  <MapPin className="h-5 w-5 text-gray-400 shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Ville ou Wilaya"
-                    className="w-full bg-transparent outline-none text-gray-900 placeholder:text-gray-400 text-sm md:text-base"
-                  />
-                </div>
-                <button className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm md:text-base">
-                  <Search className="h-5 w-5" />
-                  Rechercher
-                </button>
-              </div>
-
-              {/* Trust Badges */}
-              <div className="flex flex-col sm:flex-row gap-6">
-                <div className="flex-1 flex items-center gap-4 bg-white px-5 py-4 rounded-2xl shadow-sm border border-gray-100">
-                  <div className="w-10 h-10 rounded-full bg-[#f1f8f7] flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-[#1e293b]">Rendez-vous rapide et confirmé</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Sans appel téléphonique</p>
-                  </div>
-                </div>
-                <div className="flex-1 flex items-center gap-4 bg-white px-5 py-4 rounded-2xl shadow-sm border border-gray-100">
-                  <div className="w-10 h-10 rounded-full bg-[#f1f8f7] flex items-center justify-center shrink-0">
-                    <ShieldCheck className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-[#1e293b]">Vos données sont sécurisées</p>
-                    <p className="text-xs text-gray-500 mt-0.5">Confidentialité garantie</p>
-                  </div>
-                </div>
-              </div>
+    <div className="min-h-screen overflow-hidden bg-white text-[#112142]">
+      <section className="relative isolate bg-[#f6fbfa]">
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-white" />
+        <div className="container relative mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-4 pb-12 pt-12 sm:px-6 lg:grid-cols-[0.98fr_1.02fr] lg:items-center lg:px-8 lg:pb-16 lg:pt-16">
+          <div className="max-w-3xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#039D77]/15 bg-white px-3 py-2 text-sm font-semibold text-[#039D77] shadow-sm">
+              <Sparkles className="h-4 w-4" />
+              Mawidi simplifie l'acces aux soins
             </div>
 
-            {/* Hero Right: Just the Floating Card (Image moved out of container) */}
-            <div className="relative hidden lg:block h-[600px]">
-              {/* Floating Card */}
-              <div className="absolute bottom-6 right-0 xl:-right-8 bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 flex items-center gap-6 max-w-md z-40">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 flex items-center justify-center">
-                  <img src="/images/algeria-1.png" alt="Algérie" className="w-full h-full object-contain" loading="eager" fetchPriority="high" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-bold text-foreground mb-2">Partout en Algérie</h4>
-                  <p className="text-sm text-gray-500 mb-4 leading-relaxed">
-                    Trouvez un médecin dans votre ville en quelques clics
-                  </p>
-                  <a href="#" className="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
-                    Voir toutes les wilayas &rarr;
-                  </a>
-                </div>
-              </div>
-            </div>
+            <h1 className="max-w-4xl text-4xl font-bold leading-tight tracking-normal text-[#112142] sm:text-5xl lg:text-6xl">
+              Prenez rendez-vous avec le bon medecin, sans attente inutile.
+            </h1>
 
-          </div>
-        </div>
-      </section>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+              Recherchez une specialite, choisissez une ville et reservez un
+              creneau confirme avec des professionnels de sante en Algerie.
+            </p>
 
-      {/* 2. FEATURES ROW */}
-      <section className="py-10 bg-white border-b border-gray-50">
-        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x lg:divide-gray-200">
-            <div className="flex flex-col items-center text-center lg:px-6">
-              <div className="w-16 h-16 rounded-full bg-[#f1f8f7] flex items-center justify-center mb-4 text-primary">
-                <CalendarDays className="h-8 w-8" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Réservez facilement</h3>
-              <p className="text-sm text-gray-500 leading-relaxed max-w-[200px]">
-                Choisissez la date et l'heure qui vous conviennent.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center lg:px-6">
-              <div className="w-16 h-16 rounded-full bg-[#f1f8f7] flex items-center justify-center mb-4 text-primary">
-                <UserCheck className="h-8 w-8" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Médecins qualifiés</h3>
-              <p className="text-sm text-gray-500 leading-relaxed max-w-[200px]">
-                Des professionnels de santé vérifiés et expérimentés.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center lg:px-6">
-              <div className="w-16 h-16 rounded-full bg-[#f1f8f7] flex items-center justify-center mb-4 text-primary">
-                <MapPinIcon className="h-8 w-8" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Près de chez vous</h3>
-              <p className="text-sm text-gray-500 leading-relaxed max-w-[200px]">
-                Trouvez des médecins proches de votre position.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center lg:px-6">
-              <div className="w-16 h-16 rounded-full bg-[#f1f8f7] flex items-center justify-center mb-4 text-primary">
-                <Bell className="h-8 w-8" />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Rappels automatiques</h3>
-              <p className="text-sm text-gray-500 leading-relaxed max-w-[200px]">
-                Recevez des rappels pour ne jamais manquer votre rendez-vous.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+            <form
+              onSubmit={handleSearch}
+              className="mt-8 grid gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-[0_24px_70px_rgba(17,33,66,0.10)] md:grid-cols-[1fr_0.75fr_auto]"
+            >
+              <label className="flex min-h-14 items-center gap-3 rounded-md bg-slate-50 px-4">
+                <Stethoscope className="h-5 w-5 shrink-0 text-[#039D77]" />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  className="w-full bg-transparent text-sm font-medium text-[#112142] outline-none placeholder:text-slate-400"
+                  placeholder="Specialite, medecin, clinique..."
+                />
+              </label>
+              <label className="flex min-h-14 items-center gap-3 rounded-md bg-slate-50 px-4">
+                <MapPin className="h-5 w-5 shrink-0 text-[#039D77]" />
+                <input
+                  value={city}
+                  onChange={(event) => setCity(event.target.value)}
+                  className="w-full bg-transparent text-sm font-medium text-[#112142] outline-none placeholder:text-slate-400"
+                  placeholder="Ville ou wilaya"
+                />
+              </label>
+              <button
+                type="submit"
+                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-md bg-[#039D77] px-7 text-sm font-bold text-white shadow-sm transition hover:bg-[#028765]"
+              >
+                <Search className="h-5 w-5" />
+                Rechercher
+              </button>
+            </form>
 
-      {/* 3. STATS BANNER */}
-      <section className="py-8 bg-white">
-        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-[#f8fafc] rounded-3xl p-6 lg:p-10 border border-gray-100 flex flex-wrap justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[#e8f1f2] flex items-center justify-center text-primary">
-                <Smile className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-2xl lg:text-3xl font-bold text-gray-900">100% Gratuit</p>
-                <p className="text-sm font-medium text-gray-600">Pour les patients</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[#e8f1f2] flex items-center justify-center text-primary">
-                <Clock className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-2xl lg:text-3xl font-bold text-gray-900">24/7</p>
-                <p className="text-sm font-medium text-gray-600">Prise de rendez-vous</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[#e8f1f2] flex items-center justify-center text-primary">
-                <Shield className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-2xl lg:text-3xl font-bold text-gray-900">Sécurisé</p>
-                <p className="text-sm font-medium text-gray-600">Données médicales protégées</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-[#e8f1f2] flex items-center justify-center text-primary">
-                <Smartphone className="w-7 h-7" />
-              </div>
-              <div>
-                <p className="text-2xl lg:text-3xl font-bold text-gray-900">Simple</p>
-                <p className="text-sm font-medium text-gray-600">Accessible sur tous vos écrans</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. HOW IT WORKS */}
-      <section className="py-14 bg-white" id="how-it-works">
-        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">Comment ça marche ?</h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 relative z-0">
-            
-            {/* Continuous dashed line connecting the centers of the circles on desktop */}
-            <div className="hidden lg:block absolute top-12 left-[12.5%] right-[12.5%] border-t-2 border-dashed border-gray-300 -z-10"></div>
-
-            {/* Step 1 */}
-            <div className="flex flex-col items-center text-center px-4">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 bg-[#e8f1f2] rounded-full flex items-center justify-center">
-                  <Smartphone className="w-10 h-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <div className="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold border-4 border-white shadow-sm">
-                  1
-                </div>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Recherchez</h3>
-              <p className="text-sm text-gray-500">Trouvez un médecin par spécialité ou par ville.</p>
-            </div>
-
-            {/* Step 2 */}
-            <div className="flex flex-col items-center text-center px-4">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 bg-[#e8f1f2] rounded-full flex items-center justify-center">
-                  <MousePointerClick className="w-10 h-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <div className="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold border-4 border-white shadow-sm">
-                  2
-                </div>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Choisissez</h3>
-              <p className="text-sm text-gray-500">Sélectionnez la date et l'heure qui vous convient.</p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex flex-col items-center text-center px-4">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 bg-[#e8f1f2] rounded-full flex items-center justify-center">
-                  <FileText className="w-10 h-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <div className="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold border-4 border-white shadow-sm">
-                  3
-                </div>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Remplissez</h3>
-              <p className="text-sm text-gray-500">Ajoutez vos informations et le motif de votre consultation.</p>
-            </div>
-
-            {/* Step 4 */}
-            <div className="flex flex-col items-center text-center px-4">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 bg-[#e8f1f2] rounded-full flex items-center justify-center">
-                  <CheckCircle2 className="w-10 h-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <div className="absolute -top-2 -left-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold border-4 border-white shadow-sm">
-                  4
-                </div>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-2">Confirmez</h3>
-              <p className="text-sm text-gray-500">Recevez la confirmation de votre rendez-vous immédiatement.</p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 5. CTA BANNER */}
-      <section className="pb-10 bg-white">
-        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="bg-[#e8f1f2] rounded-3xl overflow-hidden relative flex flex-col md:flex-row items-center">
-
-            {/* Left Content */}
-            <div className="p-10 lg:p-16 flex-1 z-10">
-              <h2 className="text-3xl font-bold text-[#1e293b] mb-4">Votre santé mérite le meilleur</h2>
-              <p className="text-gray-600 mb-8 max-w-md">
-                Rejoignez des milliers de patients qui nous font déjà confiance.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4">
+            <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+              <span className="font-semibold text-[#112142]">Populaire:</span>
+              {specialties.map((specialty) => (
                 <Link
-                  to="/search"
-                  className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                  key={specialty}
+                  to={`/search?q=${encodeURIComponent(specialty)}`}
+                  className="rounded-full border border-slate-200 bg-white px-3 py-1.5 font-medium transition hover:border-[#039D77]/40 hover:text-[#039D77]"
                 >
-                  Trouver un médecin
-                  <Search className="w-4 h-4" />
+                  {specialty}
                 </Link>
-                <button className="bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl flex items-center justify-center gap-2 transition-colors">
-                  En savoir plus
-                  <Info className="w-4 h-4" />
-                </button>
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* Right Illustration */}
-            <div className="hidden md:block w-1/3 shrink-0 self-end mr-10 z-0">
+          <div className="relative min-h-[430px] lg:min-h-[600px]">
+            <div className="absolute inset-0 rounded-[2rem] bg-[#112142]" />
+            <div className="absolute -right-10 top-10 h-48 w-48 rounded-full bg-[#039D77]/20 blur-3xl" />
+            <div className="absolute -left-8 bottom-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+            <div className="absolute inset-x-4 top-8 overflow-hidden rounded-[1.5rem] border border-white/10 bg-white shadow-[0_30px_90px_rgba(17,33,66,0.22)] sm:inset-x-8">
               <img
-                src="/images/algiers-monument.png"
-                alt="Maqam Echahid Alger"
-                className="w-full h-auto opacity-80 mix-blend-multiply"
-                loading="lazy"
+                src="/images/ChatGPT%20Image%20Jun%2015,%202026,%2012_50_39%20AM.png"
+                alt="Interface de recherche Mawidi"
+                className="h-[315px] w-full object-cover object-top sm:h-[390px] lg:h-[430px]"
+                loading="eager"
+                fetchPriority="high"
               />
             </div>
-
+            <div className="absolute bottom-6 left-4 right-4 grid gap-3 rounded-lg border border-white/15 bg-white p-4 shadow-[0_24px_80px_rgba(17,33,66,0.28)] sm:left-10 sm:right-10 sm:grid-cols-3">
+              <div>
+                <p className="text-sm font-semibold text-slate-500">Medecins trouves</p>
+                <p className="mt-1 text-2xl font-bold text-[#112142]">312</p>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-slate-500">Creneaux visibles</p>
+                <p className="mt-1 text-2xl font-bold text-[#112142]">09:00</p>
+              </div>
+              <div className="flex items-center justify-between gap-3 sm:justify-start">
+                <div>
+                  <p className="text-sm font-semibold text-slate-500">Confirmation</p>
+                  <p className="mt-1 text-2xl font-bold text-[#112142]">Simple</p>
+                </div>
+                <div className="rounded-md bg-[#e8f7f3] p-3 text-[#039D77]">
+                  <BadgeCheck className="h-6 w-6" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 6. TRUST FOOTER ROW */}
-      <div className="border-t border-gray-100 py-6 bg-white">
-        <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="flex flex-wrap items-center justify-center sm:justify-between gap-6 text-sm text-gray-500 font-medium">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-gray-400" />
-              <span>Disponible 7j/7</span>
+      <section className="border-b border-slate-100 bg-white py-8">
+        <div className="container mx-auto grid max-w-[1400px] grid-cols-2 gap-4 px-4 sm:px-6 lg:grid-cols-4 lg:px-8">
+          {trustItems.map((item) => (
+            <div key={item.value} className="py-4">
+              <p className="text-2xl font-bold text-[#112142]">{item.value}</p>
+              <p className="mt-1 text-sm font-medium text-slate-500">{item.label}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <HeadphonesIcon className="w-5 h-5 text-gray-400" />
-              <span>Support réactif</span>
+          ))}
+        </div>
+      </section>
+
+      <section id="how-it-works" className="bg-white py-16 sm:py-20">
+        <div className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#039D77]">
+                Pour les patients
+              </p>
+              <h2 className="mt-3 max-w-2xl text-3xl font-bold text-[#112142] sm:text-4xl">
+                Une reservation fluide, depuis la recherche jusqu'au rappel.
+              </h2>
             </div>
-            <div className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-gray-400" />
-              <span>Paiement sur place</span>
+            <Link
+              to="/search"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#039D77] transition hover:text-[#028765]"
+            >
+              Voir les medecins
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {patientSteps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <article
+                  key={step.title}
+                  className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-md bg-[#e8f7f3] p-3 text-[#039D77]">
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <span className="text-sm font-bold text-slate-300">
+                      0{index + 1}
+                    </span>
+                  </div>
+                  <h3 className="mt-6 text-xl font-bold text-[#112142]">{step.title}</h3>
+                  <p className="mt-3 leading-7 text-slate-600">{step.text}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f6fbfa] py-16 sm:py-20">
+        <div className="container mx-auto grid max-w-[1400px] gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-8">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#039D77]">
+              Pour les cabinets
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-[#112142] sm:text-4xl">
+              Un agenda moderne pour recevoir mieux, sans alourdir vos journees.
+            </h2>
+            <p className="mt-5 max-w-xl leading-8 text-slate-600">
+              Mawidi donne aux medecins une presence claire en ligne, des
+              reservations structurees et une vue simple sur les rendez-vous a venir.
+            </p>
+
+            <div className="mt-8 space-y-4">
+              {doctorBenefits.map((benefit) => (
+                <div key={benefit} className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#039D77]" />
+                  <p className="font-medium leading-7 text-slate-700">{benefit}</p>
+                </div>
+              ))}
             </div>
-            <div className="flex items-center gap-2">
-              <Info className="w-5 h-5 text-gray-400" />
-              <span>Sans frais cachés</span>
+
+            <Link
+              to="/register/doctor"
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-md bg-[#112142] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1b315f]"
+            >
+              Inscrire mon cabinet
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-[2rem] bg-[#112142]" />
+            <img
+              src="/images/dash.png"
+              alt="Tableau de bord Mawidi"
+              className="relative w-full rounded-xl border border-white/10 object-cover shadow-[0_26px_80px_rgba(17,33,66,0.28)]"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-16 sm:py-20">
+        <div className="container mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#039D77]">
+                Confiance
+              </p>
+              <h2 className="mt-3 text-3xl font-bold text-[#112142] sm:text-4xl">
+                Une experience rassurante pour chaque rendez-vous.
+              </h2>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-lg border border-slate-200 p-5">
+                <ShieldCheck className="h-7 w-7 text-[#039D77]" />
+                <h3 className="mt-4 font-bold text-[#112142]">Donnees protegees</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Les informations sensibles restent limitees a ce qui est necessaire.
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 p-5">
+                <UserCheck className="h-7 w-7 text-[#039D77]" />
+                <h3 className="mt-4 font-bold text-[#112142]">Profils verifies</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Les praticiens disposent d'une fiche claire et exploitable.
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 p-5">
+                <MessageCircle className="h-7 w-7 text-[#039D77]" />
+                <h3 className="mt-4 font-bold text-[#112142]">Communication simple</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Les informations du rendez-vous restent faciles a retrouver.
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 p-5">
+                <HeartPulse className="h-7 w-7 text-[#039D77]" />
+                <h3 className="mt-4 font-bold text-[#112142]">Parcours local</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Une interface adaptee aux habitudes des patients en Algerie.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
+      <section className="bg-[#112142] py-14 text-white">
+        <div className="container mx-auto grid max-w-[1400px] gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8">
+          <div>
+            <div className="mb-4 flex items-center gap-1 text-[#78e0c8]">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Star key={index} className="h-4 w-4 fill-current" />
+              ))}
+            </div>
+            <h2 className="text-3xl font-bold sm:text-4xl">
+              Trouvez un creneau disponible et confirmez votre rendez-vous.
+            </h2>
+            <p className="mt-4 max-w-2xl leading-8 text-white/70">
+              Mawidi rassemble la recherche, la disponibilite et la confirmation
+              dans une experience claire sur mobile comme sur ordinateur.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+            <Link
+              to="/search"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#039D77] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#02b185]"
+            >
+              Trouver un medecin
+              <Search className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/register/doctor"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/20 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Vous etes medecin ?
+              <Clock3 className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

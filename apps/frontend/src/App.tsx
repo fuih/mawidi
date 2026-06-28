@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/shared/Layout";
-import { HomePage } from "./pages/HomePage";
+import LandingPageV2 from "./pages/LandingPageV2";
 import { SearchPage } from "./pages/SearchPage";
 import { DoctorProfilePage } from "./pages/DoctorProfilePage";
 import { BookingPage } from "./pages/BookingPage";
@@ -40,8 +40,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LandingPageV2 />} />
+        
         <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/cancel-appointment/:token" element={<CancelAppointmentPage />} />
           <Route path="/login" element={<LoginPage />} />
