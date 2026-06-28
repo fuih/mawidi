@@ -1,14 +1,11 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X, LayoutDashboard, LogOut, ArrowLeft } from "lucide-react";
 import { useAuthStore } from "../../lib/authStore";
 import { useState } from "react";
 
 export function Header() {
-  const location = useLocation();
   const { isAuthenticated, userType, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const navLinks: { name: string; href: string }[] = [];
 
   const handleLogout = () => {
     logout();

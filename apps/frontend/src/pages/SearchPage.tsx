@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, MapPin, User, Stethoscope, BadgeCheck, ChevronDown, ArrowLeft } from "lucide-react";
+import { Search, MapPin, User, Stethoscope, BadgeCheck, ChevronDown } from "lucide-react";
 import api, { getImageUrl } from "../lib/api";
 import { Skeleton } from "../components/ui/Skeleton";
 import { ALGERIAN_WILAYAS } from "../constants";
