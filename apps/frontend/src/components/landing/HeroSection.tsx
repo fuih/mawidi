@@ -75,7 +75,7 @@ export default function HeroSection() {
       </div>
 
       {/* Heartbeat SVG decoration */}
-      <div className="absolute top-1/3 right-8 lg:right-16 opacity-10 pointer-events-none hidden lg:block">
+      <div className="absolute top-1/3 right-8 lg:right-16 opacity-25 pointer-events-none hidden lg:block">
         <svg width="280" height="80" viewBox="0 0 280 80" fill="none">
           <path
             d="M0 40 L40 40 L55 10 L70 70 L85 25 L100 55 L115 40 L280 40"
@@ -91,43 +91,43 @@ export default function HeroSection() {
       {/* Medical SVG decorations */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Pill — top left */}
-        <svg className="absolute top-28 left-10 lg:left-24 opacity-[0.07] rotate-[-30deg]" width="80" height="36" viewBox="0 0 80 36">
+        <svg className="absolute top-28 left-10 lg:left-24 opacity-[0.15] rotate-[-30deg]" width="80" height="36" viewBox="0 0 80 36">
           <rect x="1" y="1" width="78" height="34" rx="17" ry="17" fill="none" stroke="#039D77" strokeWidth="2.5" />
           <line x1="40" y1="1" x2="40" y2="35" stroke="#039D77" strokeWidth="2.5" />
         </svg>
 
         {/* Plus / cross — top right */}
-        <svg className="absolute top-24 right-16 lg:right-32 opacity-[0.06]" width="44" height="44" viewBox="0 0 44 44">
+        <svg className="absolute top-24 right-16 lg:right-32 opacity-[0.12]" width="44" height="44" viewBox="0 0 44 44">
           <rect x="17" y="0" width="10" height="44" rx="3" fill="#039D77" />
           <rect x="0" y="17" width="44" height="10" rx="3" fill="#039D77" />
         </svg>
 
         {/* Capsule — mid right */}
-        <svg className="absolute top-1/2 right-8 lg:right-20 opacity-[0.055] rotate-[20deg]" width="60" height="28" viewBox="0 0 60 28">
+        <svg className="absolute top-1/2 right-8 lg:right-20 opacity-[0.12] rotate-[20deg]" width="60" height="28" viewBox="0 0 60 28">
           <rect x="1" y="1" width="58" height="26" rx="13" ry="13" fill="none" stroke="#112142" strokeWidth="2" />
           <line x1="30" y1="1" x2="30" y2="27" stroke="#112142" strokeWidth="2" />
         </svg>
 
         {/* Small plus — bottom left */}
-        <svg className="absolute bottom-44 left-12 lg:left-28 opacity-[0.06]" width="30" height="30" viewBox="0 0 30 30">
+        <svg className="absolute bottom-44 left-12 lg:left-28 opacity-[0.12]" width="30" height="30" viewBox="0 0 30 30">
           <rect x="11" y="0" width="8" height="30" rx="2" fill="#039D77" />
           <rect x="0" y="11" width="30" height="8" rx="2" fill="#039D77" />
         </svg>
 
         {/* Pill — bottom right */}
-        <svg className="absolute bottom-32 right-10 lg:right-36 opacity-[0.06] rotate-[50deg]" width="64" height="28" viewBox="0 0 64 28">
+        <svg className="absolute bottom-32 right-10 lg:right-36 opacity-[0.15] rotate-[50deg]" width="64" height="28" viewBox="0 0 64 28">
           <rect x="1" y="1" width="62" height="26" rx="13" ry="13" fill="none" stroke="#039D77" strokeWidth="2" />
           <line x1="32" y1="1" x2="32" y2="27" stroke="#039D77" strokeWidth="2" />
         </svg>
 
         {/* Stethoscope circle accent — far left mid */}
-        <svg className="absolute top-2/3 left-6 lg:left-16 opacity-[0.05]" width="48" height="48" viewBox="0 0 48 48">
+        <svg className="absolute top-2/3 left-6 lg:left-16 opacity-[0.10]" width="48" height="48" viewBox="0 0 48 48">
           <circle cx="24" cy="24" r="22" fill="none" stroke="#112142" strokeWidth="2" strokeDasharray="6 4" />
           <circle cx="24" cy="24" r="8" fill="none" stroke="#039D77" strokeWidth="2" />
         </svg>
 
         {/* Large faded plus — center background */}
-        <svg className="absolute top-1/4 left-1/2 -translate-x-1/2 opacity-[0.025]" width="120" height="120" viewBox="0 0 120 120">
+        <svg className="absolute top-1/4 left-1/2 -translate-x-1/2 opacity-[0.05]" width="120" height="120" viewBox="0 0 120 120">
           <rect x="45" y="0" width="30" height="120" rx="8" fill="#039D77" />
           <rect x="0" y="45" width="120" height="30" rx="8" fill="#039D77" />
         </svg>
@@ -242,7 +242,7 @@ export default function HeroSection() {
                     <MapPin className="w-4 h-4 text-[#039D77]" />
                   </div>
                   <div className={`w-full truncate text-left ${wilaya ? 'text-gray-900' : 'text-[#112142]'}`}>
-                    {wilaya ? wilaya : "Ville ou Wilaya"}
+                    {wilaya ? wilaya : "Wilaya"}
                   </div>
                   <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
                 </div>
@@ -258,7 +258,7 @@ export default function HeroSection() {
                         className={`px-4 py-2.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors ${!wilaya ? 'font-semibold text-[#112142]' : 'text-gray-700'}`}
                         onClick={() => { setWilaya(""); setIsCityDropdownOpen(false); }}
                       >
-                        Ville ou Wilaya
+                        Toutes les wilayas
                       </div>
                       {(cities.length > 0 ? cities : ALGERIAN_WILAYAS).map((c) => (
                         <div

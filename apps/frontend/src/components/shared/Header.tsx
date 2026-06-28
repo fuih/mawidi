@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, LayoutDashboard, LogOut } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, LayoutDashboard, LogOut, ArrowLeft } from "lucide-react";
 import { useAuthStore } from "../../lib/authStore";
 import { useState } from "react";
 
@@ -8,10 +8,7 @@ export function Header() {
   const { isAuthenticated, userType, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navLinks = [
-    { name: "Accueil", href: "/" },
-    { name: "Trouver un médecin", href: "/search" },
-  ];
+  const navLinks: { name: string; href: string }[] = [];
 
   const handleLogout = () => {
     logout();
@@ -22,29 +19,22 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-100">
       <div className="container flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
         
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img 
-            src="/images/logosvg.svg" 
-            alt="Mawidi Logo" 
-            className="h-14 w-auto object-contain"
-          />
-        </Link>
+        {/* Back Arrow & Logo */}
+        <div className="flex items-center gap-4 shrink-0">
+          <Link to="/" className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <ArrowLeft className="w-6 h-6 text-gray-700" />
+          </Link>
+          <Link to="/" className="flex items-center">
+            <img 
+              src="/images/logosvg.svg" 
+              alt="Mawidi Logo" 
+              className="h-14 w-auto object-contain"
+            />
+          </Link>
+        </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.name}
-              to={link.href} 
-              className={`text-sm font-semibold transition-colors hover:text-primary ${
-                location.pathname === link.href ? 'text-primary' : 'text-gray-600'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </nav>
+        {/* Desktop Navigation (Removed) */}
+        <nav className="hidden lg:flex items-center gap-8"></nav>
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center gap-3">
@@ -79,16 +69,16 @@ export function Header() {
           ) : (
             <>
               <Link 
-                to="/register/doctor"
-                className="text-sm font-semibold text-foreground hover:text-primary transition-colors"
-              >
-                Vous êtes médecin ?
-              </Link>
-              <Link 
                 to="/login"
-                className="px-6 py-2.5 bg-primary text-white font-semibold rounded-full text-sm hover:bg-primary/90 transition-colors"
+                className="px-5 py-2.5 text-sm font-semibold text-[#112142] border border-[#112142]/15 rounded-xl hover:border-[#039D77]/40 hover:text-[#039D77] hover:bg-[#039D77]/5 transition-all duration-200"
               >
                 Connexion
+              </Link>
+              <Link 
+                to="/register/doctor"
+                className="px-5 py-2.5 text-sm font-semibold text-white bg-[#039D77] rounded-xl hover:bg-[#027a5c] transition-all duration-200 hover:scale-105 shadow-sm"
+              >
+                Vous êtes médecin ?
               </Link>
             </>
           )}
@@ -108,18 +98,7 @@ export function Header() {
       {isMobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-4 shadow-lg pb-6">
           <nav className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.name}
-                to={link.href} 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`text-sm font-semibold transition-colors hover:text-primary ${
-                  location.pathname === link.href ? 'text-primary' : 'text-gray-600'
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {/* Links Removed */}
           </nav>
           
           <div className="border-t border-gray-100 pt-4 flex flex-col gap-3">
@@ -156,18 +135,18 @@ export function Header() {
             ) : (
               <>
                 <Link 
-                  to="/register/doctor"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-sm font-semibold text-foreground hover:text-primary transition-colors text-center w-full block py-2"
-                >
-                  Vous êtes médecin ?
-                </Link>
-                <Link 
                   to="/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-6 py-2.5 bg-primary text-white font-semibold rounded-full text-sm hover:bg-primary/90 transition-colors text-center w-full block"
+                  className="block w-full text-center px-5 py-3 text-sm font-semibold text-[#112142] border border-gray-200 rounded-xl mb-3"
                 >
                   Connexion
+                </Link>
+                <Link 
+                  to="/register/doctor"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block w-full text-center px-5 py-3 text-sm font-semibold text-white bg-[#039D77] rounded-xl"
+                >
+                  Vous êtes médecin ?
                 </Link>
               </>
             )}

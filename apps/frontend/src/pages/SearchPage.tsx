@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, MapPin, User, Stethoscope, ChevronDown, BadgeCheck, RotateCcw } from "lucide-react";
+import { Search, MapPin, User, Stethoscope, BadgeCheck, ChevronDown, ArrowLeft } from "lucide-react";
 import api, { getImageUrl } from "../lib/api";
 import { Skeleton } from "../components/ui/Skeleton";
 import { ALGERIAN_WILAYAS } from "../constants";
@@ -41,34 +41,37 @@ export function SearchPage() {
     api.get("/search/cities").then((r) => setCities(r.data)).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const params: Record<string, string> = {};
-        if (city) params.city = city;
-        if (searchQuery) params.name = searchQuery; // Fallback: searching name
-        if (gender) params.gender = gender;
-        
-        const res = await api.get("/search/doctors", { params });
-        if (Array.isArray(res.data)) {
-          setDoctors(res.data);
-        } else {
-          setDoctors([]);
-          setError("Le serveur n'a pas renvoyé une liste valide. Vérifiez l'URL de l'API (VITE_API_URL).");
-        }
-      } catch (err: any) {
-        setError("Erreur lors de la recherche");
+  const fetchDoctors = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const params: Record<string, string> = {};
+      if (city) params.city = city;
+      if (searchQuery) params.name = searchQuery;
+      if (gender) params.gender = gender;
+      
+      const res = await api.get("/search/doctors", { params });
+      if (Array.isArray(res.data)) {
+        setDoctors(res.data);
+      } else {
         setDoctors([]);
-      } finally {
-        setLoading(false);
+        setError("Le serveur n'a pas renvoyé une liste valide.");
       }
-    };
+    } catch (err: any) {
+      setError("Erreur lors de la recherche");
+      setDoctors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const debounce = setTimeout(fetchDoctors, 300);
-    return () => clearTimeout(debounce);
-  }, [searchQuery, city, gender]);
+  useEffect(() => {
+    fetchDoctors();
+  }, []); // Initial load only
+
+  const handleSearch = () => {
+    fetchDoctors();
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen pb-12">
@@ -95,6 +98,7 @@ export function SearchPage() {
                 className="w-full bg-transparent outline-none text-gray-900"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
             </div>
 
@@ -105,7 +109,7 @@ export function SearchPage() {
               >
                 <MapPin className="h-5 w-5 text-gray-400 shrink-0" />
                 <div className={`w-full truncate ${city ? 'text-gray-900' : 'text-gray-500'}`}>
-                  {city ? city : "Ville ou Wilaya"}
+                  {city ? city : "Wilaya"}
                 </div>
                 <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
               </div>
@@ -137,7 +141,10 @@ export function SearchPage() {
               )}
             </div>
 
-            <button className="bg-[#039D77] text-white font-medium px-8 py-3 rounded-xl hover:bg-[#039D77]/90 transition-colors flex items-center justify-center gap-2">
+            <button 
+              onClick={handleSearch}
+              className="bg-[#039D77] text-white font-medium px-8 py-3 rounded-xl hover:bg-[#039D77]/90 transition-colors flex items-center justify-center gap-2"
+            >
                <Search className="w-5 h-5" />
                Rechercher
             </button>
@@ -151,38 +158,45 @@ export function SearchPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-              <h2 className="font-bold text-[#112142] flex items-center gap-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                Filtres
-              </h2>
-              <button 
-                onClick={() => setGender("")}
-                className="text-sm font-medium text-[#039D77] hover:underline flex items-center gap-1"
-              >
-                <RotateCcw className="w-3 h-3" />
-                Réinitialiser
-              </button>
-            </div>
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-28">
+              <h2 className="font-bold text-[#112142] text-xl mb-6">Filtres</h2>
 
-            {/* Gender Filter */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Genre du médecin</h3>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="radio" name="gender" value="" checked={gender === ""} onChange={(e) => setGender(e.target.value)} className="w-4 h-4 text-[#039D77] focus:ring-[#039D77] border-gray-300" />
-                  <span className="text-sm text-gray-700">Tous</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="radio" name="gender" value="homme" checked={gender === "homme"} onChange={(e) => setGender(e.target.value)} className="w-4 h-4 text-[#039D77] focus:ring-[#039D77] border-gray-300" />
-                  <span className="text-sm text-gray-700">Homme</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="radio" name="gender" value="femme" checked={gender === "femme"} onChange={(e) => setGender(e.target.value)} className="w-4 h-4 text-[#039D77] focus:ring-[#039D77] border-gray-300" />
-                  <span className="text-sm text-gray-700">Femme</span>
-                </label>
+              {/* Gender Filter */}
+              <div>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Genre</h3>
+                <div className="space-y-4">
+                  {[
+                    { id: '', label: 'Tous' },
+                    { id: 'homme', label: 'Homme' },
+                    { id: 'femme', label: 'Femme' }
+                  ].map((option) => (
+                    <label key={option.id} className="flex items-center gap-3 cursor-pointer group">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${gender === option.id ? 'border-[#039D77]' : 'border-gray-300 group-hover:border-gray-400'}`}>
+                        {gender === option.id && <div className="w-2.5 h-2.5 rounded-full bg-[#039D77]" />}
+                      </div>
+                      <span className={`text-sm font-medium ${gender === option.id ? 'text-gray-900' : 'text-gray-600'}`}>
+                        {option.label}
+                      </span>
+                      <input 
+                        type="radio" 
+                        name="gender" 
+                        value={option.id} 
+                        checked={gender === option.id} 
+                        onChange={(e) => setGender(e.target.value)} 
+                        className="hidden" 
+                      />
+                    </label>
+                  ))}
+                </div>
               </div>
+
+              <button 
+                onClick={handleSearch}
+                className="w-full bg-[#039D77] text-white font-bold py-3 rounded-xl hover:bg-[#039D77]/90 mt-8 transition-colors"
+              >
+                Appliquer
+              </button>
             </div>
           </div>
 

@@ -72,8 +72,9 @@ module.exports = {
         }
       },
       fontFamily: {
+          sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           heading: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          body: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          body: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           display: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           jakarta: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           mono: ['var(--font-mono)']
