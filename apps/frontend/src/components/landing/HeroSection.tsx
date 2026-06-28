@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, ChevronDown, Stethoscope, ArrowRight } from "lucide-react";
+import { Search, MapPin, ChevronDown, Stethoscope } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import api from "../../lib/api";
 import { ALGERIAN_WILAYAS, MEDICAL_SPECIALTIES } from "../../constants";

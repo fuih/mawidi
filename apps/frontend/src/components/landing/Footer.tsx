@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+
 import { Heart, Twitter, Facebook, Instagram, Linkedin, Mail, Phone } from "lucide-react";
 
 const footerLinks = {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { motion, useScroll } from "framer-motion";
-import { Menu, X, Heart } from "lucide-react";
+import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);

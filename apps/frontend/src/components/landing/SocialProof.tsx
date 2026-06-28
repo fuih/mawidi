@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Shield, Clock, Compass, Zap, Rocket, Award, Lock } from "lucide-react";
+import { Shield, Compass, Zap, Rocket, Award, Lock } from "lucide-react";
 
 const stats = [
   {
@@ -29,40 +29,9 @@ const stats = [
   },
 ];
 
-const badges = [
-  { icon: Shield, text: "Données sécurisées & confidentielles", color: "text-[#039D77]", bg: "bg-[#039D77]/8" },
-  { icon: Award, text: "Seuls les praticiens diplômés seront référencés", color: "text-blue-600", bg: "bg-blue-50" },
-  { icon: Lock, text: "Plateforme conforme aux normes de santé", color: "text-amber-500", bg: "bg-amber-50" },
-];
-
-const wilayas = [
-  "Alger", "Oran", "Constantine", "Annaba", "Blida", "Batna",
-  "Djelfa", "Sétif", "Sidi Bel Abbès", "Biskra", "Tébessa",
-  "El Oued", "Skikda", "Tiaret", "Béjaïa", "Tlemcen",
-];
-
 export default function SocialProof() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const [email, setEmail] = useState("");
-  const [wilaya, setWilaya] = useState("");
-  const [role, setRole] = useState("patient");
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setStatus("loading");
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setStatus("success");
-      setEmail("");
-      setWilaya("");
-    } catch {
-      setStatus("error");
-    }
-  };
 
   return (
     <section className="relative py-28 lg:py-40 overflow-hidden" style={{ background: "#F8FAFC" }}>
