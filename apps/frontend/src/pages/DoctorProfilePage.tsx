@@ -347,7 +347,7 @@ export function DoctorProfilePage() {
                         !s.is_available
                           ? "bg-gray-50 text-gray-300 border-transparent cursor-not-allowed"
                           : selectedSlot === s.time
-                          ? "bg-[#112142] text-white border-[#112142] shadow-[0_8px_30px_rgb(17,33,66,0.2)] scale-105"
+                          ? "bg-[#039D77] text-white border-[#039D77] shadow-[0_8px_30px_rgb(3,157,119,0.3)] scale-105"
                           : "bg-white text-[#112142] border-gray-100 hover:border-[#039D77] hover:text-[#039D77] hover:bg-transparent hover:scale-[1.02]"
                       }`}
                     >
