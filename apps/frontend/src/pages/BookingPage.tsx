@@ -100,53 +100,69 @@ export function BookingPage() {
 
   if (isSuccess) {
     return (
-      <div className="bg-gray-50 min-h-screen py-12 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-xl shadow-lg border max-w-md w-full text-center">
-          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-            <CheckCircle2 className="h-10 w-10 text-green-600" />
+      <div className="bg-[#F8FAFC] min-h-screen py-12 flex items-center justify-center relative overflow-hidden">
+        {/* Ambient background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#039D77]/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="bg-white/90 backdrop-blur-xl p-6 sm:p-10 rounded-3xl shadow-[0_8px_40px_rgb(17,33,66,0.08)] border border-white/50 max-w-md w-full mx-4 sm:mx-0 text-center relative z-10 animate-in zoom-in-95 duration-500">
+          <div className="mx-auto w-20 h-20 bg-[#039D77]/10 rounded-full flex items-center justify-center mb-6 shadow-inner relative">
+            <div className="absolute inset-0 rounded-full border-4 border-[#039D77]/20 animate-ping opacity-20"></div>
+            <CheckCircle2 className="h-10 w-10 text-[#039D77]" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Rendez-vous Enregistré !</h2>
-          <p className="text-gray-600 mb-6">
-            Votre demande a bien été enregistrée.
+          <h2 className="text-2xl font-black text-[#112142] mb-3 tracking-tight">Rendez-vous Confirmé !</h2>
+          <p className="text-gray-500 mb-8 leading-relaxed">
+            Votre demande a été enregistrée avec succès. Vous recevrez une notification prochainement.
           </p>
 
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left border">
-            <div className="flex items-center gap-3 mb-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              <span className="capitalize text-gray-900 font-medium">{formattedDate}</span>
+          <div className="bg-gray-50/80 rounded-2xl p-5 mb-8 text-left border border-gray-100">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0">
+                <Calendar className="h-5 w-5 text-[#039D77]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Date</p>
+                <span className="capitalize text-[#112142] font-bold text-sm">{formattedDate}</span>
+              </div>
             </div>
             {isQueueMode && queueNumber !== null ? (
-              <div className="flex items-center gap-3 mt-3">
-                <Users className="h-5 w-5 text-orange-500" />
+              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-orange-100 shadow-sm flex items-center justify-center shrink-0">
+                  <Users className="h-5 w-5 text-orange-500" />
+                </div>
                 <div>
-                  <p className="text-xs text-gray-500">Votre numéro dans la file</p>
-                  <p className="text-3xl font-extrabold text-orange-500">#{queueNumber}</p>
+                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Numéro de file</p>
+                  <p className="text-2xl font-black text-orange-500">#{queueNumber}</p>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <Clock className="h-5 w-5 text-primary" />
-                <span className="text-gray-900 font-medium">{time}</span>
+              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0">
+                  <Clock className="h-5 w-5 text-[#039D77]" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Heure</p>
+                  <span className="text-[#112142] font-black text-xl">{time}</span>
+                </div>
               </div>
             )}
           </div>
 
           {isQueueMode && (
-            <p className="text-sm text-gray-500 mb-6">
-              Vous serez reçu par ordre d'arrivée. Présentez-vous le jour J avec ce numéro.
-            </p>
+            <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100 mb-8 text-sm text-orange-800 text-left">
+              Vous serez reçu par ordre d'arrivée. Présentez-vous le jour J au cabinet avec ce numéro.
+            </div>
           )}
 
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate(`/${identifier}`)}
-              className="w-full bg-primary text-white font-bold py-3 rounded-xl hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all duration-300 hover:scale-[1.02]"
+              className="w-full bg-[#039D77] text-white font-bold py-3.5 rounded-xl hover:bg-[#027a5c] shadow-[0_8px_30px_rgb(3,157,119,0.2)] transition-all duration-300 hover:scale-[1.02]"
             >
-              Voir le profil du médecin
+              Retour au profil
             </button>
             <button
               onClick={() => navigate("/")}
-              className="w-full text-gray-500 font-medium py-2 rounded-xl hover:text-gray-900 transition-colors"
+              className="w-full text-gray-500 font-bold py-3.5 rounded-xl hover:text-[#112142] hover:bg-gray-50 transition-colors"
             >
               Retour à l'accueil
             </button>
@@ -199,77 +215,77 @@ export function BookingPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <label htmlFor="firstName" className="text-sm font-medium text-gray-700">Prénom *</label>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-1.5">
+                  <label htmlFor="firstName" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Prénom *</label>
                   <input
                     id="firstName" required type="text"
-                    className="w-full px-4 py-2 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                    className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   />
                 </div>
-                <div className="space-y-2">
-                  <label htmlFor="lastName" className="text-sm font-medium text-gray-700">Nom *</label>
+                <div className="space-y-1.5">
+                  <label htmlFor="lastName" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Nom *</label>
                   <input
                     id="lastName" required type="text"
-                    className="w-full px-4 py-2 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                    className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="phone" className="text-sm font-medium text-gray-700">Téléphone *</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className="h-4 w-4 text-gray-400" />
+              <div className="space-y-1.5">
+                <label htmlFor="phone" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Téléphone *</label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors" />
                   </div>
                   <input
                     id="phone" required type="tel" placeholder="0555..."
-                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-gray-700">Email (optionnel)</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-4 w-4 text-gray-400" />
+              <div className="space-y-1.5">
+                <label htmlFor="email" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Email <span className="text-gray-400 font-normal lowercase tracking-normal">(optionnel)</span></label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors" />
                   </div>
                   <input
-                    id="email" type="email"
-                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                    id="email" type="email" placeholder="votre@email.com"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label htmlFor="reason" className="text-sm font-medium text-gray-700">Motif (optionnel)</label>
-                <div className="relative">
-                  <div className="absolute top-3 left-3 pointer-events-none">
-                    <FileText className="h-4 w-4 text-gray-400" />
+              <div className="space-y-1.5">
+                <label htmlFor="reason" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Motif <span className="text-gray-400 font-normal lowercase tracking-normal">(optionnel)</span></label>
+                <div className="relative group">
+                  <div className="absolute top-4 left-4 pointer-events-none">
+                    <FileText className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors" />
                   </div>
                   <textarea
-                    id="reason" rows={3}
-                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none resize-none"
+                    id="reason" rows={3} placeholder="Pourquoi souhaitez-vous consulter ?"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400 resize-none"
                     value={formData.reason}
                     onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t">
+              <div className="pt-6 border-t border-gray-100">
                 <button
                   type="submit" disabled={isSubmitting}
-                  className="w-full bg-primary text-white font-semibold py-3 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-70 flex justify-center items-center gap-2"
+                  className="w-full bg-[#039D77] text-white font-bold py-4 rounded-xl hover:bg-[#027a5c] transition-all duration-300 transform hover:scale-[1.01] shadow-[0_8px_30px_rgb(3,157,119,0.3)] disabled:opacity-70 disabled:hover:scale-100 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

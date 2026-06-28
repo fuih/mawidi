@@ -264,8 +264,8 @@ export function DoctorProfilePage() {
           </div>
 
           <div className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-bold text-gray-800 uppercase tracking-wider">Étape 1: La Date</p>
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-sm font-black text-gray-800 uppercase tracking-widest">Étape 1: La Date</p>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setWeekOffset(Math.max(0, weekOffset - 1))} 
@@ -291,10 +291,10 @@ export function DoctorProfilePage() {
                   <button
                     key={d.toISOString()}
                     onClick={() => setSelectedDate(d)}
-                    className={`flex flex-col items-center justify-center py-4 rounded-2xl border transition-all duration-300 transform ${
+                    className={`flex flex-col items-center justify-center py-4 rounded-[1.25rem] border-2 transition-all duration-300 transform ${
                       isSelected 
-                        ? "bg-primary text-white border-primary shadow-lg shadow-primary/30 scale-105" 
-                        : "bg-white text-gray-600 border-gray-200 hover:border-primary/50 hover:bg-primary/5 hover:scale-[1.02]"
+                        ? "bg-[#039D77] text-white border-[#039D77] shadow-[0_8px_30px_rgb(3,157,119,0.3)] scale-105" 
+                        : "bg-white text-gray-500 border-transparent hover:border-[#039D77]/30 hover:bg-[#039D77]/5 hover:scale-[1.02]"
                     }`}
                   >
                     <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">
@@ -310,7 +310,7 @@ export function DoctorProfilePage() {
           <div className="mb-10 min-h-[150px]">
             {slotsLoading ? (
               <div className="animate-in fade-in duration-200">
-                <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4">Étape 2: L'heure</p>
+                <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-6">Étape 2: L'heure</p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {Array.from({ length: 10 }).map((_, i) => (
                     <Skeleton key={i} className="h-[46px] rounded-xl" />
@@ -335,7 +335,7 @@ export function DoctorProfilePage() {
               </div>
             ) : (
               <div className="animate-in fade-in duration-200">
-                <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-4">Étape 2: L'heure</p>
+                <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-6">Étape 2: L'heure</p>
                 {/* Single unified grid as requested (no categories) */}
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {slots.map((s) => (
@@ -343,12 +343,12 @@ export function DoctorProfilePage() {
                       key={s.time}
                       disabled={!s.is_available}
                       onClick={() => setSelectedSlot(s.time)}
-                      className={`p-3 text-sm font-bold rounded-xl border transition-colors duration-200 transform-gpu ${
+                      className={`py-3.5 text-sm font-bold rounded-[1.15rem] border-2 transition-all duration-200 transform-gpu ${
                         !s.is_available
-                          ? "bg-gray-50 text-gray-400 border-gray-100 cursor-not-allowed opacity-50"
+                          ? "bg-gray-50 text-gray-300 border-transparent cursor-not-allowed"
                           : selectedSlot === s.time
-                          ? "bg-primary text-white border-primary shadow-md scale-105"
-                          : "bg-white text-gray-700 border-gray-200 hover:border-primary/50 hover:text-primary hover:bg-primary/5 hover:scale-[1.02]"
+                          ? "bg-[#112142] text-white border-[#112142] shadow-[0_8px_30px_rgb(17,33,66,0.2)] scale-105"
+                          : "bg-white text-[#112142] border-gray-100 hover:border-[#039D77] hover:text-[#039D77] hover:bg-transparent hover:scale-[1.02]"
                       }`}
                     >
                       {s.time.substring(0, 5)}

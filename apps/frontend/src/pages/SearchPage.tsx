@@ -158,7 +158,7 @@ export function SearchPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
           {/* Sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 mb-8 lg:mb-0">
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-28">
               <h2 className="font-bold text-[#112142] text-xl mb-6">Filtres</h2>
 
