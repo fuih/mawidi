@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Shield, Compass, Zap, Rocket, Award, Lock } from "lucide-react";
+import { Shield, Compass, Zap, Rocket } from "lucide-react";
 
 const stats = [
   {
