@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "../shared/LanguageSwitcher";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -35,17 +38,18 @@ export default function Navbar() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
             <a
               href="/login"
               className="px-5 py-2.5 text-sm font-semibold text-[#112142] border border-[#112142]/15 rounded-xl hover:border-[#039D77]/40 hover:text-[#039D77] hover:bg-[#039D77]/5 transition-all duration-200"
             >
-              Connexion
+              {t('header.login')}
             </a>
             <a
               href="/register/doctor"
               className="px-5 py-2.5 text-sm font-semibold text-white bg-[#039D77] rounded-xl hover:bg-[#027a5c] transition-all duration-200 hover:scale-105 hover:shadow-emerald-lg"
             >
-              Vous êtes médecin ?
+              {t('header.forDoctors')}
             </a>
           </div>
 
@@ -68,18 +72,21 @@ export default function Navbar() {
           className="md:hidden bg-white/95 backdrop-blur-2xl border-t border-gray-100 px-6 py-6 space-y-4"
         >
           <div className="pt-4 space-y-3 border-t border-gray-100">
+            <div className="flex justify-center mb-2">
+              <LanguageSwitcher />
+            </div>
             <a
               href="/login"
               className="block w-full text-center px-5 py-3 text-sm font-semibold text-[#112142] border border-gray-200 rounded-xl"
             >
-              Connexion
+              {t('header.login')}
             </a>
             <a
               href="/register/doctor"
               className="block w-full text-center px-5 py-3 text-sm font-semibold text-white bg-[#039D77] rounded-xl"
               onClick={() => setMenuOpen(false)}
             >
-              Vous êtes médecin ?
+              {t('header.forDoctors')}
             </a>
           </div>
         </motion.div>

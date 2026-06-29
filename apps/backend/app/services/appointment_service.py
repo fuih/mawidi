@@ -24,6 +24,7 @@ from app.schemas.appointment import (
 )
 from fastapi import BackgroundTasks
 from app.services.sms_service import send_appointment_notification_sms
+from app.services.email_service import send_appointment_notification_email
 
 def _appointment_to_response(appt: Appointment) -> AppointmentResponse:
     """Map an Appointment ORM instance to its Pydantic response schema."""
@@ -237,7 +238,7 @@ async def create_appointment(
 
         await db.refresh(appointment, attribute_names=["doctor"])
 
-        # SMS to patient with queue number
+        # SMS & Email to patient with queue number
         background_tasks.add_task(
             send_appointment_notification_sms,
             appointment.patient_phone,
@@ -248,6 +249,18 @@ async def create_appointment(
             next_queue_number,
             appointment.cancellation_token,
         )
+        if appointment.patient_email:
+            background_tasks.add_task(
+                send_appointment_notification_email,
+                appointment.patient_email,
+                appointment.patient_name,
+                appointment.appointment_date.strftime('%d/%m/%Y'),
+                None,
+                f"Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}",
+                "pending",
+                next_queue_number,
+                appointment.cancellation_token,
+            )
         return _appointment_to_response(appointment)
 
     # ── TIME-BASED MODE ──────────────────────────────────────
@@ -331,7 +344,7 @@ async def create_appointment(
     # Eagerly load doctor relationship for the response
     await db.refresh(appointment, attribute_names=["doctor"])
 
-    # Send SMS Notification to Patient
+    # Send SMS & Email Notification to Patient
     background_tasks.add_task(
         send_appointment_notification_sms,
         appointment.patient_phone,
@@ -342,6 +355,18 @@ async def create_appointment(
         None,
         appointment.cancellation_token,
     )
+    if appointment.patient_email:
+        background_tasks.add_task(
+            send_appointment_notification_email,
+            appointment.patient_email,
+            appointment.patient_name,
+            appointment.appointment_date.strftime('%d/%m/%Y'),
+            appointment.appointment_time.strftime('%H:%M') if appointment.appointment_time else None,
+            f"Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}",
+            "pending",
+            None,
+            appointment.cancellation_token,
+        )
 
     return _appointment_to_response(appointment)
 
@@ -558,7 +583,7 @@ async def update_appointment_status(
     await db.commit()
     await db.refresh(appointment)
 
-    # Send SMS Notification to Patient if confirmed
+    # Send SMS & Email Notification to Patient if confirmed
     if data.status == AppointmentStatus.confirmed:
         background_tasks.add_task(
             send_appointment_notification_sms,
@@ -570,6 +595,18 @@ async def update_appointment_status(
             appointment.queue_number,
             str(appointment.id),
         )
+        if appointment.patient_email:
+            background_tasks.add_task(
+                send_appointment_notification_email,
+                appointment.patient_email,
+                appointment.patient_name,
+                appointment.appointment_date.strftime('%d/%m/%Y'),
+                appointment.appointment_time.strftime('%H:%M') if appointment.appointment_time else None,
+                f"Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}",
+                "confirmed",
+                appointment.queue_number,
+                appointment.cancellation_token,
+            )
 
     return _appointment_to_response(appointment)
 
@@ -673,7 +710,7 @@ async def reschedule_appointment(
     await db.commit()
     await db.refresh(appointment)
 
-    # Send SMS
+    # Send SMS & Email
     background_tasks.add_task(
         send_appointment_notification_sms,
         appointment.patient_phone,
@@ -684,6 +721,18 @@ async def reschedule_appointment(
         appointment.queue_number,
         str(appointment.id),
     )
+    if appointment.patient_email:
+        background_tasks.add_task(
+            send_appointment_notification_email,
+            appointment.patient_email,
+            appointment.patient_name,
+            appointment.appointment_date.strftime('%d/%m/%Y'),
+            appointment.appointment_time.strftime('%H:%M') if appointment.appointment_time else None,
+            f"Dr. {appointment.doctor.first_name} {appointment.doctor.last_name}",
+            "pending",
+            appointment.queue_number,
+            appointment.cancellation_token,
+        )
 
     return _appointment_to_response(appointment)
 

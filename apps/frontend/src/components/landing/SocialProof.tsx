@@ -1,47 +1,49 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Shield, Compass, Zap, Rocket } from "lucide-react";
-
-const stats = [
-  {
-    icon: Compass,
-    value: "Vision",
-    label: "Santé connectée",
-    sublabel: "Moderniser l'accès aux soins en Algérie.",
-  },
-  {
-    icon: Shield,
-    value: "100%",
-    label: "Sécurité & Privée",
-    sublabel: "Vos données médicales restent confidentielles.",
-  },
-  {
-    icon: Zap,
-    value: "Simple",
-    label: "Prise de RDV rapide",
-    sublabel: "Supprimer l'attente au téléphone.",
-  },
-  {
-    icon: Rocket,
-    value: "En route",
-    label: "Déploiement progressif",
-    sublabel: "Inscrivez-vous pour votre wilaya.",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function SocialProof() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { t } = useTranslation();
+
+  const stats = [
+    {
+      icon: Compass,
+      value: t('socialProof.stat1Value'),
+      label: t('socialProof.stat1Label'),
+      sublabel: t('socialProof.stat1Sub'),
+    },
+    {
+      icon: Shield,
+      value: t('socialProof.stat2Value'),
+      label: t('socialProof.stat2Label'),
+      sublabel: t('socialProof.stat2Sub'),
+    },
+    {
+      icon: Zap,
+      value: t('socialProof.stat3Value'),
+      label: t('socialProof.stat3Label'),
+      sublabel: t('socialProof.stat3Sub'),
+    },
+    {
+      icon: Rocket,
+      value: t('socialProof.stat4Value'),
+      label: t('socialProof.stat4Label'),
+      sublabel: t('socialProof.stat4Sub'),
+    },
+  ];
 
   return (
     <section className="relative py-28 lg:py-40 overflow-hidden" style={{ background: "#F8FAFC" }}>
       {/* Background decoration */}
       <div
-        className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-[0.04] pointer-events-none"
+        className="absolute top-0 end-0 w-96 h-96 rounded-full opacity-[0.04] pointer-events-none"
         style={{ background: "radial-gradient(circle, #039D77 0%, transparent 70%)", transform: "translate(30%, -30%)" }}
       />
       <div
-        className="absolute bottom-0 left-0 w-80 h-80 rounded-full opacity-[0.04] pointer-events-none"
+        className="absolute bottom-0 start-0 w-80 h-80 rounded-full opacity-[0.04] pointer-events-none"
         style={{ background: "radial-gradient(circle, #112142 0%, transparent 70%)", transform: "translate(-30%, 30%)" }}
       />
 
@@ -55,17 +57,16 @@ export default function SocialProof() {
           className="text-center mb-16"
         >
           <span className="inline-block text-[#039D77] text-sm font-bold tracking-widest uppercase mb-4 bg-[#039D77]/8 px-4 py-2 rounded-full">
-            Notre Mission
+            {t('socialProof.mission')}
           </span>
           <h2
             className="text-4xl md:text-5xl font-extrabold text-[#112142] leading-tight"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Construire le futur de{" "}
-            <span className="text-[#039D77]">la santé en Algérie</span>
+            {t('socialProof.titleStart')}{" "}
+            <span className="text-[#039D77]">{t('socialProof.titleHighlight')}</span>
           </h2>
           <p className="mt-4 text-lg text-[#112142]/55 max-w-xl mx-auto">
-            Mawidi est en cours de déploiement. Voici ce que nous construisons pour vous.
+            {t('socialProof.subtitle')}
           </p>
         </motion.div>
 
@@ -86,7 +87,6 @@ export default function SocialProof() {
                 </div>
                 <div
                   className="text-2xl lg:text-3xl font-black text-[#112142] mb-1"
-                  style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
                   {stat.value}
                 </div>

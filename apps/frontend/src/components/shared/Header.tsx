@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { Menu, X, LayoutDashboard, LogOut, ArrowLeft } from "lucide-react";
 import { useAuthStore } from "../../lib/authStore";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function Header() {
+  const { t } = useTranslation();
   const { isAuthenticated, userType, logout } = useAuthStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -35,6 +38,7 @@ export function Header() {
 
         {/* Right Actions */}
         <div className="hidden lg:flex items-center gap-3">
+          <LanguageSwitcher />
           {isAuthenticated ? (
             <>
               {userType === "doctor" && (
@@ -69,13 +73,13 @@ export function Header() {
                 to="/login"
                 className="px-5 py-2.5 text-sm font-semibold text-[#112142] border border-[#112142]/15 rounded-xl hover:border-[#039D77]/40 hover:text-[#039D77] hover:bg-[#039D77]/5 transition-all duration-200"
               >
-                Connexion
+                {t('header.login')}
               </Link>
               <Link 
                 to="/register/doctor"
                 className="px-5 py-2.5 text-sm font-semibold text-white bg-[#039D77] rounded-xl hover:bg-[#027a5c] transition-all duration-200 hover:scale-105 shadow-sm"
               >
-                Vous êtes médecin ?
+                {t('header.forDoctors')}
               </Link>
             </>
           )}
@@ -99,6 +103,9 @@ export function Header() {
           </nav>
           
           <div className="border-t border-gray-100 pt-4 flex flex-col gap-3">
+            <div className="flex justify-center mb-2">
+              <LanguageSwitcher />
+            </div>
             {isAuthenticated ? (
               <>
                 {userType === "doctor" && (
@@ -136,14 +143,14 @@ export function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block w-full text-center px-5 py-3 text-sm font-semibold text-[#112142] border border-gray-200 rounded-xl mb-3"
                 >
-                  Connexion
+                  {t('header.login')}
                 </Link>
                 <Link 
                   to="/register/doctor"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block w-full text-center px-5 py-3 text-sm font-semibold text-white bg-[#039D77] rounded-xl"
                 >
-                  Vous êtes médecin ?
+                  {t('header.forDoctors')}
                 </Link>
               </>
             )}

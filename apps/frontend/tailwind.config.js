@@ -72,11 +72,11 @@ module.exports = {
         }
       },
       fontFamily: {
-          sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          heading: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          body: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          display: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          jakarta: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          sans: ['IBM Plex Sans Arabic', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          heading: ['IBM Plex Sans Arabic', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          body: ['IBM Plex Sans Arabic', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          display: ['IBM Plex Sans Arabic', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          jakarta: ['IBM Plex Sans Arabic', 'ui-sans-serif', 'system-ui', 'sans-serif'],
           mono: ['var(--font-mono)']
       },
       fontSize: {

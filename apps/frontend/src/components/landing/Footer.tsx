@@ -1,26 +1,5 @@
-
 import { Heart, Twitter, Facebook, Instagram, Linkedin, Mail, Phone } from "lucide-react";
-
-const footerLinks = {
-  Patients: [
-    { label: "Trouver un médecin", href: "#hero" },
-    { label: "Comment ça marche ?", href: "#how-it-works" },
-    { label: "Nos spécialités", href: "#" },
-    { label: "Télécharger l'appli", href: "#" },
-  ],
-  Médecins: [
-    { label: "Créer mon cabinet", href: "#doctors" },
-    { label: "Fonctionnalités", href: "#doctors" },
-    { label: "Tarifs", href: "#" },
-    { label: "Démo gratuite", href: "#" },
-  ],
-  Légal: [
-    { label: "Conditions d'utilisation", href: "#" },
-    { label: "Politique de confidentialité", href: "#" },
-    { label: "Mentions légales", href: "#" },
-    { label: "FAQ", href: "#" },
-  ],
-};
+import { useTranslation } from "react-i18next";
 
 const socials = [
   { icon: Facebook, href: "#", label: "Facebook" },
@@ -30,6 +9,29 @@ const socials = [
 ];
 
 export default function Footer() {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    [t('footer.patients')]: [
+      { label: t('footer.findDoctor'), href: "#hero" },
+      { label: t('footer.howItWorks'), href: "#how-it-works" },
+      { label: t('footer.specialties'), href: "#" },
+      { label: t('footer.downloadApp'), href: "#" },
+    ],
+    [t('footer.doctors')]: [
+      { label: t('footer.createPractice'), href: "#doctors" },
+      { label: t('footer.features'), href: "#doctors" },
+      { label: t('footer.pricing'), href: "#" },
+      { label: t('footer.freeDemo'), href: "#" },
+    ],
+    [t('footer.legal')]: [
+      { label: t('footer.termsOfUse'), href: "#" },
+      { label: t('footer.privacyPolicy'), href: "#" },
+      { label: t('footer.legalNotices'), href: "#" },
+      { label: t('footer.faq'), href: "#" },
+    ],
+  };
+
   return (
     <footer className="bg-[#112142] border-t border-white/5">
 
@@ -47,7 +49,7 @@ export default function Footer() {
               />
             </a>
             <p className="text-white/40 text-sm leading-relaxed max-w-xs mb-6">
-              La première plateforme de prise de rendez-vous médicaux en ligne pour l'Algérie. Fiable, sécurisée et disponible 24h/24.
+              {t('footer.description')}
             </p>
 
             {/* Contact info */}
@@ -80,7 +82,7 @@ export default function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="text-white text-sm font-bold mb-5" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <h4 className="text-white text-sm font-bold mb-5">
                 {category}
               </h4>
               <ul className="space-y-3">
@@ -98,19 +100,17 @@ export default function Footer() {
             </div>
           ))}
         </div>
+      </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/25 text-sm">
-            © {new Date().getFullYear()} Mawidi. Tous droits réservés. Fait avec{" "}
-            <Heart className="inline w-3 h-3 text-[#039D77] fill-[#039D77]" /> en Algérie.
+      {/* Bottom bar */}
+      <div className="border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-white/30 text-sm">
+            © {new Date().getFullYear()} Mawidi. {t('footer.rights')}
           </p>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-xs text-white/25">
-              <span className="w-2 h-2 rounded-full bg-[#039D77] animate-pulse" />
-              Tous les systèmes opérationnels
-            </span>
-          </div>
+          <p className="text-white/30 text-sm flex items-center gap-1.5">
+            {t('footer.madeWith')} <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> {t('footer.inAlgeria')}
+          </p>
         </div>
       </div>
     </footer>

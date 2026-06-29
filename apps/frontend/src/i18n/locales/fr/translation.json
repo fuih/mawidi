@@ -1,0 +1,56 @@
+{
+  "header": {
+    "home": "Accueil",
+    "search": "Rechercher",
+    "forDoctors": "Pour les professionnels",
+    "login": "Connexion"
+  },
+  "hero": {
+    "titleStart": "Votre santé ",
+    "titleHighlight": "n'attend pas.",
+    "subtitle": "Trouvez le bon médecin, choisissez un créneau et confirmez votre rendez-vous en quelques secondes — 24h/24, 7j/7.",
+    "searchSpecialty": "Spécialité",
+    "searchLocation": "Wilaya",
+    "searchButton": "Rechercher",
+    "popular": "Populaires"
+  },
+  "socialProof": {
+    "mission": "Notre Mission",
+    "titleStart": "Construire le futur de ",
+    "titleHighlight": "la santé en Algérie",
+    "subtitle": "Mawidi est en cours de déploiement. Voici ce que nous construisons pour vous.",
+    "stat1Value": "Vision",
+    "stat1Label": "Santé connectée",
+    "stat1Sub": "Moderniser l'accès aux soins en Algérie.",
+    "stat2Value": "100%",
+    "stat2Label": "Sécurité & Privée",
+    "stat2Sub": "Vos données médicales restent confidentielles.",
+    "stat3Value": "Simple",
+    "stat3Label": "Prise de RDV rapide",
+    "stat3Sub": "Supprimer l'attente au téléphone.",
+    "stat4Value": "En route",
+    "stat4Label": "Déploiement progressif",
+    "stat4Sub": "Inscrivez-vous pour votre wilaya."
+  },
+  "footer": {
+    "description": "La première plateforme de prise de rendez-vous médicaux en ligne pour l'Algérie. Fiable, sécurisée et disponible 24h/24.",
+    "patients": "Patients",
+    "findDoctor": "Trouver un médecin",
+    "howItWorks": "Comment ça marche ?",
+    "specialties": "Nos spécialités",
+    "downloadApp": "Télécharger l'appli",
+    "doctors": "Médecins",
+    "createPractice": "Créer mon cabinet",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "freeDemo": "Démo gratuite",
+    "legal": "Légal",
+    "termsOfUse": "Conditions d'utilisation",
+    "privacyPolicy": "Politique de confidentialité",
+    "legalNotices": "Mentions légales",
+    "faq": "FAQ",
+    "rights": "Tous droits réservés.",
+    "madeWith": "Fait avec",
+    "inAlgeria": "en Algérie"
+  }
+}

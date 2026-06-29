@@ -1,6 +1,8 @@
 import logging
 import smtplib
 from email.message import EmailMessage
+from typing import Optional
+
 from app.core.security import create_verification_token
 from app.core.config import settings
 
@@ -302,3 +304,79 @@ def send_doctor_approved_email(email: str, name: str, slug: str):
         print(f"Lien : {booking_url}")
         print("="*60 + "\n")
 
+def send_appointment_notification_email(
+    email: str,
+    patient_name: str,
+    date_str: str,
+    time_str: Optional[str],
+    doctor_name: str,
+    status_msg: str,
+    queue_number: Optional[int] = None,
+    cancellation_token: Optional[str] = None
+):
+    """
+    Sends an appointment notification email (pending, confirmed, cancelled).
+    """
+    frontend_url = settings.FRONTEND_URL
+
+    if status_msg == "pending":
+        subject = f"Votre demande de rendez-vous avec {doctor_name} est en attente"
+        status_text = "Votre demande de rendez-vous est <strong>en attente de confirmation</strong> par le cabinet."
+    elif status_msg == "confirmed":
+        subject = f"Confirmation de votre rendez-vous avec {doctor_name}"
+        status_text = "Votre rendez-vous a été <strong>confirmé</strong>."
+    elif status_msg == "cancelled":
+        subject = f"Annulation de votre rendez-vous avec {doctor_name}"
+        status_text = "Votre rendez-vous a été <strong>annulé</strong>."
+    else:
+        subject = f"Mise à jour de votre rendez-vous avec {doctor_name}"
+        status_text = f"Le statut de votre rendez-vous est maintenant: {status_msg}"
+
+    time_info = f"à {time_str}" if time_str else (f"(Ticket de file d'attente #{queue_number})" if queue_number else "")
+    
+    cancel_html = ""
+    if cancellation_token and status_msg in ["pending", "confirmed"]:
+        cancel_url = f"{frontend_url}/guest-cancel?token={cancellation_token}"
+        cancel_html = f'<p style="margin-top: 20px; font-size: 12px; color: #666;">Pour annuler ce rendez-vous, <a href="{cancel_url}" style="color: #d9534f;">cliquez ici</a>.</p>'
+
+    if not settings.SMTP_HOST or not settings.SMTP_USER or not settings.SMTP_PASSWORD:
+        logger.warning("SMTP configuration is missing! Falling back to mock email.")
+        print("\n" + "="*60)
+        print("📧 MOCK APPOINTMENT EMAIL SENT")
+        print(f"To: {email}")
+        print(f"Subject: {subject}")
+        print(f"Body: {status_text} le {date_str} {time_info}")
+        print("="*60 + "\n")
+        return
+
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = f"Tabibak <{settings.SMTP_FROM}>"
+    msg["To"] = email
+    
+    html_content = f"""
+    <html>
+      <body style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <h2 style="color: #112142;">Mise à jour de votre rendez-vous</h2>
+        <p>Bonjour {patient_name},</p>
+        <p>{status_text}</p>
+        <div style="background-color: #f8f9fa; border-left: 4px solid #039D77; padding: 15px; margin: 20px 0;">
+            <p style="margin: 0 0 10px 0;"><strong>Médecin :</strong> {doctor_name}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Date :</strong> {date_str}</p>
+            <p style="margin: 0;"><strong>Heure / File :</strong> {time_str if time_str else (f"Ticket #{queue_number}" if queue_number else "N/A")}</p>
+        </div>
+        <p>Merci d'avoir choisi Tabibak.pro.</p>
+        {cancel_html}
+      </body>
+    </html>
+    """
+    msg.add_alternative(html_content, subtype='html')
+
+    try:
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+            server.starttls()
+            server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+            server.send_message(msg)
+        logger.info(f"Appointment email sent successfully to {email}")
+    except Exception as e:
+        logger.error(f"Failed to send appointment email to {email}: {e}")

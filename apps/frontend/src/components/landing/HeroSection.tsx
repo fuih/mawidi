@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, MapPin, ChevronDown, Stethoscope } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../../lib/api";
 import { ALGERIAN_WILAYAS, MEDICAL_SPECIALTIES } from "../../constants";
 
@@ -31,6 +32,7 @@ export default function HeroSection() {
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [isSpecialtyDropdownOpen, setIsSpecialtyDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     api.get("/search/cities").then((r) => setCities(r.data)).catch(() => { });
@@ -146,13 +148,12 @@ export default function HeroSection() {
           <motion.h1
             variants={itemVariants}
             className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#112142] leading-[1.05] tracking-tight text-balance mb-6"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Votre santé{" "}
+            {t('hero.titleStart')}{" "}
             <span className="relative">
-              <span className="text-[#039D77]">n'attend pas.</span>
+              <span className="text-[#039D77]">{t('hero.titleHighlight')}</span>
               <svg
-                className="absolute -bottom-2 left-0 w-full"
+                className="absolute -bottom-2 start-0 w-full"
                 height="8"
                 viewBox="0 0 300 8"
                 fill="none"
@@ -174,7 +175,7 @@ export default function HeroSection() {
             variants={itemVariants}
             className="text-lg md:text-xl text-[#112142]/60 font-medium leading-relaxed max-w-2xl mx-auto"
           >
-            Trouvez le bon médecin, choisissez un créneau et confirmez votre rendez-vous en quelques secondes — 24h/24, 7j/7.
+            {t('hero.subtitle')}
           </motion.p>
         </motion.div>
 
@@ -193,16 +194,16 @@ export default function HeroSection() {
               {/* Specialty field */}
               <div className="flex-1 relative group z-20">
                 <div
-                  className="w-full pl-16 pr-10 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl text-[#112142] font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#039D77]/30 focus:border-[#039D77]/40 transition-all cursor-pointer hover:border-[#039D77]/30 flex items-center min-h-[54px] h-full"
+                  className="w-full ps-16 pe-10 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl text-[#112142] font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#039D77]/30 focus:border-[#039D77]/40 transition-all cursor-pointer hover:border-[#039D77]/30 flex items-center min-h-[54px] h-full"
                   onClick={() => setIsSpecialtyDropdownOpen(!isSpecialtyDropdownOpen)}
                 >
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#039D77]/10 flex items-center justify-center transition-colors group-focus-within:bg-[#039D77]/20">
+                  <div className="absolute start-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#039D77]/10 flex items-center justify-center transition-colors group-focus-within:bg-[#039D77]/20">
                     <Stethoscope className="w-4 h-4 text-[#039D77]" />
                   </div>
-                  <div className={`w-full truncate text-left ${specialty ? 'text-gray-900' : 'text-[#112142]'}`}>
-                    {specialty ? specialty : "Spécialité"}
+                  <div className={`w-full truncate text-start ${specialty ? 'text-gray-900' : 'text-[#112142]'}`}>
+                    {specialty ? specialty : t('hero.searchSpecialty')}
                   </div>
-                  <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-transform ${isSpecialtyDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`absolute end-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-transform ${isSpecialtyDropdownOpen ? 'rotate-180' : ''}`} />
                 </div>
 
                 {isSpecialtyDropdownOpen && (
@@ -211,12 +212,12 @@ export default function HeroSection() {
                       className="fixed inset-0 z-10"
                       onClick={() => setIsSpecialtyDropdownOpen(false)}
                     ></div>
-                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 max-h-80 overflow-y-auto text-left">
+                    <div className="absolute top-[calc(100%+8px)] start-0 w-full bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 max-h-80 overflow-y-auto text-start">
                       <div
                         className={`px-4 py-2.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors ${!specialty ? 'font-semibold text-[#112142]' : 'text-gray-700'}`}
                         onClick={() => { setSpecialty(""); setIsSpecialtyDropdownOpen(false); }}
                       >
-                        Spécialité
+                        {t('hero.searchSpecialty')}
                       </div>
                       {(apiSpecialties.length > 0 ? apiSpecialties : MEDICAL_SPECIALTIES).map((s) => (
                         <div
@@ -235,16 +236,16 @@ export default function HeroSection() {
               {/* Wilaya field */}
               <div className="flex-1 relative group z-10">
                 <div
-                  className="w-full pl-16 pr-10 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl text-[#112142] font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#039D77]/30 focus:border-[#039D77]/40 transition-all cursor-pointer hover:border-[#039D77]/30 flex items-center min-h-[54px] h-full"
+                  className="w-full ps-16 pe-10 py-4 bg-[#F8FAFC] border border-gray-100 rounded-2xl text-[#112142] font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#039D77]/30 focus:border-[#039D77]/40 transition-all cursor-pointer hover:border-[#039D77]/30 flex items-center min-h-[54px] h-full"
                   onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
                 >
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#039D77]/10 flex items-center justify-center transition-colors group-focus-within:bg-[#039D77]/20">
+                  <div className="absolute start-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#039D77]/10 flex items-center justify-center transition-colors group-focus-within:bg-[#039D77]/20">
                     <MapPin className="w-4 h-4 text-[#039D77]" />
                   </div>
-                  <div className={`w-full truncate text-left ${wilaya ? 'text-gray-900' : 'text-[#112142]'}`}>
-                    {wilaya ? wilaya : "Wilaya"}
+                  <div className={`w-full truncate text-start ${wilaya ? 'text-gray-900' : 'text-[#112142]'}`}>
+                    {wilaya ? wilaya : t('hero.searchLocation')}
                   </div>
-                  <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`absolute end-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
                 </div>
 
                 {isCityDropdownOpen && (
@@ -253,12 +254,12 @@ export default function HeroSection() {
                       className="fixed inset-0 z-10"
                       onClick={() => setIsCityDropdownOpen(false)}
                     ></div>
-                    <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 max-h-80 overflow-y-auto text-left">
+                    <div className="absolute top-[calc(100%+8px)] start-0 w-full bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 max-h-80 overflow-y-auto text-start">
                       <div
                         className={`px-4 py-2.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors ${!wilaya ? 'font-semibold text-[#112142]' : 'text-gray-700'}`}
                         onClick={() => { setWilaya(""); setIsCityDropdownOpen(false); }}
                       >
-                        Toutes les wilayas
+                        {t('hero.searchLocation')}
                       </div>
                       {(cities.length > 0 ? cities : ALGERIAN_WILAYAS).map((c) => (
                         <div
@@ -277,16 +278,16 @@ export default function HeroSection() {
               {/* Search button */}
               <button
                 onClick={handleSearch}
-                className="animate-pulse-glow flex items-center justify-center gap-2.5 bg-[#039D77] hover:bg-[#027a5c] text-white font-bold text-base px-8 py-4 rounded-2xl transition-all duration-200 hover:scale-[1.02] whitespace-nowrap shadow-emerald-lg"
+                className="w-full md:w-auto px-8 py-4 bg-[#039D77] hover:bg-[#027a5c] text-white font-semibold rounded-2xl transition-all shadow-[0_8px_30px_rgb(3,157,119,0.3)] hover:shadow-[0_8px_30px_rgb(3,157,119,0.4)] flex items-center justify-center gap-2 flex-shrink-0 group hover:scale-105"
               >
-                <Search className="w-5 h-5" />
-                <span>Rechercher</span>
+                <Search className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <span className="md:hidden">{t('hero.searchButton')}</span>
               </button>
             </div>
 
             {/* Quick tags */}
             <div className="flex flex-wrap gap-2 mt-3 px-1">
-              <span className="text-xs text-gray-400 font-medium py-1">Populaires :</span>
+              <span className="text-xs text-gray-400 font-medium py-1">{t('hero.popular')}:</span>
               {["Généraliste", "Cardiologue", "Pédiatre", "Dentiste"].map((tag) => (
                 <button
                   key={tag}

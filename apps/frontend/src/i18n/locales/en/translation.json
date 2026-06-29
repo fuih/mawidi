@@ -1,0 +1,56 @@
+{
+  "header": {
+    "home": "Home",
+    "search": "Search",
+    "forDoctors": "For Professionals",
+    "login": "Login"
+  },
+  "hero": {
+    "titleStart": "Your health ",
+    "titleHighlight": "can't wait.",
+    "subtitle": "Find the right doctor, choose a time slot and confirm your appointment in seconds — 24/7.",
+    "searchSpecialty": "Specialty",
+    "searchLocation": "Wilaya",
+    "searchButton": "Search",
+    "popular": "Popular"
+  },
+  "socialProof": {
+    "mission": "Our Mission",
+    "titleStart": "Building the future of ",
+    "titleHighlight": "healthcare in Algeria",
+    "subtitle": "Mawidi is currently rolling out. Here's what we are building for you.",
+    "stat1Value": "Vision",
+    "stat1Label": "Connected Health",
+    "stat1Sub": "Modernizing access to healthcare in Algeria.",
+    "stat2Value": "100%",
+    "stat2Label": "Secure & Private",
+    "stat2Sub": "Your medical data remains confidential.",
+    "stat3Value": "Simple",
+    "stat3Label": "Fast Booking",
+    "stat3Sub": "Eliminate waiting on the phone.",
+    "stat4Value": "On the way",
+    "stat4Label": "Progressive Rollout",
+    "stat4Sub": "Sign up for your wilaya."
+  },
+  "footer": {
+    "description": "The first online medical appointment booking platform for Algeria. Reliable, secure, and available 24/7.",
+    "patients": "Patients",
+    "findDoctor": "Find a Doctor",
+    "howItWorks": "How it works?",
+    "specialties": "Our Specialties",
+    "downloadApp": "Download the app",
+    "doctors": "Doctors",
+    "createPractice": "Create my practice",
+    "features": "Features",
+    "pricing": "Pricing",
+    "freeDemo": "Free Demo",
+    "legal": "Legal",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
+    "legalNotices": "Legal Notices",
+    "faq": "FAQ",
+    "rights": "All rights reserved.",
+    "madeWith": "Made with",
+    "inAlgeria": "in Algeria"
+  }
+}

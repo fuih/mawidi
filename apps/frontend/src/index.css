@@ -73,14 +73,6 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  
-  html[lang="ar"] body {
-    font-family: 'Cairo', sans-serif;
-  }
-  
-  html[lang="fr"] body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-  }
 }
  
 @layer utilities {

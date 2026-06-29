@@ -1,0 +1,56 @@
+{
+  "header": {
+    "home": "الرئيسية",
+    "search": "بحث",
+    "forDoctors": "للمهنيين",
+    "login": "تسجيل الدخول"
+  },
+  "hero": {
+    "titleStart": "صحتك ",
+    "titleHighlight": "لا تنتظر.",
+    "subtitle": "ابحث عن الطبيب المناسب، اختر موعداً وأكّد حجزك في ثوانٍ — على مدار الساعة.",
+    "searchSpecialty": "التخصص",
+    "searchLocation": "الولاية",
+    "searchButton": "بحث",
+    "popular": "شائعة"
+  },
+  "socialProof": {
+    "mission": "مهمتنا",
+    "titleStart": "بناء مستقبل ",
+    "titleHighlight": "الصحة في الجزائر",
+    "subtitle": "طبيبك في طور الإطلاق. إليك ما نبنيه من أجلك.",
+    "stat1Value": "رؤية",
+    "stat1Label": "صحة متصلة",
+    "stat1Sub": "تحديث الوصول إلى الرعاية في الجزائر.",
+    "stat2Value": "100%",
+    "stat2Label": "أمان وخصوصية",
+    "stat2Sub": "بياناتك الطبية تظل سرية.",
+    "stat3Value": "بسيط",
+    "stat3Label": "حجز سريع",
+    "stat3Sub": "القضاء على الانتظار عبر الهاتف.",
+    "stat4Value": "في الطريق",
+    "stat4Label": "إطلاق تدريجي",
+    "stat4Sub": "سجل من أجل ولايتك."
+  },
+  "footer": {
+    "description": "أول منصة لحجز المواعيد الطبية عبر الإنترنت في الجزائر. موثوقة، آمنة ومتاحة على مدار الساعة.",
+    "patients": "المرضى",
+    "findDoctor": "البحث عن طبيب",
+    "howItWorks": "كيف تعمل؟",
+    "specialties": "تخصصاتنا",
+    "downloadApp": "تحميل التطبيق",
+    "doctors": "الأطباء",
+    "createPractice": "إنشاء عيادتي",
+    "features": "المميزات",
+    "pricing": "الأسعار",
+    "freeDemo": "تجربة مجانية",
+    "legal": "قانوني",
+    "termsOfUse": "شروط الاستخدام",
+    "privacyPolicy": "سياسة الخصوصية",
+    "legalNotices": "إشعارات قانونية",
+    "faq": "الأسئلة الشائعة",
+    "rights": "جميع الحقوق محفوظة.",
+    "madeWith": "صُنع بـ",
+    "inAlgeria": "في الجزائر"
+  }
+}
