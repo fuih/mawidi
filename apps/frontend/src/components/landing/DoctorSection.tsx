@@ -1,41 +1,19 @@
 import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { LayoutDashboard, Users, Bell, ArrowRight, Check, Zap, TrendingDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const features = [
-  {
-    icon: LayoutDashboard,
-    title: "Tableau de bord intelligent",
-    description: "Visualisez tous vos rendez-vous du jour, gérez votre agenda et suivez vos statistiques de consultation en temps réel.",
-  },
-  {
-    icon: Users,
-    title: "Gestion de la salle d'attente",
-    description: "Gérez vos patients selon le mode file d'attente ou sur rendez-vous, et suivez le statut de chaque consultation en direct.",
-  },
-  {
-    icon: Bell,
-    title: "Rappels SMS & Email automatiques",
-    description: "Réduisez les absences (no-shows) de 60% grâce aux rappels automatiques envoyés 24h et 2h avant chaque consultation.",
-  },
-];
 
-const perks = [
-  "Accès pour assistants médicaux",
-  "Blocage de créneaux en un clic",
-  "Mode sans rendez-vous (walk-in)",
-  "Historique patient intégré",
-  "Statistiques & rapports mensuels",
-  "Support dédié 7j/7",
-];
 
 // Dashboard Mockup Component
 function DashboardMockup() {
+  const { t } = useTranslation();
+  
   const patients = [
     { name: "Amira K.", time: "09:00", status: "En consultation", color: "#039D77" },
-    { name: "Rachid B.", time: "09:30", status: "En attente", color: "#F59E0B" },
-    { name: "Nour M.", time: "10:00", status: "En attente", color: "#F59E0B" },
-    { name: "Karim D.", time: "10:30", status: "Confirmé", color: "#6366F1" },
+    { name: "Rachid B.", time: "09:30", status: t('doctorSection.mockup.stat2'), color: "#F59E0B" },
+    { name: "Nour M.", time: "10:00", status: t('doctorSection.mockup.stat2'), color: "#F59E0B" },
+    { name: "Karim D.", time: "10:30", status: t('doctorSection.mockup.stat3'), color: "#6366F1" },
   ];
 
   return (
@@ -52,7 +30,7 @@ function DashboardMockup() {
             <div className="w-3 h-3 rounded-full bg-green-400/70" />
           </div>
           <div className="flex-1 mx-4 bg-white/5 rounded-lg px-3 py-1 text-xs text-white/40 font-mono">
-            dashboard.mawidi.dz
+            {t('doctorSection.mockup.url')}
           </div>
         </div>
 
@@ -61,9 +39,9 @@ function DashboardMockup() {
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-3 mb-5">
             {[
-              { label: "Rdv Aujourd'hui", value: "12", color: "text-[#039D77]" },
-              { label: "En attente", value: "3", color: "text-amber-400" },
-              { label: "Terminés", value: "7", color: "text-blue-400" },
+              { label: t('doctorSection.mockup.stat1'), value: "12", color: "text-[#039D77]" },
+              { label: t('doctorSection.mockup.stat2'), value: "3", color: "text-amber-400" },
+              { label: t('doctorSection.mockup.stat3'), value: "7", color: "text-blue-400" },
             ].map((stat) => (
               <div key={stat.label} className="bg-white/5 rounded-2xl p-3 text-center">
                 <div className={`text-2xl font-black ${stat.color}`} style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
@@ -76,7 +54,9 @@ function DashboardMockup() {
 
           {/* Patient list */}
           <div className="space-y-2">
-            <div className="text-xs font-bold text-white/40 uppercase tracking-wider mb-3">File d'attente</div>
+            <div className="text-xs font-bold text-white/40 uppercase tracking-wider mb-3 text-start">
+              {t('doctorSection.mockup.queue')}
+            </div>
             {patients.map((p, i) => (
               <motion.div
                 key={p.name}
@@ -88,7 +68,7 @@ function DashboardMockup() {
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 text-xs font-bold">
                   {p.name.split(" ").map(n => n[0]).join("")}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 text-start">
                   <div className="text-white/90 text-sm font-semibold truncate">{p.name}</div>
                   <div className="text-white/35 text-xs">{p.time}</div>
                 </div>
@@ -110,12 +90,12 @@ function DashboardMockup() {
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-4 -right-6 bg-white rounded-2xl shadow-lg px-4 py-3 border border-gray-100"
+        className="absolute -top-4 -end-6 bg-white rounded-2xl shadow-lg px-4 py-3 border border-gray-100"
       >
         <div className="flex items-center gap-2">
           <TrendingDown className="w-4 h-4 text-[#039D77]" />
-          <div>
-            <div className="text-xs text-gray-400">No-shows réduits</div>
+          <div className="text-start">
+            <div className="text-xs text-gray-400">{t('doctorSection.mockup.noshows')}</div>
             <div className="text-sm font-bold text-[#112142]">−60%</div>
           </div>
         </div>
@@ -124,12 +104,12 @@ function DashboardMockup() {
       <motion.div
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        className="absolute -bottom-4 -left-6 bg-white rounded-2xl shadow-lg px-4 py-3 border border-gray-100"
+        className="absolute -bottom-4 -start-6 bg-white rounded-2xl shadow-lg px-4 py-3 border border-gray-100"
       >
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4 text-amber-500" />
-          <div>
-            <div className="text-xs text-gray-400">Gain de temps/jour</div>
+          <div className="text-start">
+            <div className="text-xs text-gray-400">{t('doctorSection.mockup.timeSaved')}</div>
             <div className="text-sm font-bold text-[#112142]">+2h 30min</div>
           </div>
         </div>
@@ -143,6 +123,27 @@ export function DoctorSection() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const mockupY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: LayoutDashboard,
+      title: t('doctorSection.features.dashboard.title'),
+      description: t('doctorSection.features.dashboard.description'),
+    },
+    {
+      icon: Users,
+      title: t('doctorSection.features.queue.title'),
+      description: t('doctorSection.features.queue.description'),
+    },
+    {
+      icon: Bell,
+      title: t('doctorSection.features.reminders.title'),
+      description: t('doctorSection.features.reminders.description'),
+    },
+  ];
+
+  const perks = t('doctorSection.perks', { returnObjects: true }) as string[];
 
   return (
     <section
@@ -153,11 +154,11 @@ export function DoctorSection() {
       {/* Background textures */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full opacity-[0.07]"
+          className="absolute -top-40 -end-40 w-[600px] h-[600px] rounded-full opacity-[0.07]"
           style={{ background: "radial-gradient(circle, #039D77 0%, transparent 70%)" }}
         />
         <div
-          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full opacity-[0.06]"
+          className="absolute -bottom-40 -start-40 w-[500px] h-[500px] rounded-full opacity-[0.06]"
           style={{ background: "radial-gradient(circle, #039D77 0%, transparent 70%)" }}
         />
         {/* Dot grid */}
@@ -180,19 +181,18 @@ export function DoctorSection() {
               transition={{ duration: 0.7 }}
             >
               <span className="inline-block text-[#039D77] text-sm font-bold tracking-widest uppercase mb-6 bg-[#039D77]/15 px-4 py-2 rounded-full border border-[#039D77]/25">
-                Pour les professionnels de santé
+                {t('doctorSection.badge')}
               </span>
 
               <h2
                 className="text-4xl md:text-5xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight mb-6"
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               >
-                Modernisez votre{" "}
-                <span className="text-[#039D77]">cabinet médical</span>
+                {t('doctorSection.titleStart')}{" "}
+                <span className="text-[#039D77]">{t('doctorSection.titleHighlight')}</span>
               </h2>
 
               <p className="text-white/55 text-lg leading-relaxed mb-10">
-                Mawidi transforme votre gestion quotidienne — moins d'appels téléphoniques, zéro absence imprévue, et des patients mieux informés.
+                {t('doctorSection.subtitle')}
               </p>
             </motion.div>
 
@@ -214,7 +214,6 @@ export function DoctorSection() {
                     <div>
                       <h3
                         className="text-base font-bold text-white mb-1"
-                        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                       >
                         {feature.title}
                       </h3>
@@ -249,10 +248,11 @@ export function DoctorSection() {
             >
               <a
                 href="#"
-                className="group inline-flex items-center justify-center gap-3 bg-[#039D77] hover:bg-[#04b589] text-white font-bold text-base px-8 py-4 rounded-2xl transition-all duration-200 hover:scale-[1.02] shadow-emerald-lg"
+                className="px-6 py-3 bg-[#039D77] hover:bg-[#027a5c] text-white font-semibold rounded-xl text-center transition-all duration-300 hover:shadow-emerald-lg flex items-center justify-center gap-2 group"
               >
-                Demander l'inscription de mon cabinet
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <span className="ltr:hidden rtl:inline"><ArrowRight className="w-5 h-5 group-hover:-translate-x-1 transition-transform rotate-180" /></span>
+                {t('doctorSection.cta')}
+                <span className="rtl:hidden"><ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
               </a>
             </motion.div>
           </div>

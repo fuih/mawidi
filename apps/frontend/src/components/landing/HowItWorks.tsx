@@ -1,43 +1,42 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Search, CalendarCheck, BellRing } from "lucide-react";
-
-const steps = [
-  {
-    number: "01",
-    icon: Search,
-    title: "Recherchez un spécialiste",
-    description:
-      "Entrez la spécialité souhaitée ou le nom du médecin, puis sélectionnez votre ville ou wilaya pour obtenir une liste de praticiens certifiés près de chez vous.",
-    color: "#039D77",
-    bgColor: "bg-[#039D77]/8",
-    offset: "lg:mt-0",
-  },
-  {
-    number: "02",
-    icon: CalendarCheck,
-    title: "Choisissez votre créneau",
-    description:
-      "Consultez les disponibilités en temps réel, et réservez un créneau horaire précis ou rejoignez la file d'attente du cabinet en direct.",
-    color: "#039D77",
-    bgColor: "bg-[#039D77]/8",
-    offset: "lg:mt-16",
-  },
-  {
-    number: "03",
-    icon: BellRing,
-    title: "Confirmation & suivi",
-    description:
-      "Recevez une confirmation de votre rendez-vous et suivez son statut directement depuis votre espace patient pour ne rien manquer.",
-    color: "#039D77",
-    bgColor: "bg-[#039D77]/8",
-    offset: "lg:mt-6",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function HowItWorks() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { t } = useTranslation();
+
+  const steps = [
+    {
+      number: "01",
+      icon: Search,
+      title: t('howItWorks.step1.title'),
+      description: t('howItWorks.step1.description'),
+      color: "#039D77",
+      bgColor: "bg-[#039D77]/8",
+      offset: "lg:mt-0",
+    },
+    {
+      number: "02",
+      icon: CalendarCheck,
+      title: t('howItWorks.step2.title'),
+      description: t('howItWorks.step2.description'),
+      color: "#039D77",
+      bgColor: "bg-[#039D77]/8",
+      offset: "lg:mt-16",
+    },
+    {
+      number: "03",
+      icon: BellRing,
+      title: t('howItWorks.step3.title'),
+      description: t('howItWorks.step3.description'),
+      color: "#039D77",
+      bgColor: "bg-[#039D77]/8",
+      offset: "lg:mt-6",
+    },
+  ];
 
   return (
     <section id="how-it-works" className="relative py-28 lg:py-40 bg-white overflow-hidden">
@@ -55,29 +54,28 @@ export default function HowItWorks() {
           className="text-center mb-20"
         >
           <span className="inline-block text-[#039D77] text-sm font-bold tracking-widest uppercase mb-4 bg-[#039D77]/8 px-4 py-2 rounded-full">
-            Simple & Rapide
+            {t('howItWorks.badge')}
           </span>
           <h2
             className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#112142] leading-tight tracking-tight"
-            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Comment ça{" "}
-            <span className="text-[#039D77]">fonctionne ?</span>
+            {t('howItWorks.titleStart')}{" "}
+            <span className="text-[#039D77]">{t('howItWorks.titleHighlight')}</span>
           </h2>
           <p className="mt-5 text-lg text-[#112142]/55 max-w-xl mx-auto leading-relaxed">
-            Prendre un rendez-vous médical n'a jamais été aussi simple. En moins d'une minute, c'est réglé.
+            {t('howItWorks.subtitle')}
           </p>
         </motion.div>
 
         {/* Steps */}
         <div className="relative">
           {/* Connecting line (desktop) */}
-          <div className="hidden lg:block absolute top-16 left-[calc(16.667%-40px)] right-[calc(16.667%-40px)] h-px">
+          <div className="hidden lg:block absolute top-16 start-[calc(16.667%-40px)] end-[calc(16.667%-40px)] h-px">
             <motion.div
               initial={{ scaleX: 0 }}
               animate={inView ? { scaleX: 1 } : {}}
               transition={{ duration: 1.2, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full origin-left"
+              className="h-full origin-left rtl:origin-right"
               style={{
                 background: "linear-gradient(90deg, #039D77 0%, #039D77 100%)",
                 opacity: 0.25,
@@ -91,7 +89,7 @@ export default function HowItWorks() {
                 animate={inView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 0.8 + pos / 200, duration: 0.4 }}
                 className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#039D77]/40"
-                style={{ left: `${pos}%` }}
+                style={{ insetInlineStart: `${pos}%` }}
               />
             ))}
           </div>
@@ -119,7 +117,7 @@ export default function HowItWorks() {
                       </div>
                       <span
                         className="text-6xl font-black leading-none"
-                        style={{ color: "#112142", opacity: 0.06, fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+                        style={{ color: "#112142", opacity: 0.06 }}
                       >
                         {step.number}
                       </span>
@@ -128,7 +126,6 @@ export default function HowItWorks() {
                     {/* Content */}
                     <h3
                       className="text-xl font-bold text-[#112142] mb-3"
-                      style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                     >
                       {step.title}
                     </h3>

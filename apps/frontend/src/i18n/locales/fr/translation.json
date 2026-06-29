@@ -32,6 +32,62 @@
     "stat4Label": "Déploiement progressif",
     "stat4Sub": "Inscrivez-vous pour votre wilaya."
   },
+  "howItWorks": {
+    "badge": "Simple & Rapide",
+    "titleStart": "Comment ça ",
+    "titleHighlight": "fonctionne ?",
+    "subtitle": "Prendre un rendez-vous médical n'a jamais été aussi simple. En moins d'une minute, c'est réglé.",
+    "step1": {
+      "title": "Recherchez un spécialiste",
+      "description": "Entrez la spécialité souhaitée ou le nom du médecin, puis sélectionnez votre ville ou wilaya pour obtenir une liste de praticiens certifiés près de chez vous."
+    },
+    "step2": {
+      "title": "Choisissez votre créneau",
+      "description": "Consultez les disponibilités en temps réel, et réservez un créneau horaire précis ou rejoignez la file d'attente du cabinet en direct."
+    },
+    "step3": {
+      "title": "Confirmation & suivi",
+      "description": "Recevez une confirmation de votre rendez-vous et suivez son statut directement depuis votre espace patient pour ne rien manquer."
+    }
+  },
+  "doctorSection": {
+    "badge": "Pour les professionnels de santé",
+    "titleStart": "Modernisez votre ",
+    "titleHighlight": "cabinet médical",
+    "subtitle": "Mawidi transforme votre gestion quotidienne — moins d'appels téléphoniques, zéro absence imprévue, et des patients mieux informés.",
+    "features": {
+      "dashboard": {
+        "title": "Tableau de bord intelligent",
+        "description": "Visualisez tous vos rendez-vous du jour, gérez votre agenda et suivez vos statistiques de consultation en temps réel."
+      },
+      "queue": {
+        "title": "Gestion de la salle d'attente",
+        "description": "Gérez vos patients selon le mode file d'attente ou sur rendez-vous, et suivez le statut de chaque consultation en direct."
+      },
+      "reminders": {
+        "title": "Rappels SMS & Email automatiques",
+        "description": "Réduisez les absences (no-shows) de 60% grâce aux rappels automatiques envoyés 24h et 2h avant chaque consultation."
+      }
+    },
+    "perks": [
+      "Accès pour assistants médicaux",
+      "Blocage de créneaux en un clic",
+      "Mode sans rendez-vous (walk-in)",
+      "Historique patient intégré",
+      "Statistiques & rapports mensuels",
+      "Support dédié 7j/7"
+    ],
+    "cta": "Demander l'inscription de mon cabinet",
+    "mockup": {
+      "url": "dashboard.mawidi.dz",
+      "stat1": "Rdv Aujourd'hui",
+      "stat2": "En attente",
+      "stat3": "Terminés",
+      "queue": "File d'attente",
+      "noshows": "No-shows réduits",
+      "timeSaved": "Gain de temps/jour"
+    }
+  },
   "footer": {
     "description": "La première plateforme de prise de rendez-vous médicaux en ligne pour l'Algérie. Fiable, sécurisée et disponible 24h/24.",
     "patients": "Patients",

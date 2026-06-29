@@ -32,6 +32,62 @@
     "stat4Label": "Progressive Rollout",
     "stat4Sub": "Sign up for your wilaya."
   },
+  "howItWorks": {
+    "badge": "Simple & Fast",
+    "titleStart": "How does it ",
+    "titleHighlight": "work?",
+    "subtitle": "Booking a medical appointment has never been so simple. Done in under a minute.",
+    "step1": {
+      "title": "Search for a specialist",
+      "description": "Enter the desired specialty or doctor's name, then select your city or wilaya to get a list of certified practitioners near you."
+    },
+    "step2": {
+      "title": "Choose your slot",
+      "description": "Check real-time availability, and book a specific time slot or join the clinic's live queue."
+    },
+    "step3": {
+      "title": "Confirmation & tracking",
+      "description": "Receive confirmation of your appointment and track its status directly from your patient portal."
+    }
+  },
+  "doctorSection": {
+    "badge": "For Healthcare Professionals",
+    "titleStart": "Modernize your ",
+    "titleHighlight": "medical practice",
+    "subtitle": "Mawidi transforms your daily management — fewer phone calls, zero unexpected absences, and better-informed patients.",
+    "features": {
+      "dashboard": {
+        "title": "Smart Dashboard",
+        "description": "View all your appointments for the day, manage your schedule, and track your consultation stats in real time."
+      },
+      "queue": {
+        "title": "Waiting Room Management",
+        "description": "Manage your patients by queue mode or appointment mode, and track the status of each consultation live."
+      },
+      "reminders": {
+        "title": "Automated SMS & Email Reminders",
+        "description": "Reduce no-shows by 60% with automated reminders sent 24h and 2h before each consultation."
+      }
+    },
+    "perks": [
+      "Medical assistant access",
+      "One-click slot blocking",
+      "Walk-in mode",
+      "Integrated patient history",
+      "Monthly stats & reports",
+      "24/7 dedicated support"
+    ],
+    "cta": "Request registration for my practice",
+    "mockup": {
+      "url": "dashboard.mawidi.dz",
+      "stat1": "Appts Today",
+      "stat2": "Waiting",
+      "stat3": "Completed",
+      "queue": "Waiting Line",
+      "noshows": "No-shows reduced",
+      "timeSaved": "Time saved/day"
+    }
+  },
   "footer": {
     "description": "The first online medical appointment booking platform for Algeria. Reliable, secure, and available 24/7.",
     "patients": "Patients",
