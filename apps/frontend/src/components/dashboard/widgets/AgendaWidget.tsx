@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-import { fr } from "date-fns/locale";
+import { fr, arDZ, enUS } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 import "react-day-picker/dist/style.css";
 import "../../../index.css"; // Ensure standard tailwind is there
 import api from "../../../lib/api";
@@ -12,6 +13,7 @@ interface AgendaWidgetProps {
 }
 
 export function AgendaWidget({ selectedDate, onSelectDate }: AgendaWidgetProps) {
+  const { t, i18n } = useTranslation();
   const [currentMonth, setCurrentMonth] = useState<Date>(selectedDate);
   const [monthlyCounts, setMonthlyCounts] = useState<Record<string, number>>({});
 
@@ -39,6 +41,8 @@ export function AgendaWidget({ selectedDate, onSelectDate }: AgendaWidgetProps) 
     return monthlyCounts[dateStr] || 0;
   };
 
+  const currentLocale = i18n.language === 'ar' ? arDZ : i18n.language === 'en' ? enUS : fr;
+
   return (
     <div className="bg-white rounded-xl shadow-sm border overflow-hidden h-full flex flex-col">
       <style>{`
@@ -63,7 +67,7 @@ export function AgendaWidget({ selectedDate, onSelectDate }: AgendaWidgetProps) 
       <div className="px-6 py-5 border-b flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-5 w-5 text-gray-500" />
-          <h2 className="text-lg font-semibold text-gray-900">Agenda</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{t('widgets.agenda')}</h2>
         </div>
         <div className="flex items-center gap-3">
           <button 
@@ -73,7 +77,7 @@ export function AgendaWidget({ selectedDate, onSelectDate }: AgendaWidgetProps) 
               setCurrentMonth(new Date());
             }}
           >
-            Aujourd'hui
+            {t('widgets.todayBtn')}
           </button>
         </div>
       </div>
@@ -87,7 +91,7 @@ export function AgendaWidget({ selectedDate, onSelectDate }: AgendaWidgetProps) 
             onSelect={(d) => d && onSelectDate(d)}
             month={currentMonth}
             onMonthChange={setCurrentMonth}
-            locale={fr}
+            locale={currentLocale}
             showOutsideDays
             className="w-full max-w-full"
             components={{

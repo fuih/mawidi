@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Calendar, XCircle, UserPlus, CalendarDays } from "lucide-react";
 import api from "../../../lib/api";
 import { RescheduleModal } from "../RescheduleModal";
 
 export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, onStatusUpdate, onRefresh }: { appointments?: any[], patientStats?: Record<string, any>, onStatusUpdate?: () => void, onRefresh?: () => void }) {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<"tous" | "avenir" | "termines" | "absents">("tous");
   const [rescheduleData, setRescheduleData] = useState<{id: string, name: string} | null>(null);
 
@@ -16,7 +18,7 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
   });
 
   const handleCancel = async (id: string) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir annuler ce rendez-vous ? Le patient sera prévenu par SMS.")) return;
+    if (!window.confirm(t('widgets.confirmCancel'))) return;
     try {
       await api.patch(`/dashboard/appointments/${id}/status`, {
         status: "cancelled",
@@ -25,7 +27,7 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
       if (onStatusUpdate) onStatusUpdate();
     } catch (err) {
       console.error("Failed to cancel appointment", err);
-      alert("Erreur lors de l'annulation.");
+      alert(t('widgets.cancelError'));
     }
   };
 
@@ -57,18 +59,18 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar className="h-6 w-6 text-primary" />
-            <h2 className="text-xl font-bold text-gray-900">Agenda du jour</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('widgets.todayAgenda')}</h2>
           </div>
-          <span className="text-sm font-medium bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{appointments.length} patients</span>
+          <span className="text-sm font-medium bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{t('widgets.patientsCount', { count: appointments.length })}</span>
         </div>
         
         {/* Filters */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 -mb-2">
           {[
-            { id: "tous", label: "Tous" },
-            { id: "avenir", label: "À venir" },
-            { id: "termines", label: "Terminés" },
-            { id: "absents", label: "Absents" }
+            { id: "tous", label: t('widgets.all') },
+            { id: "avenir", label: t('widgets.upcoming') },
+            { id: "termines", label: t('widgets.completed') },
+            { id: "absents", label: t('widgets.noShow') }
           ].map(tab => (
             <button 
               key={tab.id}
@@ -89,7 +91,7 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
         {filteredAppointments.length === 0 ? (
           <div className="p-12 text-center text-gray-500 flex flex-col items-center">
             <Calendar className="h-12 w-12 text-gray-300 mb-4" />
-            <p className="text-lg">Aucun rendez-vous trouvé.</p>
+            <p className="text-lg">{t('widgets.noAppointmentsFound')}</p>
           </div>
         ) : (
           <div className="divide-y border-t">
@@ -111,12 +113,12 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
                       <h4 className="text-base font-bold text-gray-900">{apt.patient_name}</h4>
                       {apt.is_new_patient && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wider">
-                          <UserPlus className="h-3 w-3" /> Nouveau
+                          <UserPlus className="h-3 w-3" /> {t('widgets.newPatient')}
                         </span>
                       )}
                       {showWarning && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 uppercase tracking-wider" title={`${Math.round(stats.rate * 100)}% taux d'absence`}>
-                          ⚠️ {stats.no_shows} RDV non honorés
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 uppercase tracking-wider" title={`${Math.round(stats.rate * 100)}% ${t('widgets.noShowRate')}`}>
+                          ⚠️ {stats.no_shows} {t('widgets.missedAppointments')}
                         </span>
                       )}
                     </div>
@@ -128,22 +130,22 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
                 <div className="flex items-center gap-3 self-end sm:self-center">
                   <button 
                     onClick={() => setRescheduleData({id: apt.id, name: apt.patient_name})}
-                    title="Déplacer le RDV"
+                    title={t('widgets.rescheduleApt')}
                     className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
                   >
                     <CalendarDays className="h-5 w-5" />
                   </button>
                   {/* Status Badges */}
-                  {apt.status === "completed" && <span className="px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-600">Terminé</span>}
-                  {apt.status === "no_show" && <span className="px-3 py-1 rounded-md text-sm font-medium bg-red-50 text-red-700">Absent</span>}
-                  {apt.status === "cancelled" && <span className="px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-500 line-through">Annulé</span>}
+                  {apt.status === "completed" && <span className="px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-600">{t('widgets.completedBadge')}</span>}
+                  {apt.status === "no_show" && <span className="px-3 py-1 rounded-md text-sm font-medium bg-red-50 text-red-700">{t('widgets.noShowBadge')}</span>}
+                  {apt.status === "cancelled" && <span className="px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-500 line-through">{t('widgets.cancelledBadge')}</span>}
                   
                   {/* Action Buttons for pending/confirmed */}
                   {["pending", "confirmed"].includes(apt.status) && (
                     <div className="flex items-center gap-2">
                       <button 
                         onClick={() => handleCancel(apt.id)}
-                        title="Annuler le RDV"
+                        title={t('widgets.cancelApt')}
                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
                       >
                         <XCircle className="h-6 w-6" />
@@ -152,13 +154,13 @@ export function TodayAppointmentsWidget({ appointments = [], patientStats = {}, 
                         onClick={() => handleNoShow(apt.id)}
                         className="px-4 py-2 text-sm font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
                       >
-                        Absent
+                        {t('widgets.noShowBadge')}
                       </button>
                       <button 
                         onClick={() => handleComplete(apt.id)}
                         className="px-4 py-2 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-sm"
                       >
-                        Terminé
+                        {t('widgets.completedBadge')}
                       </button>
                     </div>
                   )}

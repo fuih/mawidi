@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Bell, Check, CheckCircle2 } from "lucide-react";
 import api from "../../lib/api";
 import { useAuthStore } from "../../lib/authStore";
@@ -12,6 +13,7 @@ interface Notification {
 }
 
 export function NotificationBell() {
+  const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuthStore();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -86,16 +88,16 @@ export function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
+        <div className="absolute ltr:right-0 rtl:left-0 mt-2 w-80 bg-white rounded-xl shadow-lg border overflow-hidden z-50">
           <div className="p-4 border-b flex items-center justify-between bg-gray-50">
-            <h3 className="font-bold text-gray-900">Notifications</h3>
+            <h3 className="font-bold text-gray-900">{t('widgets.notificationsTitle')}</h3>
             {unreadCount > 0 && (
               <button 
                 onClick={markAllAsRead}
                 className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 font-medium"
               >
                 <Check className="h-3 w-3" />
-                Tout marquer comme lu
+                {t('widgets.markAllReadBtn')}
               </button>
             )}
           </div>
@@ -104,7 +106,7 @@ export function NotificationBell() {
             {notifications.length === 0 ? (
               <div className="p-8 text-center text-gray-500">
                 <Bell className="h-8 w-8 mx-auto mb-2 opacity-20" />
-                <p className="text-sm">Aucune notification</p>
+                <p className="text-sm">{t('widgets.noNotifications')}</p>
               </div>
             ) : (
               <div className="divide-y">
@@ -127,7 +129,7 @@ export function NotificationBell() {
                           {notif.message}
                         </p>
                         <p className="text-xs text-gray-400 mt-1">
-                          {new Date(notif.created_at).toLocaleString('fr-FR', {
+                          {new Date(notif.created_at).toLocaleString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', {
                             dateStyle: 'short',
                             timeStyle: 'short'
                           })}
@@ -147,7 +149,7 @@ export function NotificationBell() {
               className="text-sm font-semibold text-primary hover:underline"
               onClick={() => setIsOpen(false)}
             >
-              Voir toutes les notifications
+              {t('widgets.viewAllNotifs')}
             </a>
           </div>
         </div>
