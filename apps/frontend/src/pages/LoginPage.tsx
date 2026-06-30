@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api from "../lib/api";
 import { useAuthStore } from "../lib/authStore";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
+  const { t } = useTranslation();
 
   const [tab, setTab] = useState<"doctor" | "patient">("doctor");
   const [email, setEmail] = useState("");
@@ -40,7 +42,7 @@ export function LoginPage() {
         navigate("/patient/dashboard");
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Erreur de connexion");
+      setError(err.response?.data?.detail || t('auth.loginError'));
     } finally {
       setLoading(false);
     }
@@ -49,7 +51,7 @@ export function LoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <div className="bg-white p-8 rounded-xl shadow-sm border max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Connexion</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t('auth.loginTitle')}</h1>
 
         {/* Tabs */}
         <div className="flex mb-6 border rounded-lg overflow-hidden">
@@ -59,7 +61,7 @@ export function LoginPage() {
               tab === "doctor" ? "bg-primary text-white" : "bg-gray-50 text-gray-600"
             }`}
           >
-            Médecin / Secrétaire
+            {t('auth.doctorSecTab')}
           </button>
           <button
             onClick={() => setTab("patient")}
@@ -67,7 +69,7 @@ export function LoginPage() {
               tab === "patient" ? "bg-primary text-white" : "bg-gray-50 text-gray-600"
             }`}
           >
-            Patient
+            {t('auth.patientTab')}
           </button>
         </div>
 
@@ -79,37 +81,37 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {tab === "doctor" ? (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <div className="text-start">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.emailLabel')}</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none text-start text-gray-900 ltr:dir-ltr"
                 placeholder="doctor@example.com"
               />
             </div>
           ) : (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+            <div className="text-start">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.phoneLabel')}</label>
               <input
                 type="tel"
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none text-start text-gray-900 ltr:dir-ltr"
                 placeholder="0555123456"
               />
             </div>
           )}
 
-          <div>
+          <div className="text-start">
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+              <label className="block text-sm font-medium text-gray-700">{t('auth.passwordLabel')}</label>
               {tab === "doctor" && (
                 <Link to="/forgot-password" className="text-xs font-medium text-primary hover:underline">
-                  Mot de passe oublié ?
+                  {t('auth.forgotPassword')}
                 </Link>
               )}
             </div>
@@ -119,12 +121,12 @@ export function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none pr-10"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none pe-10 text-start ltr:dir-ltr"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -136,14 +138,14 @@ export function LoginPage() {
             disabled={loading}
             className="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
           >
-            {loading ? "Connexion..." : "Se connecter"}
+            {loading ? t('auth.loginLoading') : t('auth.loginButton')}
           </button>
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          Pas encore de compte ?{" "}
-          <Link to={tab === "doctor" ? "/register/doctor" : "/register/patient"} className="text-primary font-medium hover:underline">
-            S'inscrire
+          {t('auth.noAccount')}{" "}
+          <Link to={tab === "doctor" ? "/register/doctor" : "/register/patient"} className="text-primary font-medium hover:underline mx-1">
+            {t('auth.register')}
           </Link>
         </div>
       </div>

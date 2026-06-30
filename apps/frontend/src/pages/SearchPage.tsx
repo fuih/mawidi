@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, MapPin, User, Stethoscope, BadgeCheck, ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api, { getImageUrl } from "../lib/api";
 import { Skeleton } from "../components/ui/Skeleton";
 import { ALGERIAN_WILAYAS } from "../constants";
@@ -31,6 +32,7 @@ export function SearchPage() {
   const [city, setCity] = useState(searchParams.get("city") || "");
   const [gender, setGender] = useState("");
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const { t } = useTranslation();
   
   const [doctors, setDoctors] = useState<DoctorResult[]>([]);
   const [cities, setCities] = useState<string[]>([]);
@@ -55,10 +57,10 @@ export function SearchPage() {
         setDoctors(res.data);
       } else {
         setDoctors([]);
-        setError("Le serveur n'a pas renvoyé une liste valide.");
+        setError(t('search.searchErrorInvalid'));
       }
     } catch (err: any) {
-      setError("Erreur lors de la recherche");
+      setError(t('search.searchErrorFailed'));
       setDoctors([]);
     } finally {
       setLoading(false);
@@ -80,22 +82,22 @@ export function SearchPage() {
         <div className="container max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           
           <div>
-            <h1 className="text-3xl font-bold mb-2 text-[#112142] text-center lg:text-left">
-              Trouvez le bon médecin
+            <h1 className="text-3xl font-bold mb-2 text-[#112142] text-center lg:text-start">
+              {t('search.searchTitle')}
             </h1>
-            <p className="text-gray-600 text-center lg:text-left">
-              Recherchez par spécialité, ville ou nom de médecin
+            <p className="text-gray-600 text-center lg:text-start">
+              {t('search.searchSubtitle')}
             </p>
           </div>
 
           <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-sm border border-gray-100 w-full lg:w-auto lg:min-w-[600px] p-2 gap-2">
             
-            <div className="flex-1 flex items-center gap-3 px-4 py-2 border-r border-gray-100 last:border-none">
+            <div className="flex-1 flex items-center gap-3 px-4 py-2 border-b md:border-b-0 md:border-e border-gray-100 last:border-none">
               <Stethoscope className="h-5 w-5 text-gray-400 shrink-0" />
               <input
                 type="text"
-                placeholder="Spécialité, médecin..."
-                className="w-full bg-transparent outline-none text-gray-900"
+                placeholder={t('search.searchPlaceholder')}
+                className="w-full bg-transparent outline-none text-gray-900 text-start"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -108,8 +110,8 @@ export function SearchPage() {
                 onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
               >
                 <MapPin className="h-5 w-5 text-gray-400 shrink-0" />
-                <div className={`w-full truncate ${city ? 'text-gray-900' : 'text-gray-500'}`}>
-                  {city ? city : "Wilaya"}
+                <div className={`w-full truncate text-start ${city ? 'text-gray-900' : 'text-gray-500'}`}>
+                  {city ? city : t('search.wilaya')}
                 </div>
                 <ChevronDown className={`h-5 w-5 text-gray-400 transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
               </div>
@@ -122,15 +124,15 @@ export function SearchPage() {
                   ></div>
                   <div className="absolute top-full left-0 mt-2 w-full sm:w-64 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-20 max-h-80 overflow-y-auto">
                     <div 
-                      className={`px-4 py-2.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors ${!city ? 'font-semibold text-[#112142]' : 'text-gray-700'}`}
+                      className={`px-4 py-2.5 hover:bg-gray-50 cursor-pointer text-sm transition-colors text-start ${!city ? 'font-semibold text-[#112142]' : 'text-gray-700'}`}
                       onClick={() => { setCity(""); setIsCityDropdownOpen(false); }}
                     >
-                      Toutes les wilayas
+                      {t('search.allWilayas')}
                     </div>
                     {(cities.length > 0 ? cities : ALGERIAN_WILAYAS).map((c) => (
                       <div 
                         key={c}
-                        className={`px-4 py-2.5 hover:bg-[#f1f8f7] hover:text-[#039D77] cursor-pointer text-sm transition-colors ${city === c ? 'font-semibold text-[#039D77] bg-[#f1f8f7]' : 'text-gray-700'}`}
+                        className={`px-4 py-2.5 hover:bg-[#f1f8f7] hover:text-[#039D77] cursor-pointer text-sm transition-colors text-start ${city === c ? 'font-semibold text-[#039D77] bg-[#f1f8f7]' : 'text-gray-700'}`}
                         onClick={() => { setCity(c); setIsCityDropdownOpen(false); }}
                       >
                         {c}
@@ -146,7 +148,7 @@ export function SearchPage() {
               className="bg-[#039D77] text-white font-medium px-8 py-3 rounded-xl hover:bg-[#039D77]/90 transition-colors flex items-center justify-center gap-2"
             >
                <Search className="w-5 h-5" />
-               Rechercher
+               {t('search.searchButton')}
             </button>
           </div>
           
@@ -159,17 +161,17 @@ export function SearchPage() {
           
           {/* Sidebar */}
           <div className="lg:col-span-1 mb-8 lg:mb-0">
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-28">
-              <h2 className="font-bold text-[#112142] text-xl mb-6">Filtres</h2>
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sticky top-28 text-start">
+              <h2 className="font-bold text-[#112142] text-xl mb-6">{t('search.filtersTitle')}</h2>
 
               {/* Gender Filter */}
               <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Genre</h3>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">{t('search.genderFilter')}</h3>
                 <div className="space-y-4">
                   {[
-                    { id: '', label: 'Tous' },
-                    { id: 'homme', label: 'Homme' },
-                    { id: 'femme', label: 'Femme' }
+                    { id: '', label: t('search.genderAll') },
+                    { id: 'male', label: t('search.genderMale') },
+                    { id: 'female', label: t('search.genderFemale') }
                   ].map((option) => (
                     <label key={option.id} className="flex items-center gap-3 cursor-pointer group">
                       <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${gender === option.id ? 'border-[#039D77]' : 'border-gray-300 group-hover:border-gray-400'}`}>
@@ -195,7 +197,7 @@ export function SearchPage() {
                 onClick={handleSearch}
                 className="w-full bg-[#039D77] text-white font-bold py-3 rounded-xl hover:bg-[#039D77]/90 mt-8 transition-colors"
               >
-                Appliquer
+                {t('search.applyFilters')}
               </button>
             </div>
           </div>
@@ -208,7 +210,7 @@ export function SearchPage() {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
               <h2 className="text-lg font-bold text-[#112142]">
-                {loading ? "Recherche en cours..." : `${doctors.length} médecins trouvés`}
+                {loading ? t('search.searching') : t('search.doctorsFound', { count: doctors.length })}
               </h2>
             </div>
 
@@ -219,7 +221,7 @@ export function SearchPage() {
                     <div className="relative shrink-0 mx-auto sm:mx-0">
                       <Skeleton className="h-24 w-24 rounded-full border-4 border-gray-50" />
                     </div>
-                    <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-left gap-4">
+                    <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-start gap-4">
                       <div className="w-full">
                         <Skeleton className="h-7 w-3/4 max-w-[250px] mb-2 mx-auto sm:mx-0" />
                         <Skeleton className="h-5 w-1/2 max-w-[150px] mb-3 mx-auto sm:mx-0" />
@@ -227,7 +229,7 @@ export function SearchPage() {
                         <Skeleton className="h-4 w-full max-w-[400px] mb-1.5" />
                         <Skeleton className="h-4 w-5/6 max-w-[350px]" />
                       </div>
-                      <div className="flex flex-col items-center sm:items-end justify-center h-full sm:pt-4 w-full sm:w-auto">
+                      <div className="flex flex-col items-center sm:items-end justify-center h-full sm:pt-4 w-full sm:w-auto rtl:sm:items-start">
                         <Skeleton className="h-10 w-32 rounded-xl" />
                       </div>
                     </div>
@@ -248,7 +250,7 @@ export function SearchPage() {
                     </div>
 
                     {/* Info */}
-                    <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-left gap-4">
+                    <div className="flex-1 flex flex-col sm:flex-row justify-between items-center sm:items-start text-center sm:text-start gap-4">
                       <div>
                         <h3 className="text-xl font-bold text-[#112142] flex items-center justify-center sm:justify-start gap-2">
                           Dr. {doctor.first_name} {doctor.last_name}
@@ -268,12 +270,12 @@ export function SearchPage() {
                         )}
                       </div>
 
-                      <div className="flex flex-col items-center sm:items-end justify-center h-full sm:pt-4">
+                      <div className="flex flex-col items-center sm:items-end rtl:sm:items-start justify-center h-full sm:pt-4">
                          <Link
                           to={`/${doctor.slug || doctor.id}`}
                           className="bg-[#039D77] text-white font-medium px-8 py-2.5 rounded-xl hover:bg-[#039D77]/90 transition-colors"
                          >
-                          Voir le profil
+                          {t('search.viewProfile')}
                          </Link>
                       </div>
                     </div>
@@ -284,8 +286,8 @@ export function SearchPage() {
               {!loading && doctors.length === 0 && (
                 <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
                   <User className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-[#112142]">Aucun médecin trouvé</h3>
-                  <p className="text-gray-500 mt-1">Essayez de modifier vos critères de recherche.</p>
+                  <h3 className="text-lg font-bold text-[#112142]">{t('search.noDoctorsTitle')}</h3>
+                  <p className="text-gray-500 mt-1">{t('search.noDoctorsDesc')}</p>
                 </div>
               )}
             </div>

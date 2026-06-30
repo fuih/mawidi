@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { MapPin, Stethoscope, Calendar as CalendarIcon, Info, User, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api, { getImageUrl } from "../lib/api";
 import { Skeleton } from "../components/ui/Skeleton";
 
@@ -43,6 +44,7 @@ interface SlotsResponse {
 export function DoctorProfilePage() {
   const { identifier } = useParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [doctor, setDoctor] = useState<DoctorProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -70,7 +72,7 @@ export function DoctorProfilePage() {
         const res = await api.get(`/doctors/${identifier}/profile`);
         setDoctor(res.data);
       } catch {
-        setError("Médecin introuvable");
+        setError(t('doctorProfile.notFound'));
       } finally {
         setLoading(false);
       }
@@ -150,7 +152,7 @@ export function DoctorProfilePage() {
   if (error || !doctor) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-red-500">{error || "Erreur"}</p>
+        <p className="text-red-500">{error || t('doctorProfile.error')}</p>
       </div>
     );
   }
@@ -226,13 +228,13 @@ export function DoctorProfilePage() {
                 </div>
                 {doctor.google_maps_url && (
                   <a href={doctor.google_maps_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 px-4 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-full text-sm font-medium transition-colors">
-                    Voir sur la carte
+                    {t('doctorProfile.seeOnMap')}
                   </a>
                 )}
                 {isQueueMode && (
                   <div className="flex items-center gap-2 px-4 py-1.5 bg-orange-50 text-orange-600 rounded-full text-sm font-semibold border border-orange-200">
                     <Users className="h-4 w-4" />
-                    <span>File d'attente</span>
+                    <span>{t('doctorProfile.queueMode')}</span>
                   </div>
                 )}
               </div>
@@ -240,10 +242,10 @@ export function DoctorProfilePage() {
           </div>
 
           {doctor.bio && (
-            <div className="mt-10 border-t border-gray-100 pt-8">
+            <div className="mt-10 border-t border-gray-100 pt-8 text-start">
               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center justify-center sm:justify-start gap-2">
                 <Info className="h-5 w-5 text-gray-400" />
-                Présentation
+                {t('doctorProfile.presentation')}
               </h3>
               <p className="text-gray-600 leading-relaxed">{doctor.bio}</p>
               {doctor.bio_ar && (
@@ -258,14 +260,14 @@ export function DoctorProfilePage() {
           <div className="text-center mb-10">
             <h2 className="text-2xl font-black text-gray-900 flex items-center justify-center gap-3">
               <CalendarIcon className="h-7 w-7 text-primary" />
-              Prendre rendez-vous
+              {t('doctorProfile.bookAppointment')}
             </h2>
-            <p className="text-gray-500 mt-2">Sélectionnez la date et l'heure de votre choix</p>
+            <p className="text-gray-500 mt-2">{t('doctorProfile.bookSubtitle')}</p>
           </div>
 
           <div className="mb-10">
             <div className="flex items-center justify-between mb-6">
-              <p className="text-sm font-black text-gray-800 uppercase tracking-widest">Étape 1: La Date</p>
+              <p className="text-sm font-black text-gray-800 uppercase tracking-widest">{t('doctorProfile.step1')}</p>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setWeekOffset(Math.max(0, weekOffset - 1))} 
@@ -298,7 +300,7 @@ export function DoctorProfilePage() {
                     }`}
                   >
                     <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider opacity-80 mb-1">
-                      {d.toLocaleDateString("fr-FR", { weekday: "short" }).replace('.', '')}
+                      {d.toLocaleDateString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', { weekday: "short" }).replace('.', '')}
                     </span>
                     <span className="text-lg sm:text-2xl font-black">{d.getDate()}</span>
                   </button>
@@ -310,7 +312,7 @@ export function DoctorProfilePage() {
           <div className="mb-10 min-h-[150px]">
             {slotsLoading ? (
               <div className="animate-in fade-in duration-200">
-                <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-6">Étape 2: L'heure</p>
+                <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-6 text-start">{t('doctorProfile.step2')}</p>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {Array.from({ length: 10 }).map((_, i) => (
                     <Skeleton key={i} className="h-[46px] rounded-xl" />
@@ -319,23 +321,23 @@ export function DoctorProfilePage() {
               </div>
             ) : !isWorkingDay ? (
               <div className="text-center p-8 bg-red-50/50 rounded-2xl border border-red-100 animate-in fade-in duration-200">
-                <p className="text-red-800 font-bold text-lg mb-1">Non disponible</p>
-                <p className="text-red-600">Le médecin ne consulte pas ce jour-là.</p>
+                <p className="text-red-800 font-bold text-lg mb-1">{t('doctorProfile.notAvailableTitle')}</p>
+                <p className="text-red-600">{t('doctorProfile.notAvailableDesc')}</p>
               </div>
             ) : availableSlots.length === 0 ? (
               <div className="text-center p-8 bg-gray-50 rounded-2xl border border-gray-200 animate-in fade-in duration-200">
-                <p className="text-gray-800 font-bold text-lg mb-1">Complet</p>
-                <p className="text-gray-600">Aucun créneau disponible pour cette journée.</p>
+                <p className="text-gray-800 font-bold text-lg mb-1">{t('doctorProfile.fullTitle')}</p>
+                <p className="text-gray-600">{t('doctorProfile.fullDesc')}</p>
               </div>
             ) : isQueueMode ? (
               <div className="text-center p-8 bg-orange-50/50 rounded-2xl border border-orange-100 animate-in fade-in duration-200">
                 <Users className="h-12 w-12 text-orange-400 mx-auto mb-4" />
-                <p className="text-orange-800 font-bold text-lg mb-1">Consultation sans RDV</p>
-                <p className="text-orange-600">Vous recevrez un numéro de file après validation.</p>
+                <p className="text-orange-800 font-bold text-lg mb-1">{t('doctorProfile.queueConsultationTitle')}</p>
+                <p className="text-orange-600">{t('doctorProfile.queueConsultationDesc')}</p>
               </div>
             ) : (
               <div className="animate-in fade-in duration-200">
-                <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-6">Étape 2: L'heure</p>
+                <p className="text-sm font-black text-gray-800 uppercase tracking-widest mb-6 text-start">{t('doctorProfile.step2')}</p>
                 {/* Single unified grid as requested (no categories) */}
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                   {slots.map((s) => (
@@ -373,7 +375,7 @@ export function DoctorProfilePage() {
                 : "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
             }`}
           >
-            {isQueueMode ? "Réserver ma place" : "Continuer"}
+            {isQueueMode ? t('doctorProfile.reserveQueue') : t('doctorProfile.continue')}
           </button>
         </div>
       </div>

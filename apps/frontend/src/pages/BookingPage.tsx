@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Calendar, Clock, User, Phone, Mail, FileText, CheckCircle2, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api from "../lib/api";
 import { useAuthStore } from "../lib/authStore";
 
@@ -8,6 +9,7 @@ export function BookingPage() {
   const { identifier } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const date = searchParams.get("date");
   const time = searchParams.get("time");
@@ -62,7 +64,7 @@ export function BookingPage() {
   }
 
   // Parse "YYYY-MM-DD" as local midnight (not UTC midnight) to avoid date rollback
-  const formattedDate = new Date(`${date}T00:00`).toLocaleDateString("fr-FR", {
+  const formattedDate = new Date(`${date}T00:00`).toLocaleDateString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -92,7 +94,7 @@ export function BookingPage() {
       setQueueNumber(res.data.queue_number ?? null);
       setIsSuccess(true);
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Erreur lors de la réservation");
+      setError(err.response?.data?.detail || t('booking.bookingError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -109,9 +111,9 @@ export function BookingPage() {
             <div className="absolute inset-0 rounded-full border-4 border-[#039D77]/20 animate-ping opacity-20"></div>
             <CheckCircle2 className="h-10 w-10 text-[#039D77]" />
           </div>
-          <h2 className="text-2xl font-black text-[#112142] mb-3 tracking-tight">Rendez-vous Confirmé !</h2>
+          <h2 className="text-2xl font-black text-[#112142] mb-3 tracking-tight">{t('booking.confirmedTitle')}</h2>
           <p className="text-gray-500 mb-8 leading-relaxed">
-            Votre demande a été enregistrée avec succès. Vous recevrez une notification prochainement.
+            {t('booking.confirmedDesc')}
           </p>
 
           <div className="bg-gray-50/80 rounded-2xl p-5 mb-8 text-left border border-gray-100">
@@ -120,7 +122,7 @@ export function BookingPage() {
                 <Calendar className="h-5 w-5 text-[#039D77]" />
               </div>
               <div>
-                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Date</p>
+                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t('booking.date')}</p>
                 <span className="capitalize text-[#112142] font-bold text-sm">{formattedDate}</span>
               </div>
             </div>
@@ -130,7 +132,7 @@ export function BookingPage() {
                   <Users className="h-5 w-5 text-orange-500" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Numéro de file</p>
+                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t('booking.queueNumber')}</p>
                   <p className="text-2xl font-black text-orange-500">#{queueNumber}</p>
                 </div>
               </div>
@@ -140,7 +142,7 @@ export function BookingPage() {
                   <Clock className="h-5 w-5 text-[#039D77]" />
                 </div>
                 <div>
-                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Heure</p>
+                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t('booking.time')}</p>
                   <span className="text-[#112142] font-black text-xl">{time}</span>
                 </div>
               </div>
@@ -149,7 +151,7 @@ export function BookingPage() {
 
           {isQueueMode && (
             <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100 mb-8 text-sm text-orange-800 text-left">
-              Vous serez reçu par ordre d'arrivée. Présentez-vous le jour J au cabinet avec ce numéro.
+              {t('booking.queueInstructions')}
             </div>
           )}
 
@@ -158,13 +160,13 @@ export function BookingPage() {
               onClick={() => navigate(`/${identifier}`)}
               className="w-full bg-[#039D77] text-white font-bold py-3.5 rounded-xl hover:bg-[#027a5c] shadow-[0_8px_30px_rgb(3,157,119,0.2)] transition-all duration-300 hover:scale-[1.02]"
             >
-              Retour au profil
+              {t('booking.backToProfile')}
             </button>
             <button
               onClick={() => navigate("/")}
               className="w-full text-gray-500 font-bold py-3.5 rounded-xl hover:text-[#112142] hover:bg-gray-50 transition-colors"
             >
-              Retour à l'accueil
+              {t('auth.backToHome')}
             </button>
           </div>
         </div>
@@ -177,33 +179,33 @@ export function BookingPage() {
       {/* Ambient background */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
       
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <h1 className="text-3xl font-extrabold text-[#112142] mb-8 tracking-tight">Finaliser votre rendez-vous</h1>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-start">
+        <h1 className="text-3xl font-extrabold text-[#112142] mb-8 tracking-tight">{t('booking.finalizeTitle')}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form */}
-          <div className="lg:col-span-2 bg-white/90 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-xl shadow-primary/5 border border-white/50">
+          <div className="lg:col-span-2 bg-white/90 backdrop-blur-xl p-6 sm:p-8 rounded-2xl shadow-xl shadow-primary/5 border border-white/50 text-start">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-gray-900">
               <User className="h-6 w-6 text-primary" />
-              Vos informations
+              {t('booking.yourInfo')}
             </h2>
 
             {isQueueMode && (
-              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg flex gap-3">
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg flex gap-3 text-start">
                 <Users className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
                 <p className="text-sm text-orange-700">
-                  Vous serez reçu par ordre d'arrivée. Votre numéro de file sera affiché après confirmation.
+                  {t('booking.queueInfo')}
                 </p>
               </div>
             )}
 
             {patientLocked && (
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex gap-3">
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex gap-3 text-start">
                 <User className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
                 <p className="text-sm text-blue-700">
-                  Informations pré-remplies depuis votre compte.{" "}
+                  {t('booking.prefilledInfo')}{" "}
                   <span className="font-medium">
-                    Vous réservez pour un membre de la famille ? Modifiez le nom et le téléphone ci-dessous.
+                    {t('booking.bookingForFamily')}
                   </span>
                 </p>
               </div>
@@ -218,19 +220,19 @@ export function BookingPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
-                  <label htmlFor="firstName" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Prénom *</label>
+                  <label htmlFor="firstName" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">{t('auth.firstName')}</label>
                   <input
                     id="firstName" required type="text"
-                    className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium"
+                    className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium text-start"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label htmlFor="lastName" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Nom *</label>
+                  <label htmlFor="lastName" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">{t('auth.lastName')}</label>
                   <input
                     id="lastName" required type="text"
-                    className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium"
+                    className="w-full px-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium text-start"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   />
@@ -238,14 +240,14 @@ export function BookingPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="phone" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Téléphone *</label>
+                <label htmlFor="phone" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">{t('auth.phoneLabelRequired')}</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors" />
+                  <div className="absolute inset-y-0 start-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors rtl:mr-4" />
                   </div>
                   <input
                     id="phone" required type="tel" placeholder="0555..."
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400 ltr:dir-ltr rtl:pl-4 rtl:pr-12 text-start"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
@@ -253,14 +255,14 @@ export function BookingPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="email" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Email <span className="text-gray-400 font-normal lowercase tracking-normal">(optionnel)</span></label>
+                <label htmlFor="email" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">{t('auth.emailLabelOptional')}</label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors" />
+                  <div className="absolute inset-y-0 start-0 pl-4 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors rtl:mr-4" />
                   </div>
                   <input
                     id="email" type="email" placeholder="votre@email.com"
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400"
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400 ltr:dir-ltr rtl:pl-4 rtl:pr-12 text-start"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
@@ -268,14 +270,14 @@ export function BookingPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="reason" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">Motif <span className="text-gray-400 font-normal lowercase tracking-normal">(optionnel)</span></label>
+                <label htmlFor="reason" className="text-[13px] font-bold text-gray-700 uppercase tracking-wide">{t('booking.reasonLabel')}</label>
                 <div className="relative group">
-                  <div className="absolute top-4 left-4 pointer-events-none">
+                  <div className="absolute top-4 start-4 pointer-events-none">
                     <FileText className="h-5 w-5 text-gray-400 group-focus-within:text-[#039D77] transition-colors" />
                   </div>
                   <textarea
-                    id="reason" rows={3} placeholder="Pourquoi souhaitez-vous consulter ?"
-                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400 resize-none"
+                    id="reason" rows={3} placeholder={t('booking.reasonPlaceholder')}
+                    className="w-full pl-12 pr-4 py-3.5 bg-gray-50/50 border-2 border-gray-100 rounded-xl focus:border-[#039D77] focus:bg-white outline-none transition-all duration-200 text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400 resize-none rtl:pl-4 rtl:pr-12 text-start"
                     value={formData.reason}
                     onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                   />
@@ -290,10 +292,10 @@ export function BookingPage() {
                   {isSubmitting ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Confirmation en cours...
+                      {t('booking.confirming')}
                     </>
                   ) : (
-                    isQueueMode ? "Confirmer ma place dans la file" : "Confirmer le rendez-vous"
+                    isQueueMode ? t('booking.confirmQueue') : t('booking.confirmAppointment')
                   )}
                 </button>
               </div>
@@ -301,10 +303,10 @@ export function BookingPage() {
           </div>
 
           {/* Right Summary */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 text-start">
             <div className="bg-white/80 backdrop-blur-xl p-6 rounded-2xl shadow-xl shadow-primary/5 border border-white/50 sticky top-24">
               <h3 className="text-xs uppercase tracking-widest font-bold text-gray-500 mb-6">
-                Résumé du rendez-vous
+                {t('booking.summary')}
               </h3>
 
               <div className="space-y-5">
@@ -313,7 +315,7 @@ export function BookingPage() {
                     <Calendar className="h-5 w-5 text-primary" />
                   </div>
                   <div className="pt-1">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Date</p>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('booking.date')}</p>
                     <p className="font-bold capitalize text-gray-900">{formattedDate}</p>
                   </div>
                 </div>
@@ -324,9 +326,9 @@ export function BookingPage() {
                       <Users className="h-5 w-5 text-orange-500" />
                     </div>
                     <div className="pt-1">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Mode</p>
-                      <p className="font-medium text-gray-900">File d'attente</p>
-                      <p className="text-xs text-gray-400 mt-0.5">Numéro attribué à la confirmation</p>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('booking.mode')}</p>
+                      <p className="font-medium text-gray-900">{t('booking.queueMode')}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{t('booking.queueAssigned')}</p>
                     </div>
                   </div>
                 ) : (
@@ -335,7 +337,7 @@ export function BookingPage() {
                       <Clock className="h-5 w-5 text-primary" />
                     </div>
                     <div className="pt-1">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Heure</p>
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{t('booking.time')}</p>
                       <p className="font-bold text-gray-900 text-xl">{time}</p>
                     </div>
                   </div>
@@ -348,7 +350,7 @@ export function BookingPage() {
                         <User className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Médecin</p>
+                        <p className="text-xs text-gray-500">{t('booking.doctor')}</p>
                         <p className="font-medium text-gray-900">Dr. {doctor.first_name} {doctor.last_name}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{doctor.specialty}</p>
                       </div>
@@ -359,11 +361,11 @@ export function BookingPage() {
                         <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Adresse</p>
+                        <p className="text-xs text-gray-500">{t('booking.address')}</p>
                         <p className="font-medium text-gray-900 text-sm">{doctor.address || doctor.city}</p>
                         {doctor.google_maps_url && (
                           <a href={doctor.google_maps_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline mt-1.5 text-sm font-medium">
-                            Voir sur la carte
+                            {t('doctorProfile.seeOnMap')}
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                           </a>
                         )}

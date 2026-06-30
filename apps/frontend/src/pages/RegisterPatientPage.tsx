@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import api from "../lib/api";
 import { useAuthStore } from "../lib/authStore";
 
 export function RegisterPatientPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
 
@@ -36,7 +38,7 @@ export function RegisterPatientPage() {
       await login();
       navigate("/");
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Erreur lors de l'inscription");
+      setError(err.response?.data?.detail || t('auth.registerError'));
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,7 @@ export function RegisterPatientPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
       <div className="bg-white p-8 rounded-xl shadow-sm border max-w-md w-full">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">Inscription Patient</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">{t('auth.registerPatientTitle')}</h1>
 
         {error && (
           <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg mb-4 border border-red-200">
@@ -55,55 +57,55 @@ export function RegisterPatientPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+            <div className="text-start">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.firstName')}</label>
               <input
                 type="text" required value={form.first_name}
                 onChange={(e) => set("first_name", e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none text-start"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+            <div className="text-start">
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.lastName')}</label>
               <input
                 type="text" required value={form.last_name}
                 onChange={(e) => set("last_name", e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none text-start"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone *</label>
+          <div className="text-start">
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.phoneLabelRequired')}</label>
             <input
               type="tel" required value={form.phone}
               onChange={(e) => set("phone", e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none text-start ltr:dir-ltr"
               placeholder="0555123456"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email (optionnel)</label>
+          <div className="text-start">
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.emailLabelOptional')}</label>
             <input
               type="email" value={form.email}
               onChange={(e) => set("email", e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none text-start ltr:dir-ltr text-gray-900"
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe (optionnel, 8 car. min)</label>
+          <div className="text-start">
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.passwordLabelOptional')}</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"} minLength={8} value={form.password}
                 onChange={(e) => set("password", e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none pr-10"
+                className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/50 outline-none pe-10 text-start ltr:dir-ltr"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -114,13 +116,13 @@ export function RegisterPatientPage() {
             type="submit" disabled={loading}
             className="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
           >
-            {loading ? "Inscription..." : "S'inscrire"}
+            {loading ? t('auth.registerLoading') : t('auth.registerButton')}
           </button>
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          Déjà inscrit ?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">Se connecter</Link>
+          {t('auth.alreadyRegistered')}{" "}
+          <Link to="/login" className="text-primary font-medium hover:underline mx-1">{t('auth.loginButton')}</Link>
         </div>
       </div>
     </div>

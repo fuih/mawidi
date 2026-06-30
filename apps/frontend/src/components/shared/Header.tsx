@@ -47,7 +47,7 @@ export function Header() {
                   className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-medium rounded-lg text-sm hover:bg-primary/20 transition-colors"
                 >
                   <LayoutDashboard className="h-4 w-4" />
-                  Tableau de bord
+                  {t('header.dashboard')}
                 </Link>
               )}
               {userType === "patient" && (
@@ -56,7 +56,7 @@ export function Header() {
                   className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-medium rounded-lg text-sm hover:bg-primary/20 transition-colors"
                 >
                   <LayoutDashboard className="h-4 w-4" />
-                  Mon Espace
+                  {t('header.mySpace')}
                 </Link>
               )}
               <button
@@ -64,7 +64,7 @@ export function Header() {
                 className="flex items-center gap-2 px-4 py-2 text-gray-600 font-medium rounded-lg text-sm hover:bg-gray-100 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
-                Déconnexion
+                {t('header.logout')}
               </button>
             </>
           ) : (
@@ -112,28 +112,28 @@ export function Header() {
                   <Link 
                     to="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-medium rounded-lg text-sm hover:bg-primary/20 transition-colors w-full"
+                    className="flex items-center gap-2 px-4 py-3 bg-primary/10 text-primary font-medium rounded-lg w-full"
                   >
-                    <LayoutDashboard className="h-4 w-4" />
-                    Tableau de bord
+                    <LayoutDashboard className="h-5 w-5" />
+                    {t('header.dashboard')}
                   </Link>
                 )}
                 {userType === "patient" && (
                   <Link 
                     to="/patient/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary font-medium rounded-lg text-sm hover:bg-primary/20 transition-colors w-full"
+                    className="flex items-center gap-2 px-4 py-3 bg-primary/10 text-primary font-medium rounded-lg w-full"
                   >
-                    <LayoutDashboard className="h-4 w-4" />
-                    Mon Espace
+                    <LayoutDashboard className="h-5 w-5" />
+                    {t('header.mySpace')}
                   </Link>
                 )}
                 <button
                   onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 font-medium rounded-lg text-sm hover:bg-gray-100 transition-colors w-full text-left"
+                  className="flex items-center gap-2 px-4 py-3 text-gray-600 font-medium rounded-lg w-full hover:bg-gray-50"
                 >
-                  <LogOut className="h-4 w-4" />
-                  Déconnexion
+                  <LogOut className="h-5 w-5" />
+                  {t('header.logout')}
                 </button>
               </>
             ) : (
