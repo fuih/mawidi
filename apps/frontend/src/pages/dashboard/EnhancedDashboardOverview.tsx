@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import api from "../../lib/api";
 import { useAuthStore } from "../../lib/authStore";
 import { AgendaWidget } from "../../components/dashboard/widgets/AgendaWidget";
@@ -33,6 +34,7 @@ interface Appointment {
 export function EnhancedDashboardOverview() {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
+  const { t, i18n } = useTranslation();
 
   const [_stats, setStats] = useState<Stats | null>(null);
   const [todayAppts, setTodayAppts] = useState<Appointment[]>([]);
@@ -153,11 +155,11 @@ export function EnhancedDashboardOverview() {
 
   const translateStatus = (status: string) => {
     switch (status) {
-      case "pending": return "En attente";
-      case "confirmed": return "Confirmé";
-      case "completed": return "Terminé";
-      case "cancelled": return "Annulé";
-      case "no_show": return "Absent";
+      case "pending": return t('dashboardOverview.statusPending');
+      case "confirmed": return t('dashboardOverview.statusConfirmed');
+      case "completed": return t('dashboardOverview.statusCompleted');
+      case "cancelled": return t('dashboardOverview.statusCancelled');
+      case "no_show": return t('dashboardOverview.statusNoShow');
       default: return status;
     }
   };
@@ -170,16 +172,16 @@ export function EnhancedDashboardOverview() {
     <div className="w-full">
       {/* Page Header */}
       <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Bonjour, Dr. {profile?.first_name || ""}</h2>
-        <p className="text-gray-500 text-base mt-2">Voici votre programme pour aujourd'hui.</p>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight text-start">{t('dashboardOverview.greeting', { name: profile?.first_name || "" })}</h2>
+        <p className="text-gray-500 text-base mt-2 text-start">{t('dashboardOverview.subtitle')}</p>
       </div>
 
       {/* Top Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Total Appointments */}
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all text-start">
           <div className="flex justify-between items-start mb-4">
-            <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">Rendez-vous prévus</span>
+            <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">{t('dashboardOverview.scheduledAppointments')}</span>
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
               <span className="material-symbols-outlined text-blue-500 text-[20px]">calendar_clock</span>
             </div>
@@ -187,34 +189,34 @@ export function EnhancedDashboardOverview() {
           <div className="flex items-end gap-1 mt-2">
             <span className="text-4xl font-black text-[#112142] tracking-tight">{apptsTotal}</span>
           </div>
-          <div className="text-xs text-gray-500 mt-3 font-medium">Pour la date sélectionnée</div>
+          <div className="text-xs text-gray-500 mt-3 font-medium">{t('dashboardOverview.forSelectedDate')}</div>
         </div>
 
         {/* Pending Confirmations */}
-        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all">
+        <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all text-start">
           <div className="flex justify-between items-start mb-4">
-            <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">À confirmer</span>
+            <span className="text-[11px] font-black text-gray-500 uppercase tracking-widest">{t('dashboardOverview.pendingConfirmation')}</span>
             <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center">
               <span className="material-symbols-outlined text-orange-500 text-[20px]">pending_actions</span>
             </div>
           </div>
           <div className="text-4xl font-black text-[#112142] tracking-tight mt-2">{apptsPending}</div>
           <div className="flex items-center gap-1 text-orange-500 mt-3">
-            <span className="text-xs font-bold">En attente de validation</span>
+            <span className="text-xs font-bold">{t('dashboardOverview.waitingForValidation')}</span>
           </div>
         </div>
 
         {/* Completed Appointments */}
-        <div className="bg-[#039D77] rounded-3xl p-6 shadow-[0_8px_30px_rgb(3,157,119,0.3)] hover:shadow-[0_8px_30px_rgb(3,157,119,0.4)] transition-all">
+        <div className="bg-[#039D77] rounded-3xl p-6 shadow-[0_8px_30px_rgb(3,157,119,0.3)] hover:shadow-[0_8px_30px_rgb(3,157,119,0.4)] transition-all text-start">
           <div className="flex justify-between items-start mb-4">
-            <span className="text-[11px] font-black text-white/90 uppercase tracking-widest">Consultations terminées</span>
+            <span className="text-[11px] font-black text-white/90 uppercase tracking-widest">{t('dashboardOverview.completedConsultations')}</span>
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
               <span className="material-symbols-outlined text-white text-[20px]">check_circle</span>
             </div>
           </div>
           <div className="text-4xl font-black text-white tracking-tight mt-2">{apptsCompleted}</div>
           <div className="flex items-center gap-1 text-white/90 mt-3">
-            <span className="text-xs font-bold">Patients pris en charge</span>
+            <span className="text-xs font-bold">{t('dashboardOverview.patientsTreated')}</span>
           </div>
         </div>
       </div>
@@ -233,37 +235,37 @@ export function EnhancedDashboardOverview() {
                 <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary text-[22px]">view_agenda</span>
                   {selectedDate.toDateString() === new Date().toDateString() 
-                    ? "Agenda du jour" 
-                    : `Agenda du ${selectedDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`}
+                    ? t('dashboardOverview.todaysAgenda') 
+                    : t('dashboardOverview.agendaOf', { date: selectedDate.toLocaleDateString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', { day: 'numeric', month: 'long' }) })}
                 </h3>
                 <button 
                   onClick={() => setIsManualBookOpen(true)}
                   className="hidden sm:flex text-sm font-medium text-white bg-primary px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors items-center gap-1 shadow-sm"
                 >
                   <span className="material-symbols-outlined text-[18px]">add</span>
-                  Nouveau
+                  {t('dashboardOverview.new')}
                 </button>
               </div>
-              <div className="flex space-x-2 bg-gray-50/80 p-1.5 rounded-xl border border-gray-100 self-stretch sm:self-auto overflow-x-auto">
+              <div className="flex space-x-2 bg-gray-50/80 p-1.5 rounded-xl border border-gray-100 self-stretch sm:self-auto overflow-x-auto ltr:space-x-reverse-none rtl:space-x-reverse">
                 <button 
                   onClick={() => setActiveTab("all")}
                   className={`px-5 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === "all" ? "bg-white shadow-[0_2px_10px_rgb(17,33,66,0.06)] text-[#112142]" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"}`}
-                >Tous</button>
+                >{t('dashboardOverview.all')}</button>
                 <button 
                   onClick={() => setActiveTab("upcoming")}
                   className={`px-5 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === "upcoming" ? "bg-white shadow-[0_2px_10px_rgb(17,33,66,0.06)] text-[#112142]" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"}`}
-                >À venir</button>
+                >{t('dashboardOverview.upcoming')}</button>
                 <button 
                   onClick={() => setActiveTab("completed")}
                   className={`px-5 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === "completed" ? "bg-white shadow-[0_2px_10px_rgb(17,33,66,0.06)] text-[#112142]" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"}`}
-                >Terminés</button>
+                >{t('dashboardOverview.completed')}</button>
               </div>
             </div>
 
             {/* Patient List */}
-            <div className="space-y-4">
+            <div className="space-y-4 text-start">
               {filteredAppts.length === 0 ? (
-                <div className="text-center py-12 text-gray-500 font-medium">Aucun rendez-vous pour aujourd'hui.</div>
+                <div className="text-center py-12 text-gray-500 font-medium">{t('dashboardOverview.noAppointments')}</div>
               ) : (
                 filteredAppts.map((apt) => (
                   <div key={apt.id} className="patient-card flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 rounded-2xl border-2 border-gray-50 bg-white gap-4 hover:border-[#039D77]/20 hover:shadow-[0_8px_30px_rgb(3,157,119,0.06)] transition-all">
@@ -277,7 +279,7 @@ export function EnhancedDashboardOverview() {
                             {apt.patient_name}
                           </h4>
                           {apt.is_new_patient && (
-                            <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full border border-blue-200">Nouveau</span>
+                            <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full border border-blue-200">{t('dashboardOverview.newPatient')}</span>
                           )}
                         </div>
                         <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
@@ -290,27 +292,27 @@ export function EnhancedDashboardOverview() {
                       <button 
                         onClick={() => setRescheduleData({id: apt.id, name: apt.patient_name})}
                         className="flex items-center gap-1 px-4 py-2 rounded-lg border border-indigo-200 text-indigo-600 bg-white hover:bg-indigo-50 text-sm font-medium transition-colors"
-                        title="Déplacer"
+                        title={t('dashboardOverview.reschedule')}
                       >
                         <span className="material-symbols-outlined text-[18px]">calendar_month</span>
-                        Déplacer
+                        {t('dashboardOverview.reschedule')}
                       </button>
                       {apt.status === "pending" || apt.status === "confirmed" ? (
                         <>
                           <button 
                             onClick={() => handleUpdateStatus(apt.id, "cancelled")}
                             className="flex items-center gap-1 px-4 py-2 rounded-lg border border-red-200 text-red-600 bg-white hover:bg-red-50 text-sm font-medium transition-colors"
-                            title="Annuler"
+                            title={t('dashboardOverview.cancel')}
                           >
                             <span className="material-symbols-outlined text-[18px]">close</span>
-                            Annuler
+                            {t('dashboardOverview.cancel')}
                           </button>
                           <button 
                             onClick={() => handleUpdateStatus(apt.id, "completed")}
                             className="flex items-center gap-1 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-colors"
                           >
                             <span className="material-symbols-outlined text-[18px]">check</span>
-                            Terminé
+                            {t('dashboardOverview.done')}
                           </button>
                         </>
                       ) : (
@@ -333,7 +335,7 @@ export function EnhancedDashboardOverview() {
                   onClick={() => navigate("/dashboard/appointments")}
                   className="w-full py-2 text-center text-sm font-semibold text-primary hover:bg-primary/5 rounded-lg transition-colors mt-2"
                 >
-                  Voir tous les rendez-vous
+                  {t('dashboardOverview.viewAllAppointments')}
                 </button>
               )}
             </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Calendar, Clock, XCircle, Users, CheckCircle2,
   AlertCircle, Ban, History, Stethoscope, MapPin, ArrowRight,
@@ -22,24 +23,25 @@ interface Appointment {
 }
 
 const STATUS_CONFIG = {
-  pending:   { label: "En attente",    cls: "bg-amber-50 text-amber-700 border-amber-200",   icon: Clock },
-  confirmed: { label: "Confirmé",      cls: "bg-green-50 text-green-700 border-green-200",   icon: CheckCircle2 },
-  completed: { label: "Terminé",       cls: "bg-blue-50 text-blue-700 border-blue-200",      icon: CheckCircle2 },
-  cancelled: { label: "Annulé",        cls: "bg-red-50 text-red-700 border-red-200",         icon: Ban },
-  no_show:   { label: "Non présenté",  cls: "bg-gray-100 text-gray-500 border-gray-200",    icon: AlertCircle },
+  pending:   { labelKey: "patientDashboard.pending",    cls: "bg-amber-50 text-amber-700 border-amber-200",   icon: Clock },
+  confirmed: { labelKey: "patientDashboard.confirmed",      cls: "bg-green-50 text-green-700 border-green-200",   icon: CheckCircle2 },
+  completed: { labelKey: "patientDashboard.completed",       cls: "bg-blue-50 text-blue-700 border-blue-200",      icon: CheckCircle2 },
+  cancelled: { labelKey: "patientDashboard.cancelled",        cls: "bg-red-50 text-red-700 border-red-200",         icon: Ban },
+  no_show:   { labelKey: "patientDashboard.noShow",  cls: "bg-gray-100 text-gray-500 border-gray-200",    icon: AlertCircle },
 };
 
 /** Parse "YYYY-MM-DD" in local timezone to avoid UTC rollback */
 const parseLocalDate = (s: string) => new Date(`${s}T00:00`);
 
-const formatDate = (s: string) =>
-  parseLocalDate(s).toLocaleDateString("fr-FR", {
+const formatDate = (s: string, lang: string) =>
+  parseLocalDate(s).toLocaleDateString(lang === 'ar' ? 'ar-DZ' : lang === 'en' ? 'en-US' : 'fr-FR', {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
 export function PatientDashboard() {
   const navigate = useNavigate();
   const { isAuthenticated, userType, isInitializing } = useAuthStore();
+  const { t, i18n } = useTranslation();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState("");
@@ -58,14 +60,14 @@ export function PatientDashboard() {
     api.get("/appointments/patient/me")
       .then((r) => setAppointments(r.data))
       .catch((err) => {
-        const detail = err.response?.data?.detail || err.message || "Erreur inconnue";
-        setFetchError(`Erreur (${err.response?.status ?? "?"}): ${detail}`);
+        const detail = err.response?.data?.detail || err.message || t('patientDashboard.unknownError');
+        setFetchError(t('patientDashboard.errorWithStatus', { status: err.response?.status ?? "?", detail }));
       })
       .finally(() => setLoading(false));
   }, [isAuthenticated, userType, navigate, isInitializing]);
 
   const handleCancel = async (id: string) => {
-    if (!confirm("Voulez-vous vraiment annuler ce rendez-vous ?")) return;
+    if (!confirm(t('patientDashboard.confirmCancel'))) return;
     setCancellingId(id);
     setCancelError("");
     try {
@@ -74,7 +76,7 @@ export function PatientDashboard() {
         prev.map((a) => (a.id === id ? { ...a, status: "cancelled" } : a))
       );
     } catch (err: any) {
-      setCancelError(err.response?.data?.detail || "Erreur lors de l'annulation");
+      setCancelError(err.response?.data?.detail || t('patientDashboard.cancelError'));
     } finally {
       setCancellingId(null);
     }
@@ -151,11 +153,11 @@ export function PatientDashboard() {
               <History className="h-7 w-7 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Mon Espace Patient</h1>
-              <p className="text-gray-500 text-sm mt-0.5">
+              <h1 className="text-2xl font-bold text-gray-900">{t('patientDashboard.myPatientSpace')}</h1>
+              <p className="text-gray-500 text-sm mt-0.5 text-start">
                 {upcomingCount > 0
-                  ? `${upcomingCount} rendez-vous à venir`
-                  : "Aucun rendez-vous à venir"}
+                  ? t('patientDashboard.upcomingAppointmentsCount', { count: upcomingCount })
+                  : t('patientDashboard.noUpcomingAppointments')}
               </p>
             </div>
           </div>
@@ -164,10 +166,10 @@ export function PatientDashboard() {
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         {fetchError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-4 rounded-xl flex gap-3 items-start">
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-4 rounded-xl flex gap-3 items-start text-start">
             <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold mb-1">Erreur de chargement</p>
+              <p className="font-semibold mb-1">{t('patientDashboard.loadError')}</p>
               <p>{fetchError}</p>
             </div>
           </div>
@@ -192,9 +194,9 @@ export function PatientDashboard() {
                   : "text-gray-500 hover:text-gray-800"
               }`}
             >
-              {f === "upcoming" && "À venir"}
-              {f === "past" && "Passés"}
-              {f === "all" && "Tous"}
+              {f === "upcoming" && t('patientDashboard.upcoming')}
+              {f === "past" && t('patientDashboard.past')}
+              {f === "all" && t('patientDashboard.all')}
             </button>
           ))}
         </div>
@@ -203,13 +205,13 @@ export function PatientDashboard() {
         {filtered.length === 0 ? (
           <div className="bg-white rounded-2xl border p-16 text-center">
             <Calendar className="h-14 w-14 mx-auto text-gray-200 mb-4" />
-            <p className="text-gray-500 font-medium">Aucun rendez-vous trouvé</p>
+            <p className="text-gray-500 font-medium">{t('patientDashboard.noAppointmentsFound')}</p>
             <button
               onClick={() => navigate("/search")}
               className="mt-6 flex items-center gap-2 mx-auto bg-primary text-white px-6 py-2.5 rounded-xl font-medium text-sm hover:bg-primary/90 transition-colors"
             >
-              Trouver un médecin
-              <ArrowRight className="h-4 w-4" />
+              {t('patientDashboard.findDoctor')}
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" />
             </button>
           </div>
         ) : (
@@ -234,9 +236,9 @@ export function PatientDashboard() {
                         <Stethoscope className={`h-6 w-6 ${isActive ? "text-primary" : "text-gray-400"}`} />
                       </div>
 
-                      <div className="min-w-0">
+                      <div className="min-w-0 text-start">
                         <h3 className="font-bold text-gray-900">
-                          Dr. {appt.doctor_first_name} {appt.doctor_last_name}
+                          {t('patientDashboard.dr')}{appt.doctor_first_name} {appt.doctor_last_name}
                         </h3>
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
                           {appt.doctor_specialty && (
@@ -256,7 +258,7 @@ export function PatientDashboard() {
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
                           <span className="text-sm text-gray-700 flex items-center gap-1.5 capitalize">
                             <Calendar className="h-4 w-4 text-gray-400" />
-                            {formatDate(appt.appointment_date)}
+                            {formatDate(appt.appointment_date, i18n.language)}
                           </span>
                           {appt.appointment_time ? (
                             <span className="text-sm text-gray-700 flex items-center gap-1.5">
@@ -267,20 +269,20 @@ export function PatientDashboard() {
                             <span className="text-sm flex items-center gap-1.5">
                               <Users className="h-4 w-4 text-orange-400" />
                               <span className="font-semibold text-orange-600">
-                                Numéro #{appt.queue_number}
+                                {t('patientDashboard.queueNumber', { number: appt.queue_number })}
                               </span>
                             </span>
                           ) : (
                             <span className="text-sm text-gray-500 flex items-center gap-1.5">
                               <Users className="h-4 w-4 text-gray-400" />
-                              File d'attente
+                              {t('patientDashboard.queue')}
                             </span>
                           )}
                         </div>
 
                         {appt.reason && (
                           <p className="mt-1 text-xs text-gray-400 truncate max-w-xs">
-                            Motif : {appt.reason}
+                            {t('patientDashboard.reason', { reason: appt.reason })}
                           </p>
                         )}
                       </div>
@@ -290,7 +292,7 @@ export function PatientDashboard() {
                     <div className="flex items-center gap-3 shrink-0">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${cfg.cls}`}>
                         <StatusIcon className="h-3.5 w-3.5" />
-                        {cfg.label}
+                        {t(cfg.labelKey)}
                       </span>
 
                       {isActive && isFuture && (
@@ -304,7 +306,7 @@ export function PatientDashboard() {
                           ) : (
                             <XCircle className="h-4 w-4" />
                           )}
-                          Annuler
+                          {t('patientDashboard.cancel')}
                         </button>
                       )}
                     </div>
@@ -322,8 +324,8 @@ export function PatientDashboard() {
               onClick={() => navigate("/search")}
               className="inline-flex items-center gap-2 text-primary font-medium text-sm hover:underline"
             >
-              Prendre un nouveau rendez-vous
-              <ArrowRight className="h-4 w-4" />
+              {t('patientDashboard.bookNewAppointment')}
+              <ArrowRight className="h-4 w-4 rtl:rotate-180" />
             </button>
           </div>
         )}

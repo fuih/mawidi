@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Bell, Check, CheckCircle2, RefreshCw } from "lucide-react";
 import api from "../../lib/api";
 import { useAuthStore } from "../../lib/authStore";
@@ -15,6 +16,7 @@ interface Notification {
 export function NotificationsPage() {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
+  const { t, i18n } = useTranslation();
   
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +75,7 @@ export function NotificationsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-3 text-gray-500">
           <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-          <p>Chargement des notifications...</p>
+          <p>{t('notificationsPage.loadingNotifications')}</p>
         </div>
       </div>
     );
@@ -83,13 +85,13 @@ export function NotificationsPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+        <div className="text-start">
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <Bell className="h-6 w-6 text-gray-400" />
-            Notifications
+            {t('notificationsPage.title')}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            {unreadCount} notification{unreadCount !== 1 ? 's' : ''} non lue{unreadCount !== 1 ? 's' : ''}
+            {t('notificationsPage.unreadCount', { count: unreadCount })}
           </p>
         </div>
 
@@ -100,7 +102,7 @@ export function NotificationsPage() {
             className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
             {markingAll ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-            Tout marquer comme lu
+            {t('notificationsPage.markAllRead')}
           </button>
         )}
       </div>
@@ -112,8 +114,8 @@ export function NotificationsPage() {
             <div className="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
               <Bell className="h-8 w-8 text-gray-300" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900">Aucune notification</h3>
-            <p className="text-sm text-gray-500 mt-1">Vous êtes à jour !</p>
+            <h3 className="text-lg font-medium text-gray-900">{t('notificationsPage.noNotifications')}</h3>
+            <p className="text-sm text-gray-500 mt-1">{t('notificationsPage.upToDate')}</p>
           </div>
         ) : (
           <div className="divide-y">
@@ -132,12 +134,12 @@ export function NotificationsPage() {
                       <div className="h-3 w-3 mt-1.5 rounded-full bg-primary ring-4 ring-primary/20" />
                     )}
                   </div>
-                  <div>
+                  <div className="text-start">
                     <p className={`text-base ${!notif.is_read ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
                       {notif.message}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">
-                      {new Date(notif.created_at).toLocaleString('fr-FR', {
+                      {new Date(notif.created_at).toLocaleString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', {
                         weekday: 'long',
                         day: 'numeric',
                         month: 'long',
@@ -159,7 +161,7 @@ export function NotificationsPage() {
                     ) : (
                       <>
                         <Check className="h-4 w-4" />
-                        Marquer lu
+                        {t('notificationsPage.markRead')}
                       </>
                     )}
                   </button>

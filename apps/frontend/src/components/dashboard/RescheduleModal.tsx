@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import api from "../../lib/api";
 
@@ -11,6 +12,7 @@ interface RescheduleModalProps {
 }
 
 export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, onSuccess }: RescheduleModalProps) {
+  const { t } = useTranslation();
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [loading, setLoading] = useState(false);
@@ -79,7 +81,7 @@ export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, o
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Erreur lors du déplacement du rendez-vous.");
+      setError(err.response?.data?.detail || t('rescheduleModal.rescheduleError'));
     } finally {
       setLoading(false);
     }
@@ -91,18 +93,18 @@ export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, o
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b flex items-center justify-between">
-          <h3 className="text-lg font-bold text-gray-900">Déplacer le rendez-vous</h3>
+          <h3 className="text-lg font-bold text-gray-900">{t('rescheduleModal.title')}</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-start">
           <div className="text-sm text-gray-600 mb-4">
-            Déplacez le rendez-vous de <strong className="text-gray-900">{patientName}</strong> vers une nouvelle date.
+            {t('rescheduleModal.subtitle1')} <strong className="text-gray-900">{patientName}</strong>{t('rescheduleModal.subtitle2')}
             {bookingMode === "queue_based" && (
               <span className="block mt-2 text-primary font-medium">
-                Note: Le patient recevra le prochain numéro de file disponible pour cette journée.
+                {t('rescheduleModal.queueNote')}
               </span>
             )}
           </div>
@@ -114,7 +116,7 @@ export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, o
           )}
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nouvelle date *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('rescheduleModal.newDate')}</label>
             <input 
               type="date" 
               required
@@ -127,10 +129,10 @@ export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, o
 
           {bookingMode === "time_based" && (
             <div className="space-y-2 mt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nouvelle heure *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('rescheduleModal.newTime')}</label>
               {slotsLoading ? (
                 <div className="w-full rounded-lg border-gray-300 bg-gray-50 text-gray-400 p-2.5 border text-sm animate-pulse">
-                  Chargement des créneaux...
+                  {t('manualBookingModal.loadingSlots')}
                 </div>
               ) : slots.filter(s => s.is_available).length > 0 ? (
                   <select 
@@ -139,18 +141,18 @@ export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, o
                     onChange={(e) => setTime(e.target.value)}
                     className="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2.5 border bg-white"
                   >
-                    <option value="">-- Sélectionnez une heure --</option>
+                    <option value="">{t('manualBookingModal.selectTime')}</option>
                     {slots.filter(s => s.is_available).map(s => (
                         <option key={s.time} value={s.time}>{s.time.substring(0, 5)}</option>
                     ))}
                   </select>
               ) : date ? (
                 <div className="text-red-600 text-sm font-medium p-3 border border-red-200 rounded-lg bg-red-50 text-center">
-                  Aucun créneau disponible à cette date.
+                  {t('manualBookingModal.noSlotsAvailable')}
                 </div>
               ) : (
                 <div className="w-full rounded-lg border-gray-200 bg-gray-50 text-gray-400 p-2.5 border text-sm text-center">
-                  Veuillez choisir une date d'abord
+                  {t('manualBookingModal.chooseDateFirst')}
                 </div>
               )}
             </div>
@@ -163,14 +165,14 @@ export function RescheduleModal({ isOpen, onClose, appointmentId, patientName, o
               disabled={loading}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg border transition-colors"
             >
-              Annuler
+              {t('manualBookingModal.cancel')}
             </button>
             <button
               type="submit"
               disabled={loading || !date || (bookingMode === "time_based" && !time)}
               className="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-50"
             >
-              {loading ? "Enregistrement..." : "Confirmer"}
+              {loading ? t('manualBookingModal.saving') : t('rescheduleModal.confirm')}
             </button>
           </div>
         </form>

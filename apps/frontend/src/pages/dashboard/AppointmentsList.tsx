@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   CalendarDays,
   Phone,
@@ -30,17 +31,18 @@ interface Appointment {
   is_new_patient: boolean;
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  pending: { label: "En attente", color: "bg-yellow-50 text-yellow-800 border-yellow-200", icon: <Clock className="h-3.5 w-3.5" /> },
-  confirmed: { label: "Confirmé", color: "bg-blue-50 text-blue-800 border-blue-200", icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
-  completed: { label: "Terminé", color: "bg-green-50 text-green-800 border-green-200", icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
-  cancelled: { label: "Annulé", color: "bg-red-50 text-red-700 border-red-200", icon: <XCircle className="h-3.5 w-3.5" /> },
-  no_show: { label: "Absent", color: "bg-gray-100 text-gray-600 border-gray-200", icon: <AlertCircle className="h-3.5 w-3.5" /> },
+const STATUS_CONFIG: Record<string, { labelKey: string; color: string; icon: React.ReactNode }> = {
+  pending: { labelKey: "dashboardOverview.statusPending", color: "bg-yellow-50 text-yellow-800 border-yellow-200", icon: <Clock className="h-3.5 w-3.5" /> },
+  confirmed: { labelKey: "dashboardOverview.statusConfirmed", color: "bg-blue-50 text-blue-800 border-blue-200", icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
+  completed: { labelKey: "dashboardOverview.statusCompleted", color: "bg-green-50 text-green-800 border-green-200", icon: <CheckCircle2 className="h-3.5 w-3.5" /> },
+  cancelled: { labelKey: "dashboardOverview.statusCancelled", color: "bg-red-50 text-red-700 border-red-200", icon: <XCircle className="h-3.5 w-3.5" /> },
+  no_show: { labelKey: "dashboardOverview.statusNoShow", color: "bg-gray-100 text-gray-600 border-gray-200", icon: <AlertCircle className="h-3.5 w-3.5" /> },
 };
 
 export function AppointmentsList() {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
+  const { t, i18n } = useTranslation();
 
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filterStatus, setFilterStatus] = useState("all");
@@ -87,7 +89,7 @@ export function AppointmentsList() {
       });
       await fetchAll(false);
     } catch (err: any) {
-      alert(err.response?.data?.detail || "Erreur");
+      alert(err.response?.data?.detail || t('appointmentsList.error'));
     } finally {
       setActionLoading(null);
     }
@@ -99,7 +101,7 @@ export function AppointmentsList() {
       await api.patch("/dashboard/settings/auto-confirm", { auto_confirm: !autoConfirm });
       setAutoConfirm(!autoConfirm);
     } catch {
-      alert("Erreur lors de la mise à jour du paramètre.");
+      alert(t('appointmentsList.errorUpdatingSetting'));
     } finally {
       setTogglingAutoConfirm(false);
     }
@@ -116,7 +118,7 @@ export function AppointmentsList() {
     if (!cfg) return null;
     return (
       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.color}`}>
-        {cfg.icon} {cfg.label}
+        {cfg.icon} {t(cfg.labelKey)}
       </span>
     );
   };
@@ -137,9 +139,9 @@ export function AppointmentsList() {
       case "pending":
         return (
           <div className="flex items-center gap-2 flex-wrap">
-            {btn("Déplacer", () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
-            {btn("Confirmer", () => updateStatus(apt.id, "confirmed"), "bg-blue-600 text-white border-blue-600 hover:bg-blue-700", isLoading("confirmed"))}
-            {btn("Annuler", () => updateStatus(apt.id, "cancelled", "Annulé par le médecin"), "border-red-200 text-red-600 hover:bg-red-50", isLoading("cancelled"))}
+            {btn(t('dashboardOverview.reschedule'), () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
+            {btn(t('appointmentsList.confirm'), () => updateStatus(apt.id, "confirmed"), "bg-blue-600 text-white border-blue-600 hover:bg-blue-700", isLoading("confirmed"))}
+            {btn(t('dashboardOverview.cancel'), () => updateStatus(apt.id, "cancelled", t('appointmentsList.cancelledByDoctor')), "border-red-200 text-red-600 hover:bg-red-50", isLoading("cancelled"))}
           </div>
         );
       case "confirmed": {
@@ -147,31 +149,31 @@ export function AppointmentsList() {
         const canMarkAbsent = apt.appointment_date <= todayDateStr;
         return (
           <div className="flex items-center gap-2 flex-wrap">
-            {btn("Déplacer", () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
-            {btn("Terminé", () => updateStatus(apt.id, "completed"), "bg-green-600 text-white border-green-600 hover:bg-green-700", isLoading("completed"))}
-            {canMarkAbsent && btn("Absent", () => updateStatus(apt.id, "no_show"), "border-gray-300 text-gray-600 hover:bg-gray-50", isLoading("no_show"))}
-            {btn("Annuler", () => updateStatus(apt.id, "cancelled", "Annulé par le médecin"), "border-red-200 text-red-600 hover:bg-red-50", isLoading("cancelled"))}
+            {btn(t('dashboardOverview.reschedule'), () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
+            {btn(t('dashboardOverview.done'), () => updateStatus(apt.id, "completed"), "bg-green-600 text-white border-green-600 hover:bg-green-700", isLoading("completed"))}
+            {canMarkAbsent && btn(t('appointmentsList.markNoShow'), () => updateStatus(apt.id, "no_show"), "border-gray-300 text-gray-600 hover:bg-gray-50", isLoading("no_show"))}
+            {btn(t('dashboardOverview.cancel'), () => updateStatus(apt.id, "cancelled", t('appointmentsList.cancelledByDoctor')), "border-red-200 text-red-600 hover:bg-red-50", isLoading("cancelled"))}
           </div>
         );
       }
       case "cancelled":
         return (
           <div className="flex items-center gap-2">
-            {btn("Déplacer", () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
-            {btn("↩ Restaurer", () => updateStatus(apt.id, "pending"), "border-yellow-300 text-yellow-700 hover:bg-yellow-50", isLoading("pending"))}
+            {btn(t('dashboardOverview.reschedule'), () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
+            {btn(t('appointmentsList.restore'), () => updateStatus(apt.id, "pending"), "border-yellow-300 text-yellow-700 hover:bg-yellow-50", isLoading("pending"))}
           </div>
         );
       case "no_show":
         return (
           <div className="flex items-center gap-2">
-            {btn("Déplacer", () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
-            {btn("↩ Restaurer", () => updateStatus(apt.id, "confirmed"), "border-blue-300 text-blue-700 hover:bg-blue-50", isLoading("confirmed"))}
+            {btn(t('dashboardOverview.reschedule'), () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
+            {btn(t('appointmentsList.restore'), () => updateStatus(apt.id, "confirmed"), "border-blue-300 text-blue-700 hover:bg-blue-50", isLoading("confirmed"))}
           </div>
         );
       case "completed":
         return (
           <div className="flex items-center gap-2">
-            {btn("Déplacer", () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
+            {btn(t('dashboardOverview.reschedule'), () => setRescheduleData({id: apt.id, name: apt.patient_name}), "border-indigo-200 text-indigo-600 hover:bg-indigo-50")}
           </div>
         );
       default:
@@ -184,7 +186,7 @@ export function AppointmentsList() {
       <div className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-3 text-gray-500">
           <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-          <p>Chargement des rendez-vous...</p>
+          <p>{t('appointmentsList.loadingAppointments')}</p>
         </div>
       </div>
     );
@@ -199,16 +201,16 @@ export function AppointmentsList() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Rendez-vous</h1>
-            <p className="text-sm text-gray-500 mt-0.5">{appointments.length} rendez-vous au total</p>
+          <div className="text-start">
+            <h1 className="text-2xl font-bold text-gray-900">{t('appointmentsList.appointmentsTitle')}</h1>
+            <p className="text-sm text-gray-500 mt-0.5">{t('appointmentsList.totalAppointments', { count: appointments.length })}</p>
           </div>
           <button 
             onClick={() => setIsManualBookOpen(true)}
             className="hidden sm:flex text-sm font-medium text-white bg-primary px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors items-center gap-1.5 shadow-sm"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
-            Nouveau
+            {t('dashboardOverview.new')}
           </button>
         </div>
 
@@ -220,12 +222,12 @@ export function AppointmentsList() {
             : "border-gray-200 bg-white hover:border-gray-300"
             }`}
         >
-          <div className="flex-1">
+          <div className="flex-1 text-start">
             <p className={`text-sm font-bold ${autoConfirm ? "text-green-800" : "text-gray-700"}`}>
-              Confirmation automatique
+              {t('appointmentsList.autoConfirm')}
             </p>
             <p className="text-xs text-gray-500 mt-0.5">
-              {autoConfirm ? "Les nouveaux RDV sont directement confirmés" : "Chaque RDV doit être approuvé manuellement"}
+              {autoConfirm ? t('appointmentsList.autoConfirmDescOn') : t('appointmentsList.autoConfirmDescOff')}
             </p>
           </div>
           {togglingAutoConfirm
@@ -246,10 +248,10 @@ export function AppointmentsList() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Chercher un patient..."
+                placeholder={t('appointmentsList.searchPatient')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                className="w-full ltr:pl-9 rtl:pr-9 ltr:pr-4 rtl:pl-4 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
 
@@ -264,7 +266,7 @@ export function AppointmentsList() {
                 <button
                   onClick={() => setFilterDate("")}
                   className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
-                  title="Effacer la date"
+                  title={t('appointmentsList.clearDate')}
                 >
                   <XCircle className="h-4 w-4" />
                 </button>
@@ -275,12 +277,12 @@ export function AppointmentsList() {
           {/* Status Filter Pills */}
           <div className="flex items-center gap-2 flex-wrap">
             {[
-              { key: "all", label: "Tous" },
-              { key: "pending", label: "En attente" },
-              { key: "confirmed", label: "Confirmés" },
-              { key: "completed", label: "Terminés" },
-              { key: "cancelled", label: "Annulés" },
-              { key: "no_show", label: "Absents" },
+              { key: "all", label: t('appointmentsList.filterAll') },
+              { key: "pending", label: t('appointmentsList.filterPending') },
+              { key: "confirmed", label: t('appointmentsList.filterConfirmed') },
+              { key: "completed", label: t('appointmentsList.filterCompleted') },
+              { key: "cancelled", label: t('appointmentsList.filterCancelled') },
+              { key: "no_show", label: t('appointmentsList.filterNoShow') },
             ].map(({ key, label }) => (
               <button
                 key={key}
@@ -300,8 +302,8 @@ export function AppointmentsList() {
         {filtered.length === 0 ? (
           <div className="py-16 text-center text-gray-500 flex flex-col items-center gap-3">
             <CalendarDays className="h-12 w-12 text-gray-300" />
-            <p className="text-lg font-medium">Aucun rendez-vous trouvé</p>
-            <p className="text-sm">Essayez de changer les filtres.</p>
+            <p className="text-lg font-medium">{t('appointmentsList.noAppointmentsFound')}</p>
+            <p className="text-sm">{t('appointmentsList.tryChangingFilters')}</p>
           </div>
         ) : (
           <div className="divide-y">
@@ -313,7 +315,7 @@ export function AppointmentsList() {
                   {/* Date/Time Column */}
                   <div className="shrink-0 w-20 text-center bg-gray-50 rounded-xl p-2.5 border">
                     <p className="text-xs font-medium text-gray-500 uppercase">
-                      {new Date(apt.appointment_date).toLocaleDateString('fr-FR', { month: 'short' })}
+                      {new Date(apt.appointment_date).toLocaleDateString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', { month: 'short' })}
                     </p>
                     <p className="text-2xl font-bold text-gray-900 leading-none my-1">
                       {new Date(apt.appointment_date).getDate()}
@@ -329,7 +331,7 @@ export function AppointmentsList() {
                       <h3 className="text-base font-bold text-gray-900">{apt.patient_name}</h3>
                       {apt.is_new_patient && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wider">
-                          <UserPlus className="h-3 w-3" /> Nouveau
+                          <UserPlus className="h-3 w-3" /> {t('dashboardOverview.newPatient')}
                         </span>
                       )}
                       <StatusBadge status={apt.status} />

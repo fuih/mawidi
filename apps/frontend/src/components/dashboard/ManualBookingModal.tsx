@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import api from "../../lib/api";
 
@@ -10,6 +11,7 @@ interface ManualBookingModalProps {
 }
 
 export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: ManualBookingModalProps) {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [bookingMode, setBookingMode] = useState<"time_based" | "queue_based">("queue_based");
@@ -95,7 +97,7 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Erreur lors de l'ajout du rendez-vous.");
+      setError(err.response?.data?.detail || t('manualBookingModal.addError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +107,7 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="px-6 py-4 border-b flex items-center justify-between">
-          <h3 className="text-lg font-bold text-gray-900">Nouveau Rendez-vous Manuel</h3>
+          <h3 className="text-lg font-bold text-gray-900">{t('manualBookingModal.title')}</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X className="h-5 w-5" />
           </button>
@@ -117,40 +119,41 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
           </div>
         )}
 
-        <form onSubmit={handleManualBook} className="p-6 pt-4 space-y-4">
+        <form onSubmit={handleManualBook} className="p-6 pt-4 space-y-4 text-start">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nom du patient *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('manualBookingModal.patientName')}</label>
             <input 
               required
               className="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2.5 border"
               value={formData.patient_name}
               onChange={e => setFormData({...formData, patient_name: e.target.value})}
-              placeholder="Ex: Ali Maiche"
+              placeholder={t('manualBookingModal.patientNamePlaceholder')}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('manualBookingModal.phone')}</label>
             <input 
               required
-              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2.5 border"
+              className="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2.5 border text-start"
+              dir="ltr"
               value={formData.patient_phone}
               onChange={e => setFormData({...formData, patient_phone: e.target.value})}
               placeholder="05..."
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Motif (Optionnel)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('manualBookingModal.reason')}</label>
             <input 
               className="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2.5 border"
               value={formData.reason}
               onChange={e => setFormData({...formData, reason: e.target.value})}
-              placeholder="Consultation de suivi"
+              placeholder={t('manualBookingModal.reasonPlaceholder')}
             />
           </div>
           
           <div className="space-y-4">
             <div className={bookingMode === "queue_based" ? "w-full" : ""}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('manualBookingModal.date')}</label>
               <input 
                 type="date"
                 required
@@ -163,10 +166,10 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
             
             {bookingMode === "time_based" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Heure *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('manualBookingModal.time')}</label>
                 {slotsLoading ? (
                   <div className="w-full rounded-lg border-gray-300 bg-gray-50 text-gray-400 p-2.5 border text-sm animate-pulse">
-                    Chargement des créneaux...
+                    {t('manualBookingModal.loadingSlots')}
                   </div>
                 ) : slots.filter(s => s.is_available).length > 0 ? (
                   <select 
@@ -175,18 +178,18 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
                     onChange={(e) => setFormData({...formData, appointment_time: e.target.value})}
                     className="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-2.5 border bg-white"
                   >
-                    <option value="">-- Sélectionnez une heure --</option>
+                    <option value="">{t('manualBookingModal.selectTime')}</option>
                     {slots.filter(s => s.is_available).map(s => (
                         <option key={s.time} value={s.time}>{s.time.substring(0, 5)}</option>
                     ))}
                   </select>
                 ) : formData.appointment_date ? (
                   <div className="text-red-600 text-sm font-medium p-3 border border-red-200 rounded-lg bg-red-50 text-center">
-                    Aucun créneau disponible à cette date.
+                    {t('manualBookingModal.noSlotsAvailable')}
                   </div>
                 ) : (
                   <div className="w-full rounded-lg border-gray-200 bg-gray-50 text-gray-400 p-2.5 border text-sm text-center">
-                    Veuillez choisir une date d'abord
+                    {t('manualBookingModal.chooseDateFirst')}
                   </div>
                 )}
               </div>
@@ -199,14 +202,14 @@ export function ManualBookingModal({ isOpen, onClose, onSuccess, initialDate }: 
               onClick={onClose}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg border transition-colors"
             >
-              Annuler
+              {t('manualBookingModal.cancel')}
             </button>
             <button 
               type="submit" 
               disabled={isSubmitting || (bookingMode === "time_based" && !formData.appointment_time)}
               className="px-4 py-2 text-sm font-bold text-white bg-primary hover:bg-primary/90 rounded-lg disabled:opacity-50 transition-colors"
             >
-              {isSubmitting ? "Enregistrement..." : "Confirmer le RDV"}
+              {isSubmitting ? t('manualBookingModal.saving') : t('manualBookingModal.confirmBooking')}
             </button>
           </div>
         </form>

@@ -13,6 +13,8 @@ import {
   CreditCard
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "../shared/LanguageSwitcher";
 import { NotificationBell } from "./NotificationBell";
 import { useAuthStore } from "../../lib/authStore";
 import api, { getImageUrl } from "../../lib/api";
@@ -21,6 +23,7 @@ export function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout, userType, isAuthenticated, isInitializing } = useAuthStore();
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [resendStatus, setResendStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -43,23 +46,23 @@ export function DashboardLayout() {
   };
 
   const navigation = [
-    { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Rendez-vous", href: "/dashboard/appointments", icon: ListTodo },
-    { name: "Disponibilités", href: "/dashboard/schedule", icon: Clock },
-    { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+    { name: t('dashboardLayout.dashboard'), href: "/dashboard", icon: LayoutDashboard },
+    { name: t('dashboardLayout.appointments'), href: "/dashboard/appointments", icon: ListTodo },
+    { name: t('dashboardLayout.schedule'), href: "/dashboard/schedule", icon: Clock },
+    { name: t('dashboardLayout.notifications'), href: "/dashboard/notifications", icon: Bell },
   ];
 
   if (userType === "doctor") {
     navigation.push(
-      { name: "Statistiques", href: "/dashboard/stats", icon: TrendingUp },
-      { name: "Assistants", href: "/dashboard/assistants", icon: Users },
-      { name: "Abonnement", href: "/dashboard/billing", icon: CreditCard },
-      { name: "Paramètres", href: "/dashboard/settings", icon: Settings }
+      { name: t('dashboardLayout.stats'), href: "/dashboard/stats", icon: TrendingUp },
+      { name: t('dashboardLayout.assistants'), href: "/dashboard/assistants", icon: Users },
+      { name: t('dashboardLayout.billing'), href: "/dashboard/billing", icon: CreditCard },
+      { name: t('dashboardLayout.settings'), href: "/dashboard/settings", icon: Settings }
     );
   }
 
   if (isInitializing) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500">Chargement...</div>;
+    return <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500">{t('dashboardLayout.loading')}</div>;
   }
 
   if (!isAuthenticated || !["doctor", "assistant"].includes(userType as string)) {
@@ -79,8 +82,8 @@ export function DashboardLayout() {
 
       {/* Sidebar */}
       <div className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r shadow-sm transform transition-transform duration-200 ease-in-out lg:static lg:translate-x-0
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        fixed inset-y-0 start-0 z-50 w-64 bg-white border-r ltr:border-r rtl:border-l shadow-sm transform transition-transform duration-200 ease-in-out lg:static lg:translate-x-0
+        ${sidebarOpen ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full"}
       `}>
         <div className="flex h-16 items-center px-6 border-b justify-center">
           <Link to="/" className="flex items-center">
@@ -102,11 +105,11 @@ export function DashboardLayout() {
             )}
           </div>
           <h3 className="font-semibold text-gray-900">Dr. {profile?.first_name} {profile?.last_name}</h3>
-          <p className="text-xs text-gray-500 mb-4">{profile?.speciality?.name || "Médecin"}</p>
+          <p className="text-xs text-gray-500 mb-4">{profile?.speciality?.name || t('dashboardLayout.doctor')}</p>
           <div className="flex w-full gap-2">
-            <Link to="/dashboard/settings" className="flex-1 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border transition-colors flex items-center justify-center gap-1" title="Paramètres">
+            <Link to="/dashboard/settings" className="flex-1 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border transition-colors flex items-center justify-center gap-1" title={t('dashboardLayout.settings')}>
               <Settings className="h-3.5 w-3.5" />
-              Profil
+              {t('dashboardLayout.profile')}
             </Link>
             {profile?.id && (
               <a 
@@ -114,10 +117,10 @@ export function DashboardLayout() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex-1 py-2 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-medium rounded-lg border border-primary/20 transition-colors flex items-center justify-center gap-1"
-                title="Page publique"
+                title={t('dashboardLayout.publicPage')}
               >
                 <Globe className="h-3.5 w-3.5" />
-                Public
+                {t('dashboardLayout.publicPage')}
               </a>
             )}
           </div>
@@ -146,16 +149,17 @@ export function DashboardLayout() {
           })}
         </nav>
 
-        <div className="absolute bottom-0 w-full p-4 border-t bg-white">
+        <div className="absolute bottom-0 w-full p-4 border-t bg-white flex flex-col gap-2">
+          <LanguageSwitcher />
           <button 
             onClick={() => {
               logout();
               navigate("/");
             }}
-            className="flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            className="flex w-full items-center justify-start gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors text-start"
           >
-            <LogOut className="h-5 w-5" />
-            Déconnexion
+            <LogOut className="h-5 w-5 rtl:scale-x-[-1]" />
+            {t('dashboardLayout.logout')}
           </button>
         </div>
       </div>
@@ -179,29 +183,29 @@ export function DashboardLayout() {
         {/* Main Area */}
         <main className="flex-1 overflow-y-auto bg-gray-50 flex flex-col">
           {profile && profile.is_verified === false && userType === "doctor" && (
-            <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+            <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 text-start">
               <div className="text-sm text-yellow-800">
-                <span className="font-semibold">Action requise :</span> Veuillez vérifier votre adresse e-mail pour que votre profil apparaisse dans la recherche des patients.
+                <span className="font-semibold">{t('dashboardLayout.verificationRequired')}</span> {t('dashboardLayout.verifyEmailMsg')}
               </div>
               <button 
                 onClick={handleResend}
                 disabled={resendStatus === "loading" || resendStatus === "success"}
                 className="whitespace-nowrap px-3 py-1.5 text-xs font-medium bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded-md transition-colors disabled:opacity-50"
               >
-                {resendStatus === "loading" ? "Envoi..." : resendStatus === "success" ? "E-mail envoyé !" : "Renvoyer l'e-mail"}
+                {resendStatus === "loading" ? t('dashboardLayout.sending') : resendStatus === "success" ? t('dashboardLayout.emailSent') : t('dashboardLayout.resendEmail')}
               </button>
             </div>
           )}
           {profile && profile.subscription_status === "past_due" && userType === "doctor" && (
-            <div className="bg-red-50 border-b border-red-200 px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
+            <div className="bg-red-50 border-b border-red-200 px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 text-start">
               <div className="text-sm text-red-800">
-                <span className="font-semibold">Abonnement expiré :</span> Votre profil n'est plus visible pour les patients. Veuillez renouveler votre abonnement.
+                <span className="font-semibold">{t('dashboardLayout.subscriptionExpired')}</span> {t('dashboardLayout.subscriptionExpiredMsg')}
               </div>
               <Link 
                 to="/dashboard/billing"
                 className="whitespace-nowrap px-3 py-1.5 text-xs font-medium bg-red-100 hover:bg-red-200 text-red-800 rounded-md transition-colors"
               >
-                Renouveler
+                {t('dashboardLayout.renew')}
               </Link>
             </div>
           )}

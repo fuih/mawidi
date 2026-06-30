@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Save, Camera, Loader2, User, Stethoscope, MapPin, Image as ImageIcon } from "lucide-react";
 import api, { getImageUrl } from "../../lib/api";
 import { useAuthStore } from "../../lib/authStore";
@@ -7,6 +8,7 @@ import { useAuthStore } from "../../lib/authStore";
 export function DoctorSettingsPage() {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
+  const { t } = useTranslation();
 
   const [form, setForm] = useState({
     first_name: "",
@@ -80,12 +82,12 @@ export function DoctorSettingsPage() {
       if (!payload.bio_ar) delete payload.bio_ar;
 
       await api.put("/dashboard/profile", payload);
-      setMessage("Profil mis à jour avec succès !");
+      setMessage(t('doctorSettings.profileUpdated'));
       
       // Auto clear success message after 3 seconds
       setTimeout(() => setMessage(""), 3000);
     } catch (err: any) {
-      setMessage("Erreur: " + (err.response?.data?.detail || "Échec"));
+      setMessage(t('doctorSettings.errorPrefix') + (err.response?.data?.detail || t('doctorSettings.failed')));
     } finally {
       setSaving(false);
     }
@@ -95,7 +97,7 @@ export function DoctorSettingsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">Chargement de votre profil...</p>
+        <p className="text-gray-500 font-medium">{t('doctorSettings.loadingProfile')}</p>
       </div>
     );
   }
@@ -105,11 +107,11 @@ export function DoctorSettingsPage() {
     if (!file) return;
 
     if (file.size > 4 * 1024 * 1024) {
-      setPhotoError("La taille de l'image ne doit pas dépasser 4 Mo.");
+      setPhotoError(t('doctorSettings.photoSizeError'));
       return;
     }
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      setPhotoError("Format non supporté. Utilisez JPEG, PNG ou WebP.");
+      setPhotoError(t('doctorSettings.photoFormatError'));
       return;
     }
 
@@ -130,7 +132,7 @@ export function DoctorSettingsPage() {
       setPhotoUrl(res.data.profile_photo_url);
       URL.revokeObjectURL(objectUrl);
     } catch (err: any) {
-      setPhotoError(err.response?.data?.detail || "Erreur lors de l'upload de la photo.");
+      setPhotoError(err.response?.data?.detail || t('doctorSettings.photoUploadError'));
       setPhotoUrl(previousPhotoUrl);
       URL.revokeObjectURL(objectUrl);
     } finally {
@@ -142,9 +144,9 @@ export function DoctorSettingsPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Paramètres du profil</h1>
-          <p className="text-sm text-gray-500 mt-1">Gérez vos informations publiques et personnalisez votre page médecin.</p>
+        <div className="text-start">
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t('doctorSettings.profileSettings')}</h1>
+          <p className="text-sm text-gray-500 mt-1">{t('doctorSettings.profileSettingsDesc')}</p>
         </div>
         
         {/* Top Save Button for quick access */}
@@ -154,7 +156,7 @@ export function DoctorSettingsPage() {
           className="hidden sm:flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm hover:bg-primary/90 transition-all disabled:opacity-70"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          Enregistrer
+          {t('doctorSettings.save')}
         </button>
       </div>
 
@@ -180,20 +182,20 @@ export function DoctorSettingsPage() {
           <div className="bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:shadow-md">
             <div className="px-6 py-4 border-b bg-gray-50/50 flex items-center gap-2">
               <User className="w-5 h-5 text-gray-500" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Identité</h3>
-                <p className="text-xs text-gray-500">Vos informations personnelles.</p>
+              <div className="text-start">
+                <h3 className="font-semibold text-gray-900">{t('doctorSettings.identity')}</h3>
+                <p className="text-xs text-gray-500">{t('doctorSettings.identityDesc')}</p>
               </div>
             </div>
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 text-start">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Prénom</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.firstName')}</label>
                   <input type="text" value={form.first_name} onChange={(e) => set("first_name", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Amine" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nom</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.lastName')}</label>
                   <input type="text" value={form.last_name} onChange={(e) => set("last_name", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Benali" />
                 </div>
@@ -201,12 +203,12 @@ export function DoctorSettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-right">الاسم (عربي)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-right" dir="rtl">{t('doctorSettings.firstNameAr')}</label>
                   <input type="text" dir="rtl" value={form.first_name_ar} onChange={(e) => set("first_name_ar", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-right" placeholder="أمين" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-right">اللقب (عربي)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-right" dir="rtl">{t('doctorSettings.lastNameAr')}</label>
                   <input type="text" dir="rtl" value={form.last_name_ar} onChange={(e) => set("last_name_ar", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-right" placeholder="بن علي" />
                 </div>
@@ -218,20 +220,20 @@ export function DoctorSettingsPage() {
           <div className="bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:shadow-md">
             <div className="px-6 py-4 border-b bg-gray-50/50 flex items-center gap-2">
               <Stethoscope className="w-5 h-5 text-gray-500" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Profil Professionnel</h3>
-                <p className="text-xs text-gray-500">Spécialité, tarif et présentation aux patients.</p>
+              <div className="text-start">
+                <h3 className="font-semibold text-gray-900">{t('doctorSettings.professionalProfile')}</h3>
+                <p className="text-xs text-gray-500">{t('doctorSettings.professionalProfileDesc')}</p>
               </div>
             </div>
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 text-start">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Spécialité</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.specialty')}</label>
                   <input type="text" value={form.specialty} onChange={(e) => set("specialty", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Ex: Cardiologie" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tarif de consultation (DA)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.consultationFee')}</label>
                   <div className="relative">
                     <input type="number" min="0" step="100" value={form.consultation_fee} onChange={(e) => set("consultation_fee", e.target.value)}
                       className="w-full pl-4 pr-12 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="2000" />
@@ -244,16 +246,16 @@ export function DoctorSettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Biographie (français)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.bioFr')}</label>
                   <textarea rows={4} value={form.bio} onChange={(e) => set("bio", e.target.value)}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none" 
-                    placeholder="Décrivez votre parcours, vos diplômes et votre approche médicale..." />
+                    placeholder={t('doctorSettings.bioFrPlaceholder')} />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-right">السيرة الذاتية (عربي)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5 text-right" dir="rtl">{t('doctorSettings.bioAr')}</label>
                   <textarea rows={4} dir="rtl" value={form.bio_ar} onChange={(e) => set("bio_ar", e.target.value)}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-right" 
-                    placeholder="...صف مسيرتك المهنية، شهاداتك ونهجك الطبي" />
+                    placeholder={t('doctorSettings.bioArPlaceholder')} />
                 </div>
               </div>
             </div>
@@ -263,36 +265,36 @@ export function DoctorSettingsPage() {
           <div className="bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:shadow-md">
             <div className="px-6 py-4 border-b bg-gray-50/50 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-gray-500" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Cabinet & Contact</h3>
-                <p className="text-xs text-gray-500">Où et comment vos patients peuvent vous joindre.</p>
+              <div className="text-start">
+                <h3 className="font-semibold text-gray-900">{t('doctorSettings.clinicAndContact')}</h3>
+                <p className="text-xs text-gray-500">{t('doctorSettings.clinicAndContactDesc')}</p>
               </div>
             </div>
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 text-start">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Numéro de téléphone</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.phoneNumber')}</label>
                   <input type="tel" value={form.phone} onChange={(e) => set("phone", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium" placeholder="0555 12 34 56" />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ville / Wilaya</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.city')}</label>
                   <input type="text" value={form.city} onChange={(e) => set("city", e.target.value)}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="Ex: Alger" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Adresse complète du cabinet</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.fullAddress')}</label>
                 <input type="text" value={form.address} onChange={(e) => set("address", e.target.value)}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="N° 15, Rue Emir Abdelkader, Bâtiment A..." />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Lien Google Maps</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">{t('doctorSettings.googleMapsLink')}</label>
                 <input type="url" value={form.google_maps_url} onChange={(e) => set("google_maps_url", e.target.value)}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" placeholder="https://goo.gl/maps/..." />
-                <p className="text-xs text-gray-500 mt-1">Collez le lien vers votre position exacte sur Google Maps pour aider les patients à vous trouver.</p>
+                <p className="text-xs text-gray-500 mt-1">{t('doctorSettings.googleMapsHint')}</p>
               </div>
             </div>
           </div>
@@ -304,7 +306,7 @@ export function DoctorSettingsPage() {
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="px-6 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
             >
-              Annuler
+              {t('doctorSettings.cancel')}
             </button>
             <button
               type="submit" disabled={saving}
@@ -315,7 +317,7 @@ export function DoctorSettingsPage() {
               ) : (
                 <Save className="h-5 w-5" />
               )}
-              Enregistrer
+              {t('doctorSettings.save')}
             </button>
           </div>
         </div>
@@ -324,10 +326,10 @@ export function DoctorSettingsPage() {
         <div className="space-y-6">
           
           {/* Section: Photo de Profil */}
-          <div className="bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:shadow-md sticky top-6">
+          <div className="bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:shadow-md sticky top-6 text-start">
             <div className="px-6 py-4 border-b bg-gray-50/50 flex items-center gap-2">
               <ImageIcon className="w-5 h-5 text-gray-500" />
-              <h3 className="font-semibold text-gray-900">Photo de profil</h3>
+              <h3 className="font-semibold text-gray-900">{t('doctorSettings.profilePhoto')}</h3>
             </div>
             <div className="p-6 flex flex-col items-center text-center">
               <div className="relative group mb-5">
@@ -361,15 +363,15 @@ export function DoctorSettingsPage() {
                 />
               </div>
               
-              <h4 className="text-sm font-semibold text-gray-900 mb-1">Télécharger une nouvelle photo</h4>
-              <p className="text-xs text-gray-500 mb-4 px-2">Une photo professionnelle aide les patients à vous reconnaître et augmente la confiance. Formats : JPEG, PNG, WebP. Taille max : 4 Mo.</p>
+              <h4 className="text-sm font-semibold text-gray-900 mb-1">{t('doctorSettings.uploadNewPhoto')}</h4>
+              <p className="text-xs text-gray-500 mb-4 px-2">{t('doctorSettings.photoHint')}</p>
               
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 className="w-full text-sm font-medium text-primary hover:bg-primary/10 transition-colors bg-primary/5 py-2.5 rounded-lg"
               >
-                Choisir une image
+                {t('doctorSettings.chooseImage')}
               </button>
             </div>
           </div>

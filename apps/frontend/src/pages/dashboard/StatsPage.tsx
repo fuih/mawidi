@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { 
   TrendingUp, 
   Users, 
@@ -37,6 +38,7 @@ interface DashboardStats {
 export function StatsPage() {
   const navigate = useNavigate();
   const { isAuthenticated, userType } = useAuthStore();
+  const { t, i18n } = useTranslation();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   
@@ -76,7 +78,7 @@ export function StatsPage() {
       <div className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-3 text-gray-500">
           <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-          <p>Chargement des statistiques...</p>
+          <p>{t('statsPage.loadingStats')}</p>
         </div>
       </div>
     );
@@ -92,35 +94,35 @@ export function StatsPage() {
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header and Filters */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
+        <div className="text-start">
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             <TrendingUp className="h-6 w-6 text-primary" />
-            Statistiques de votre cabinet
+            {t('statsPage.clinicStats')}
           </h1>
-          <p className="text-sm text-gray-500 mt-1">Aperçu global de votre activité sur موعدي Mawidi</p>
+          <p className="text-sm text-gray-500 mt-1">{t('statsPage.statsDesc')}</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border shadow-sm">
-            <label className="text-sm text-gray-500 font-medium">Du</label>
+            <label className="text-sm text-gray-500 font-medium">{t('statsPage.from')}</label>
             <input 
               type="date" 
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="text-sm border-none focus:ring-0 p-0 text-gray-900 font-medium"
+              className="text-sm border-none focus:ring-0 p-0 text-gray-900 font-medium bg-transparent"
             />
-            <label className="text-sm text-gray-500 font-medium ml-2">Au</label>
+            <label className="text-sm text-gray-500 font-medium ml-2 mr-2">{t('statsPage.to')}</label>
             <input 
               type="date" 
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="text-sm border-none focus:ring-0 p-0 text-gray-900 font-medium"
+              className="text-sm border-none focus:ring-0 p-0 text-gray-900 font-medium bg-transparent"
             />
           </div>
           <button 
             onClick={fetchStats}
             className="p-2 text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors shadow-sm"
-            title="Appliquer le filtre"
+            title={t('statsPage.applyFilter')}
           >
             <RefreshCw className="h-5 w-5" />
           </button>
@@ -130,33 +132,33 @@ export function StatsPage() {
       {/* Top Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard 
-          title="Rendez-vous Aujourd'hui" 
+          title={t('statsPage.todayAppointments')} 
           value={stats.today.toString()} 
           icon={<Users className="h-6 w-6 text-blue-600" />} 
           bgClass="bg-blue-50"
         />
         <StatCard 
-          title="Total des Rendez-vous" 
+          title={t('statsPage.totalAppointments')} 
           value={stats.total.toString()} 
           icon={<Activity className="h-6 w-6 text-purple-600" />} 
           bgClass="bg-purple-50"
         />
         <StatCard 
-          title="Taux d'Absence" 
+          title={t('statsPage.noShowRate')} 
           value={`${actualNoShowRate}%`} 
           icon={<AlertCircle className="h-6 w-6 text-red-600" />} 
           bgClass="bg-red-50"
         />
         {stats.fill_rate !== null ? (
           <StatCard 
-            title="Taux de Remplissage" 
+            title={t('statsPage.fillRate')} 
             value={`${stats.fill_rate}%`} 
             icon={<CalendarCheck className="h-6 w-6 text-green-600" />} 
             bgClass="bg-green-50"
           />
         ) : (
           <StatCard 
-            title="Moy. Patients/Jour" 
+            title={t('statsPage.avgPatientsPerDay')} 
             value={`${stats.avg_patients_per_day || "N/A"}`} 
             icon={<Users className="h-6 w-6 text-green-600" />} 
             bgClass="bg-green-50"
@@ -166,24 +168,24 @@ export function StatsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Breakdown by Status */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-6">Répartition par statut & Évolution</h2>
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6 text-start">
+          <h2 className="text-lg font-bold text-gray-900 mb-6">{t('statsPage.statusBreakdownAndEvolution')}</h2>
           
           <div className="space-y-5 mb-8">
-            <ProgressBar label="En attente" value={stats.pending} total={stats.total} colorClass="bg-yellow-400" icon={<Clock className="h-4 w-4 text-yellow-600" />} />
-            <ProgressBar label="Confirmés" value={stats.confirmed} total={stats.total} colorClass="bg-blue-500" icon={<CheckCircle2 className="h-4 w-4 text-blue-600" />} />
-            <ProgressBar label="Terminés" value={stats.completed} total={stats.total} colorClass="bg-green-500" icon={<CheckCircle2 className="h-4 w-4 text-green-600" />} />
-            <ProgressBar label="Annulés" value={stats.cancelled} total={stats.total} colorClass="bg-gray-400" icon={<CalendarX className="h-4 w-4 text-gray-600" />} />
-            <ProgressBar label="Absents (No-show)" value={stats.no_show} total={stats.total} colorClass="bg-red-500" icon={<AlertCircle className="h-4 w-4 text-red-600" />} />
+            <ProgressBar label={t('statsPage.pending')} value={stats.pending} total={stats.total} colorClass="bg-yellow-400" icon={<Clock className="h-4 w-4 text-yellow-600" />} />
+            <ProgressBar label={t('statsPage.confirmed')} value={stats.confirmed} total={stats.total} colorClass="bg-blue-500" icon={<CheckCircle2 className="h-4 w-4 text-blue-600" />} />
+            <ProgressBar label={t('statsPage.completed')} value={stats.completed} total={stats.total} colorClass="bg-green-500" icon={<CheckCircle2 className="h-4 w-4 text-green-600" />} />
+            <ProgressBar label={t('statsPage.cancelled')} value={stats.cancelled} total={stats.total} colorClass="bg-gray-400" icon={<CalendarX className="h-4 w-4 text-gray-600" />} />
+            <ProgressBar label={t('statsPage.noShow')} value={stats.no_show} total={stats.total} colorClass="bg-red-500" icon={<AlertCircle className="h-4 w-4 text-red-600" />} />
           </div>
 
-          <h3 className="text-sm font-bold text-gray-700 mb-4">Évolution sur la période</h3>
-          <SimpleChart data={stats.weekly_chart} />
+          <h3 className="text-sm font-bold text-gray-700 mb-4">{t('statsPage.evolutionOverPeriod')}</h3>
+          <SimpleChart data={stats.weekly_chart} t={t} i18n={i18n} />
         </div>
 
         {/* Performance Insights */}
-        <div className="bg-white rounded-xl shadow-sm border p-6 flex flex-col">
-          <h2 className="text-lg font-bold text-gray-900 mb-6">Performances</h2>
+        <div className="bg-white rounded-xl shadow-sm border p-6 flex flex-col text-start">
+          <h2 className="text-lg font-bold text-gray-900 mb-6">{t('statsPage.performances')}</h2>
           
           <div className="flex-1 flex flex-col justify-center gap-8">
             <div className="text-center">
@@ -196,16 +198,16 @@ export function StatsPage() {
                   <span className="text-2xl font-bold text-gray-900">{completionRate}%</span>
                 </div>
               </div>
-              <h3 className="mt-4 font-semibold text-gray-700">Taux de réalisation</h3>
-              <p className="text-xs text-gray-500 mt-1">Rendez-vous honorés par les patients</p>
+              <h3 className="mt-4 font-semibold text-gray-700">{t('statsPage.completionRate')}</h3>
+              <p className="text-xs text-gray-500 mt-1">{t('statsPage.honoredAppointments')}</p>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4 border text-sm text-gray-600">
               <p className="font-medium text-gray-900 mb-1 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                Conseil
+                {t('statsPage.tip')}
               </p>
-              Pour réduire le taux d'absence, assurez-vous que les rappels SMS automatiques sont activés dans vos paramètres.
+              {t('statsPage.reduceNoShowTip')}
             </div>
           </div>
         </div>
@@ -214,8 +216,8 @@ export function StatsPage() {
   );
 }
 
-function SimpleChart({ data }: { data: DashboardStats["weekly_chart"] }) {
-  if (!data || data.length === 0) return <p className="text-gray-500 text-sm">Aucune donnée pour cette période.</p>;
+function SimpleChart({ data, t, i18n }: { data: DashboardStats["weekly_chart"], t: any, i18n: any }) {
+  if (!data || data.length === 0) return <p className="text-gray-500 text-sm">{t('statsPage.noDataForPeriod')}</p>;
   
   const maxVal = Math.max(...data.map(d => Math.max(d.completed, d.cancelled, d.no_show, 1)));
 
@@ -226,7 +228,7 @@ function SimpleChart({ data }: { data: DashboardStats["weekly_chart"] }) {
         const hCanc = `${(day.cancelled / maxVal) * 100}%`;
         const hNoSh = `${(day.no_show / maxVal) * 100}%`;
         const dateObj = new Date(day.date);
-        const dayName = dateObj.toLocaleDateString("fr-FR", { weekday: 'short', day: 'numeric' });
+        const dayName = dateObj.toLocaleDateString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR', { weekday: 'short', day: 'numeric' });
         
         return (
           <div key={i} className="flex-1 flex flex-col justify-end items-center gap-1 relative group h-full">
@@ -238,11 +240,11 @@ function SimpleChart({ data }: { data: DashboardStats["weekly_chart"] }) {
             <span className="text-[10px] text-gray-500 capitalize">{dayName}</span>
             
             {/* Tooltip */}
-            <div className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 text-white text-xs p-2 rounded shadow-lg pointer-events-none z-10 whitespace-nowrap">
-              <p className="font-bold mb-1">{dateObj.toLocaleDateString("fr-FR")}</p>
-              <p className="text-green-400">Terminés: {day.completed}</p>
-              <p className="text-red-400">Absents: {day.no_show}</p>
-              <p className="text-gray-400">Annulés: {day.cancelled}</p>
+            <div className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 text-white text-xs p-2 rounded shadow-lg pointer-events-none z-10 whitespace-nowrap text-start">
+              <p className="font-bold mb-1">{dateObj.toLocaleDateString(i18n.language === 'ar' ? 'ar-DZ' : i18n.language === 'en' ? 'en-US' : 'fr-FR')}</p>
+              <p className="text-green-400">{t('statsPage.completedChart', { count: day.completed })}</p>
+              <p className="text-red-400">{t('statsPage.noShowChart', { count: day.no_show })}</p>
+              <p className="text-gray-400">{t('statsPage.cancelledChart', { count: day.cancelled })}</p>
             </div>
           </div>
         );
